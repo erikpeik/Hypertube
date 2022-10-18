@@ -23,4 +23,4 @@ npm-back: # Install npm packages in the backend
 npm-front: # Install npm packages in the frontend
 	docker-compose exec client npm install
 
-.PHONY: all build up build-up clean fclean re
+.PHONY: all build up build-up clean fclean re npm-back npm-front
