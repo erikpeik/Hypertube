@@ -1,13 +1,13 @@
 {
 	"Servers": {
 	  "1": {
-		"Name": "Hypertube",
+		"Name": "hypertube",
 		"Group": "Server Group 1",
 		"Port": 5432,
 		"Username": "hypertube",
 		"Host": "postgres-db",
 		"SSLMode": "prefer",
-		"MaintenanceDB": "Hypertube"
+		"MaintenanceDB": "hypertube"
 	  }
 	}
   }
