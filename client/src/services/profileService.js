@@ -1,5 +1,6 @@
 import axios from 'axios'
 const baseUrl = 'http://localhost:3001/api/profile'
+// axios.defaults.withCredentials = true;
 
 const setUpProfile = ProfileSettings => {
 	const request = axios.post(`${baseUrl}/setup`, ProfileSettings)
