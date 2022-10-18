@@ -179,14 +179,12 @@ module.exports = (app, pool, bcrypt) => {
 
 	app.get('/api/profile', async (request, response) => {
 		const sess = request.session
-		console.log(sess.userid)
 
 		if (1) {
 			try {
 				var sql = `SELECT * FROM users WHERE users.id = $1`
 				var { rows } = await pool.query(sql, [sess.userid])
 				const { password: removed_password, ...profileData } = rows[0]
-				console.log(rows[0])
 
 				// var sql = `SELECT * FROM user_pictures WHERE user_id = $1 AND profile_pic = 'YES'`
 				// var profile_pic = await pool.query(sql, [sess.userid])
