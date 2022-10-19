@@ -6,14 +6,11 @@ module.exports = function (app, pool, bcrypt, cookieParser, bodyParser, jwt) {
 					WHERE username = $1 OR email = $1`;
 		const { rows } = await pool.query(sql, [username]);
 		if (rows.length === 0) {
-			throw "User not found!";
+			response.send("User not found!");
 		} else if (rows[0]["verified"] === "NO") {
-			throw "User account not yeat activated! Please check your inbox for confirmation email.";
+			response.send("User account not yeat activated! Please check your inbox for confirmation email.");
 		} else {
-			const compareResult = await bcrypt.compare(
-				password,
-				rows[0]["password"]
-			);
+			const compareResult = await bcrypt.compare(password, rows[0]["password"]);
 			if (compareResult) {
 				const userId = rows[0]["id"];
 				const name = rows[0]["username"];
@@ -38,13 +35,11 @@ module.exports = function (app, pool, bcrypt, cookieParser, bodyParser, jwt) {
 					maxAge: 60 * 1000,
 				});
 				const sql1 = `UPDATE users SET token = $1 WHERE id = $2`;
-				const { rows1 } = await pool.query(sql1, [
-					refreshToken,
-					userId,
-				]);
+				const { rows1 } = await pool.query(sql1, [refreshToken, userId]);
 
 				response.json({ accessToken, username: name, userid: userId });
-			} else throw "Wrong password!";
+			} else
+				response.send("Wrong password!")
 		}
 	});
 

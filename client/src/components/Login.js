@@ -26,8 +26,6 @@ const Login = ( ) => {
 			if (result.userid) {
 				const sessionUser = { name: result.username, id: result.userid }
 				dispatch(setUser(sessionUser))
-				// dispatch(getUserLists())
-				// dispatch(getUserNotifications())
 				dispatch(getProfileData())
 				dispatch(changeNotification(""))
 			} else {
