@@ -37,6 +37,11 @@ const setNewPassword = (passwords) => {
 	return request.then((response) => response.data);
 };
 
+const checkGithubConnection = token => {
+	const request = axios.post(`${baseUrl}/oauth/githubconnect`, token);
+	return request.then((response) => response);
+}
+
 const signUpService = {
 	createUser,
 	verifyUser,
@@ -45,6 +50,7 @@ const signUpService = {
 	getSessionUser,
 	resetPassword,
 	setNewPassword,
+	checkGithubConnection
 };
 
 export default signUpService;

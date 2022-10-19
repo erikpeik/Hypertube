@@ -21,6 +21,8 @@ services:
   client:
     build: ./client
     container_name: client_container
+    env_file:
+      - .env
     environment:
       - NODE_PATH=src
       - WATCHPACK_POLLING=true

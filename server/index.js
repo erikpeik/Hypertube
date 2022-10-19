@@ -1,6 +1,7 @@
 require("dotenv").config(); // to use .env variables
 const express = require("express");
 const app = express();
+const axios = require("axios");
 const cors = require("cors"); // Cross-origin resource sharing (CORS) middleware is required to allow requests from other origins
 const corsOptions = {
 	origin: "http://localhost:3000",
@@ -64,6 +65,7 @@ require("./routes/signup.js")(app, pool, bcrypt, transporter, helperFunctions);
 require("./routes/login_logout.js")(app, pool, bcrypt, cookieParser, bodyParser, jwt);
 require("./routes/resetpassword.js")(app, pool, bcrypt, transporter, helperFunctions);
 require("./routes/profile.js")(app, pool, bcrypt, cookieParser, bodyParser);
+require("./routes/oauth.js")(app, pool, axios);
 
 app.get("/", (req, res) => {
 	res.send("Welcome to Hypertube");

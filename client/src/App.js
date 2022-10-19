@@ -12,12 +12,13 @@ import ProfileSettings from "./components/profile/ProfileSettings";
 import NavBar from "./components/Navbar";
 import PathNotExists from "./components/PathNotExists";
 import ConfirmMail from "./components/login/ConfirmMail";
-import RedirectPage from "./components/RedirectPage";
+// import RedirectPage from "./components/RedirectPage";
 import DeleteUser from "./components/profile/DeleteUser"
 import ResetPassword, {
 	SetNewPassword,
 } from "./components/login/ResetPassword";
 import ChangePassword from "./components/profile/ChangePassword";
+import GithubAuth from "./components/GithubAuth";
 
 const App = () => {
 	const dispatch = useDispatch();
@@ -31,12 +32,13 @@ const App = () => {
 
 	return (
 		<Router>
-			<RedirectPage />
+			{/* <RedirectPage /> */}
 			<NavBar />
 			<Routes>
 				<Route path="/" element={<Login />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/signup" element={<Signup />} />
+				<Route path="/oauth" element={<GithubAuth />} />
 				<Route path="/confirm/:user/:code" element={<ConfirmMail />} />
 				<Route path="/login/resetpassword" element={<ResetPassword />} />
 				<Route path="/resetpassword/:user/:code" element={<SetNewPassword />} />
