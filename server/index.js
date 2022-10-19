@@ -65,6 +65,7 @@ require("./routes/signup.js")(app, pool, bcrypt, transporter, helperFunctions);
 require("./routes/login_logout.js")(app, pool, bcrypt, cookieParser, bodyParser, jwt);
 require("./routes/resetpassword.js")(app, pool, bcrypt, transporter, helperFunctions);
 require("./routes/profile.js")(app, pool, bcrypt, cookieParser, bodyParser);
+require("./routes/browsing.js")(app, pool, bcrypt, cookieParser, bodyParser, jwt);
 require("./routes/oauth.js")(app, pool, axios);
 
 app.get("/", (req, res) => {

@@ -14,6 +14,7 @@ import PathNotExists from "./components/PathNotExists";
 import ConfirmMail from "./components/login/ConfirmMail";
 // import RedirectPage from "./components/RedirectPage";
 import DeleteUser from "./components/profile/DeleteUser"
+import Browsing from "./components/Browsing"
 import ResetPassword, {
 	SetNewPassword,
 } from "./components/login/ResetPassword";
@@ -38,12 +39,13 @@ const App = () => {
 				<Route path="/" element={<Login />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/signup" element={<Signup />} />
+				<Route path="/profile" element={<Profile />} />
+				<Route path="/browsing" element={<Browsing />} />
 				<Route path="/oauth" element={<GithubAuth />} />
 				<Route path="/confirm/:user/:code" element={<ConfirmMail />} />
 				<Route path="/login/resetpassword" element={<ResetPassword />} />
 				<Route path="/resetpassword/:user/:code" element={<SetNewPassword />} />
 				<Route path="/changepassword" element={<ChangePassword />} />
-				<Route path="/profile" element={<Profile />} />
 				<Route path="/settings" element={<ProfileSettings />} />
 				<Route path="/logout" element={<Logout />} />
 				<Route path="/deleteuser" element={<DeleteUser />} />
