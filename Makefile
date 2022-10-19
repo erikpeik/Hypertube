@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: plehtika <plehtika@student.hive.fi>        +#+  +:+       +#+         #
+#    By: emende <emende@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2022/10/19 14:19:46 by plehtika          #+#    #+#              #
-#    Updated: 2022/10/19 14:20:13 by plehtika         ###   ########.fr        #
+#    Created: 2022/10/19 14:19:46 by emende            #+#    #+#              #
+#    Updated: 2022/10/19 14:20:13 by emende.          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,4 +35,6 @@ npm-back: # Install npm packages in the backend
 npm-front: # Install npm packages in the frontend
 	docker-compose exec client npm install
 
-.PHONY: all build up build-up clean fclean re npm-back npm-front
+npm-all: npm-back npm-front # Install npm packages in both backend and frontend
+
+.PHONY: all build up build-up clean fclean re npm-back npm-front npm-all
