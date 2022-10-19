@@ -2,7 +2,6 @@ module.exports = function (app, pool, bcrypt, cookieParser, bodyParser, jwt) {
   app.post("/api/login", async (request, response) => {
     const { username, password } = request.body;
 
-    // const verifyUser = async () => {
     var sql = `SELECT * FROM users
 					WHERE username = $1 OR email = $1`;
     const { rows } = await pool.query(sql, [username]);
@@ -31,7 +30,7 @@ module.exports = function (app, pool, bcrypt, cookieParser, bodyParser, jwt) {
             expiresIn: "1d",
           }
         );
-        const cookie = response.cookie("refreshToken", refreshToken, {
+        response.cookie("refreshToken", refreshToken, {
           httpOnly: false,
           maxAge: 24 * 60 * 60 * 1000,
         });
@@ -41,32 +40,17 @@ module.exports = function (app, pool, bcrypt, cookieParser, bodyParser, jwt) {
         response.json({ accessToken, username: name, userid: userId });
       } else throw "Wrong password!";
     }
-    // };
-
-    // verifyUser()
-    //   .then((sess) => {
-    //     response.send(sess);
-    //   })
-    //   .catch((error) => {
-    //     response.send(error);
-    //   });
   });
 
-  //   app.get("/api/login", (request, response) => {
-  //     var sess = request.session;
-  //     if (sess.username && sess.userid)
-  //       response.send({ name: sess.username, id: sess.userid });
-  //     else response.send("");
-  //   });
+  app.get("/api/login", async (request, response) => {
+    var cookie = request.cookies.refreshToken;
 
-  //   app.get("/api/logout", async(request, response) => {
-  //     request.session.destroy((err) => {
-  //       if (err) {
-  //         return console.log(err);
-  //       }
-  //       response.end();
-  //     });
-  //   });
+    if (cookie !== "") {
+      const sql = "SELECT * FROM users WHERE token = $1";
+      const { rows } = await pool.query(sql, [cookie]);
+      response.send({ name: rows[0]["username"], id: rows[0]["id"] });
+    } else response.send("");
+  });
 
   app.post("/api/logout", async (request, response) => {
     const refreshToken = request.cookies.refreshToken;
@@ -77,7 +61,6 @@ module.exports = function (app, pool, bcrypt, cookieParser, bodyParser, jwt) {
       const userId = rows[0]["id"];
       const sql1 = `UPDATE users SET token = $1 WHERE id = $2`;
       await pool.query(sql1, [0, userId]);
-      console.log("here", response);
     }
     const cookie = response.clearCookie("refreshToken");
     response.status(200).json({ msg: "Logged out" });
