@@ -110,6 +110,7 @@ const Profile = () => {
 						);
 					})}
 				</Grid>
+				<Button theme={theme} onClick={() => navigate('/settings')}>Edit profile</Button>
 				<Button
 					theme={theme}
 					onClick={() => navigate("/changepassword")}

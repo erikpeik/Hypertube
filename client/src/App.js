@@ -8,6 +8,7 @@ import Login from "./components/Login";
 import Logout from "./components/Logout";
 import Signup from "./components/Signup";
 import Profile from "./components/Profile";
+import ProfileSettings from "./components/profile/ProfileSettings";
 import NavBar from "./components/Navbar";
 import PathNotExists from "./components/PathNotExists";
 import ConfirmMail from "./components/login/ConfirmMail";
@@ -36,16 +37,11 @@ const App = () => {
 				<Route path="/login" element={<Login />} />
 				<Route path="/signup" element={<Signup />} />
 				<Route path="/confirm/:user/:code" element={<ConfirmMail />} />
-				<Route
-					path="/login/resetpassword"
-					element={<ResetPassword />}
-				/>
-				<Route
-					path="/resetpassword/:user/:code"
-					element={<SetNewPassword />}
-				/>
+				<Route path="/login/resetpassword" element={<ResetPassword />} />
+				<Route path="/resetpassword/:user/:code" element={<SetNewPassword />} />
 				<Route path="/changepassword" element={<ChangePassword />} />
 				<Route path="/profile" element={<Profile />} />
+				<Route path="/settings" element={<ProfileSettings />} />
 				<Route path="/logout" element={<Logout />} />
 				<Route path="*" element={<PathNotExists />} />
 			</Routes>
