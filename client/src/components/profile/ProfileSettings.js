@@ -39,7 +39,7 @@ const ProfileSettings = () => {
 	const theme = createTheme({
 		palette: {
 			primary: {
-				main: '#FF1E56',
+				main: '#000000',
 			},
 			secondary: {
 				main: '#F5F5F5',

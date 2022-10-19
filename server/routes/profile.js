@@ -1,17 +1,17 @@
-module.exports = (app, pool, bcrypt) => {
+module.exports = (app, pool, bcrypt, cookieParser, bodyParser) => {
 	app.post("/api/profile/editsettings", async (request, response) => {
 		const cookie = request.cookies.refreshToken;
 		const { username, firstname, lastname, email } = request.body;
 
 		if (!cookie) return response.send("User not signed in!");
-		const check = "SELECT * FROM users WHERE token = $1";
-		const { user } = await pool.query(check, [cookie]);
+		const check = `SELECT * FROM users WHERE token = $1`;
+		const user = await pool.query(check, [cookie]);
 		var sql =
 			"SELECT * FROM users WHERE (username = $1 OR email = $2) AND id != $3";
 		const { rows } = await pool.query(sql, [
 			username,
 			email,
-			user[0]["id"],
+			user.rows[0]["id"],
 		]);
 		if (rows.length !== 0)
 			return response.send("Username or email is already in use!");
@@ -49,8 +49,9 @@ module.exports = (app, pool, bcrypt) => {
 				firstname,
 				lastname,
 				email,
-				user[0]["id"],
+				user.rows[0]["id"],
 			]);
+			response.send(true);
 		} catch (error) {
 			console.log(error);
 			response.send("User settings update failed for some reason");
@@ -233,25 +234,15 @@ module.exports = (app, pool, bcrypt) => {
 	// 	}
 	// });
 
-	app.delete("/api/profile/deleteuser", (request, response) => {
-		const sess = request.session;
-
-		if (sess.userid) {
+	app.delete("/api/profile/deleteuser", async (request, response) => {
+		const cookie = request.cookies.refreshToken;
+		if (cookie) {
+			const getId = "SELECT * FROM users WHERE token = $1";
+			const { rows } = await pool.query(getId, [cookie]);
+			const id = rows[0]["id"];
 			try {
 				var sql = `DELETE FROM users WHERE id = $1`;
-				pool.query(sql, [sess.userid]);
-				var sql = `DELETE FROM likes WHERE target_id = $1`;
-				pool.query(sql, [sess.userid]);
-				var sql = `DELETE FROM blocks WHERE target_id = $1`;
-				pool.query(sql, [sess.userid]);
-				var sql = `DELETE FROM watches WHERE target_id = $1`;
-				pool.query(sql, [sess.userid]);
-				var sql = `DELETE FROM reports WHERE target_id = $1`;
-				pool.query(sql, [sess.userid]);
-				var sql = `DELETE FROM connections WHERE user2_id = $1`;
-				pool.query(sql, [sess.userid]);
-				var sql = `DELETE FROM notifications WHERE sender_id = $1`;
-				pool.query(sql, [sess.userid]);
+				pool.query(sql, [id]);
 				response.send(true);
 			} catch (error) {
 				console.log(error);

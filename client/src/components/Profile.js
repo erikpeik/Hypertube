@@ -75,8 +75,10 @@ const Profile = () => {
 				"Are you sure you want to completely delete your account?"
 			)
 		) {
-			if (window.confirm("Are you really really sure?")) {
-				navigate("/deleteuser");
+			if (window.confirm("Are you really, REALLY sure?")) {
+				if (window.confirm("Are you 100% sure?")) {
+					navigate("/deleteuser");
+				}
 			}
 		}
 	};
@@ -110,7 +112,9 @@ const Profile = () => {
 						);
 					})}
 				</Grid>
-				<Button theme={theme} onClick={() => navigate('/settings')}>Edit profile</Button>
+				<Button theme={theme} onClick={() => navigate("/settings")}>
+					Edit profile
+				</Button>
 				<Button
 					theme={theme}
 					onClick={() => navigate("/changepassword")}

@@ -13,6 +13,7 @@ import NavBar from "./components/Navbar";
 import PathNotExists from "./components/PathNotExists";
 import ConfirmMail from "./components/login/ConfirmMail";
 import RedirectPage from "./components/RedirectPage";
+import DeleteUser from "./components/profile/DeleteUser"
 import ResetPassword, {
 	SetNewPassword,
 } from "./components/login/ResetPassword";
@@ -43,6 +44,7 @@ const App = () => {
 				<Route path="/profile" element={<Profile />} />
 				<Route path="/settings" element={<ProfileSettings />} />
 				<Route path="/logout" element={<Logout />} />
+				<Route path="/deleteuser" element={<DeleteUser />} />
 				<Route path="*" element={<PathNotExists />} />
 			</Routes>
 		</Router>
