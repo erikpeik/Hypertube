@@ -62,7 +62,7 @@ const transporter = nodemailer.createTransport({
 const helperFunctions = require("./utils/helperFunctions.js")
 require("./routes/signup.js")(app, pool, bcrypt, transporter, helperFunctions);
 require("./routes/login_logout.js")(app, pool, bcrypt, cookieParser, bodyParser, jwt);
-require("./routes/resetpassword.js")(app, pool, bcrypt, transporter);
+require("./routes/resetpassword.js")(app, pool, bcrypt, transporter, helperFunctions);
 require("./routes/profile.js")(app, pool, bcrypt, cookieParser, bodyParser);
 
 app.get("/", (req, res) => {
