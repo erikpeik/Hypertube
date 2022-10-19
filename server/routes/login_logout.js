@@ -8,9 +8,14 @@ module.exports = function (app, pool, bcrypt, cookieParser, bodyParser, jwt) {
 		if (rows.length === 0) {
 			response.send("User not found!");
 		} else if (rows[0]["verified"] === "NO") {
-			response.send("User account not yeat activated! Please check your inbox for confirmation email.");
+			response.send(
+				"User account not yeat activated! Please check your inbox for confirmation email."
+			);
 		} else {
-			const compareResult = await bcrypt.compare(password, rows[0]["password"]);
+			const compareResult = await bcrypt.compare(
+				password,
+				rows[0]["password"]
+			);
 			if (compareResult) {
 				const userId = rows[0]["id"];
 				const name = rows[0]["username"];
@@ -38,8 +43,7 @@ module.exports = function (app, pool, bcrypt, cookieParser, bodyParser, jwt) {
 				await pool.query(sql1, [refreshToken, userId]);
 
 				response.json({ accessToken, username: name, userid: userId });
-			} else
-				response.send("Wrong password!")
+			} else response.send("Wrong password!");
 		}
 	});
 
