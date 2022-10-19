@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS email_verify (
 	running_id SERIAL NOT NULL PRIMARY KEY,
 	user_id INT NOT NULL,
 	email VARCHAR(255) NOT NULL,
-	verify_code INT NOT NULL,
+	verify_code VARCHAR(255) NOT NULL,
 	expire_time TIMESTAMP DEFAULT (CURRENT_TIMESTAMP + interval '30 minutes'),
 	FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );

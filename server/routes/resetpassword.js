@@ -33,12 +33,12 @@ module.exports = function (app, pool, bcrypt, transporter) {
 			var mailOptions = {
 				from: process.env.EMAIL_ADDRESS,
 				to: mailInfo.email,
-				subject: 'Matcha password reset',
+				subject: 'Hypertube password reset',
 				html: `<h1>Hello!</h1><p>It seems like you have forgotten your password!</p>
 						<p>Never mind, who remembers those anyway. And it's very easy to reset
 						with a single click!</p>
 						<a href="http://localhost:3000/resetpassword/${mailInfo.username}/${mailInfo.code}">Just click here to create a new password!</a>
-						<p>Love, Matcha Mail</p>`
+						<p>Kisses and hugs, Hypertube Mail xoxoxoxo</p>`
 			};
 
 			await transporter.sendMail(mailOptions, function (error, info) {

@@ -10,7 +10,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json({ limit: "50mb" })); // needed to attach JSON data to POST body property
-var nodemailer = require("nodemailer"); // middleware to send e-mails
+const nodemailer = require("nodemailer"); // middleware to send e-mails
 const bcrypt = require("bcrypt"); // For password hashing and comparing
 const session = require("express-session"); // for session management
 app.use(
@@ -51,7 +51,7 @@ const connectToDatabase = () => {
 };
 connectToDatabase();
 
-var transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
 	service: "gmail",
 	auth: {
 		user: process.env.EMAIL_ADDRESS,
@@ -59,7 +59,9 @@ var transporter = nodemailer.createTransport({
 	},
 });
 
-require("./routes/signup.js")(app, pool, bcrypt, transporter);
+
+const helperFunctions = require ("./utils/helperFunctions.js")
+require("./routes/signup.js")(app, pool, bcrypt, transporter, helperFunctions);
 require("./routes/login_logout.js")(
 	app,
 	pool,
