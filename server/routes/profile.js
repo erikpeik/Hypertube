@@ -1,121 +1,18 @@
 module.exports = (app, pool, bcrypt) => {
-	app.post("/api/profile/setup", async (request, response) => {
-		var sess = request.session;
-		const { gender, age, location, gps, sexual_pref, biography, tags } =
-			request.body;
-
-		if (!sess.userid) return response.send("User not signed in!");
-		if (gender !== "male" && gender !== "female" && gender !== "other")
-			return response.send("Forbidden gender!");
-		if (isNaN(age) || age < 18 || age > 120)
-			return response.send("Forbidden age!");
-		if (location.length > 50)
-			return response.send(
-				"Maximum length for location is 50 characters."
-			);
-		if (!location.match(/^[a-z, åäö-]+$/i))
-			return response.send(
-				"Forbidden characters in location! Allowed characters are a-z, å, ä, ö, comma (,) and dash (-)."
-			);
-		if (
-			isNaN(gps[0]) ||
-			isNaN(gps[1]) ||
-			gps[0] < -90 ||
-			gps[0] > 90 ||
-			gps[1] < -180 ||
-			gps[1] > 180
-		)
-			return response.send(
-				"Forbidden coordinates! The range for latitude is -90 to 90, and for longitude -180 to 180."
-			);
-		if (
-			sexual_pref !== "male" &&
-			sexual_pref !== "female" &&
-			sexual_pref !== "bisexual"
-		)
-			return response.send("Forbidden sexual preference!");
-		if (biography.length > 500)
-			return response.send(
-				"The maximum length for biography is 500 characters!"
-			);
-		const forbiddenTags = tags.filter(
-			(tag) => !tag.match(/(?=^.{1,20}$)[a-z åäö-]+$/i)
-		);
-		if (forbiddenTags.length !== 0)
-			return response.send(
-				"The allowed characters in tags are a-z, å, ä, ö and dash (-), and maximum length is 20 characters."
-			);
-
-		try {
-			var sql = `INSERT INTO user_settings (user_id, gender, age,
-						user_location, sexual_pref, biography, ip_location)
-						VALUES ($1,$2,$3,$4,$5,$6,point($7,$8))`;
-			await pool.query(sql, [
-				sess.userid,
-				gender,
-				age,
-				location,
-				sexual_pref,
-				biography,
-				gps[0],
-				gps[1],
-			]);
-			var sql = `UPDATE fame_rates SET setup_pts = setup_pts + 5, total_pts = total_pts + 5
-						WHERE user_id = $1 AND setup_pts < 5 AND total_pts <= 95`;
-			pool.query(sql, [sess.userid]);
-			sess.location = { x: Number(gps[0]), y: Number(gps[1]) };
-			var sql = `UPDATE tags SET tagged_users = array_remove(tagged_users, $1)
-							WHERE (array[LOWER($2)] @> array[LOWER(tag_content)]::TEXT[]) IS NOT TRUE
-							RETURNING *`;
-			await pool.query(sql, [sess.userid, tags]);
-
-			tags.map(async (tagtext) => {
-				var sql =
-					"SELECT * FROM tags WHERE LOWER(tag_content) = LOWER($1)";
-				var { rows } = await pool.query(sql, [tagtext]);
-
-				if (rows.length === 0) {
-					var sql = `INSERT INTO tags (tag_content, tagged_users) VALUES (LOWER($2), array[$1]::INT[])`;
-					await pool.query(sql, [sess.userid, tagtext]);
-				} else {
-					var sql = `UPDATE tags SET tagged_users = array_append(tagged_users, $1)
-								WHERE LOWER(tag_content) = LOWER($2) AND (tagged_users @> array[$1]::INT[]) IS NOT TRUE`;
-					await pool.query(sql, [sess.userid, tagtext]);
-				}
-			});
-			var tagPoints = tags.length;
-			if (tagPoints > 5) tagPoints = 5;
-			var sql = `UPDATE fame_rates SET total_pts = total_pts - tag_pts + $2, tag_pts = $2
-							WHERE user_id = $1`;
-			await pool.query(sql, [sess.userid, tagPoints]);
-
-			response.send(true);
-		} catch (error) {
-			response.send(error);
-		}
-	});
-
 	app.post("/api/profile/editsettings", async (request, response) => {
-		var sess = request.session;
-		const {
-			username,
-			firstname,
-			lastname,
-			email,
-			gender,
-			age,
-			location,
-			gps_lat,
-			gps_lon,
-			sexual_pref,
-			biography,
-			tags,
-		} = request.body;
+		const cookie = request.cookies.refreshToken;
+		const { username, firstname, lastname, email } = request.body;
 
-		if (!sess.userid) return response.send("User not signed in!");
+		if (!cookie) return response.send("User not signed in!");
+		const check = "SELECT * FROM users WHERE token = $1";
+		const { user } = await pool.query(check, [cookie]);
 		var sql =
 			"SELECT * FROM users WHERE (username = $1 OR email = $2) AND id != $3";
-		const { rows } = await pool.query(sql, [username, email, sess.userid]);
+		const { rows } = await pool.query(sql, [
+			username,
+			email,
+			user[0]["id"],
+		]);
 		if (rows.length !== 0)
 			return response.send("Username or email is already in use!");
 		if (username.length < 4 || username.length > 25)
@@ -144,47 +41,6 @@ module.exports = (app, pool, bcrypt) => {
 			)
 		)
 			return response.send("Please enter a valid e-mail address.");
-		if (gender !== "male" && gender !== "female" && gender !== "other")
-			return response.send("Forbidden gender!");
-		if (isNaN(age) || age < 18 || age > 120)
-			return response.send("Forbidden age!");
-		if (location.length > 50)
-			return response.send(
-				"Maximum length for location is 50 characters."
-			);
-		if (!location.match(/^[a-z, åäö-]+$/i))
-			return response.send(
-				"Forbidden characters in location! Allowed characters are a-z, å, ä, ö, comma (,) and dash (-)."
-			);
-		if (
-			isNaN(gps_lat) ||
-			isNaN(gps_lon) ||
-			gps_lat < -90 ||
-			gps_lat > 90 ||
-			gps_lon < -180 ||
-			gps_lon > 180
-		)
-			return response.send(
-				"Forbidden coordinates! The range for latitude is -90 to 90, and for longitude -180 to 180."
-			);
-		if (
-			sexual_pref !== "male" &&
-			sexual_pref !== "female" &&
-			sexual_pref !== "bisexual"
-		)
-			return response.send("Forbidden sexual preference!");
-		if (biography.length > 500)
-			return response.send(
-				"The maximum length for biography is 500 characters!"
-			);
-		const forbiddenTags = tags.filter(
-			(tag) => !tag.match(/(?=^.{1,20}$)[a-z åäö-]+$/i)
-		);
-		if (forbiddenTags.length !== 0)
-			return response.send(
-				"The allowed characters in tags are a-z, å, ä, ö and dash (-), and maximum length is 20 characters."
-			);
-
 		try {
 			let sql = `UPDATE users SET username = $1, firstname = $2, lastname = $3, email = $4
 						WHERE id = $5`;
@@ -193,52 +49,8 @@ module.exports = (app, pool, bcrypt) => {
 				firstname,
 				lastname,
 				email,
-				sess.userid,
+				user[0]["id"],
 			]);
-
-			sql = `UPDATE user_settings
-						SET gender = $1, age = $2, user_location = $3, sexual_pref = $4,
-						biography = $5, ip_location = point($6,$7) WHERE user_id = $8`;
-			await pool.query(sql, [
-				gender,
-				age,
-				location,
-				sexual_pref,
-				biography,
-				gps_lat,
-				gps_lon,
-				sess.userid,
-			]);
-
-			sess.location = { x: Number(gps_lat), y: Number(gps_lon) };
-
-			sql = `UPDATE tags SET tagged_users = array_remove(tagged_users, $1)
-							WHERE (array[LOWER($2)] @> array[LOWER(tag_content)]::TEXT[]) IS NOT TRUE
-							RETURNING *`;
-			await pool.query(sql, [sess.userid, tags]);
-
-			sql = `DELETE FROM tags WHERE cardinality(tagged_users) = 0`;
-			pool.query(sql);
-
-			await tags.map(async (tagtext) => {
-				sql = "SELECT * FROM tags WHERE LOWER(tag_content) = LOWER($1)";
-				var { rows } = await pool.query(sql, [tagtext]);
-
-				if (rows.length === 0) {
-					sql = `INSERT INTO tags (tag_content, tagged_users) VALUES (LOWER($2), array[$1]::INT[])`;
-					await pool.query(sql, [sess.userid, tagtext]);
-				} else {
-					sql = `UPDATE tags SET tagged_users = array_append(tagged_users, $1)
-								WHERE LOWER(tag_content) = LOWER($2) AND (tagged_users @> array[$1]::INT[]) IS NOT TRUE`;
-					await pool.query(sql, [sess.userid, tagtext]);
-				}
-			});
-			var tagPoints = tags.length;
-			if (tagPoints > 5) tagPoints = 5;
-			sql = `UPDATE fame_rates SET total_pts = total_pts - tag_pts + $2, tag_pts = $2
-							WHERE user_id = $1`;
-			await pool.query(sql, [sess.userid, tagPoints]);
-			response.send(true);
 		} catch (error) {
 			console.log(error);
 			response.send("User settings update failed for some reason");
