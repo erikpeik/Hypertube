@@ -246,7 +246,7 @@ module.exports = (app, pool, bcrypt) => {
 	});
 
 	app.post("/api/profile/changepassword", async (request, response) => {
-		const sess = request.session;
+		const cookie = request.cookies.refreshToken;
 		const { oldPassword, newPassword, confirmPassword } = request.body;
 
 		if (newPassword !== confirmPassword) {
@@ -261,27 +261,28 @@ module.exports = (app, pool, bcrypt) => {
 			);
 		}
 
-		var sql = `SELECT * FROM users WHERE id = $1`;
-		const { rows } = await pool.query(sql, [sess.userid]);
+		if (cookie) {
+			const sql = "SELECT * FROM users WHERE token = $1";
+			const { rows } = await pool.query(sql, [cookie]);
 
-		if (!(await bcrypt.compare(oldPassword, rows[0]["password"]))) {
-			return response.send("The old password is not correct!");
-		} else {
-			const hash = await bcrypt.hash(newPassword, 10);
-			try {
-				var sql = "UPDATE users SET password = $1 WHERE id = $2";
-				await pool.query(sql, [hash, sess.userid]);
-				return response.send(true);
-			} catch (error) {
-				console.log("ERROR :", error);
-				return response.send("Password creation failed");
+			if (!(await bcrypt.compare(oldPassword, rows[0]["password"]))) {
+				return response.send("The old password is not correct!");
+			} else {
+				const hash = await bcrypt.hash(newPassword, 10);
+				try {
+					var sql1 = "UPDATE users SET password = $1 WHERE id = $2";
+					await pool.query(sql1, [hash, rows[0]["id"]]);
+					return response.send(true);
+				} catch (error) {
+					console.log("ERROR :", error);
+					return response.send("Password creation failed");
+				}
 			}
 		}
 	});
 
 	app.get("/api/profile", async (request, response) => {
-		var cookie = request.cookies.refreshToken;
-
+		const cookie = request.cookies.refreshToken;
 		if (cookie) {
 			try {
 				const sql = "SELECT * FROM users WHERE token = $1";
