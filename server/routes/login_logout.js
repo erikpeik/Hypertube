@@ -32,7 +32,7 @@ module.exports = function (app, pool, bcrypt, cookieParser, bodyParser, jwt) {
 				);
 				response.cookie("refreshToken", refreshToken, {
 					httpOnly: false,
-					maxAge: 60 * 1000,
+					maxAge: 24 * 60 * 60 * 1000,
 				});
 				const sql1 = `UPDATE users SET token = $1 WHERE id = $2`;
 				const { rows1 } = await pool.query(sql1, [refreshToken, userId]);
@@ -44,8 +44,7 @@ module.exports = function (app, pool, bcrypt, cookieParser, bodyParser, jwt) {
 	});
 
 	app.get("/api/login", async (request, response) => {
-		var cookie = request.cookies.refreshToken;
-
+		const cookie = request.cookies.refreshToken;
 		if (cookie) {
 			const sql = "SELECT * FROM users WHERE token = $1";
 			const { rows } = await pool.query(sql, [cookie]);

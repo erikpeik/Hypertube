@@ -111,16 +111,6 @@ const Profile = () => {
 						return <ProfileInput key={index} text={key} input={ProfileData[key]} />
 					})}
 				</Grid>
-				<Grid container sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-					<Typography sx={{ width: 'fit-content', fontWeight: '700' }}>
-						{"Biography: "}
-					</Typography>
-					<Grid item xs={12} sm={10}>
-						<Typography sx={{ width: 'fit-content' }}>
-							{profileData.biography}
-						</Typography>
-					</Grid>
-				</Grid>
 				<Button theme={theme} onClick={() => navigate('/changepassword')}>Change password</Button>
 				<Button theme={deleteTheme} variant="contained" onClick={() => deleteUser()}>Delete user</Button>
 			</Paper>
