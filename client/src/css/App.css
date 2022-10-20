@@ -12,7 +12,7 @@ body {
 	min-height: 100vh;
 	position: relative;
 	background-color: #F11926;
-	background-image: linear-gradient(43deg, #fd297b 0%, #ff5864 46%, #ff655b 100%);
+	background-image: linear-gradient(43deg, #10004a 0%, #352e94 46%, #386193 100%);
 	background-attachment: fixed;
 }
 
@@ -20,7 +20,6 @@ body {
 	padding-bottom: 80px;
 	/* Height of the footer */
 }
-
 
 .footer {
 	position: absolute;
@@ -42,12 +41,6 @@ body {
 	transform: translate(-50%, -50%);
 }
 
-/* for profile testing */
-
-#other_pictures {
-	display: flex
-}
-
 /* for image upload */
 
 input[type=file] {
@@ -55,11 +48,5 @@ input[type=file] {
 }
 
 .styled-image-upload {
-	cursor: pointer;
-}
-
-/* browsing profiles */
-
-.userprofilepic {
 	cursor: pointer;
 }

@@ -1,11 +1,6 @@
 import axios from 'axios'
 const baseUrl = 'http://localhost:3001/api/profile'
 
-const setUpProfile = ProfileSettings => {
-	const request = axios.post(`${baseUrl}/setup`, ProfileSettings)
-	return request.then(response => response.data)
-}
-
 const editUserSettings = ProfileSettings => {
 	const request = axios.post(`${baseUrl}/editsettings`, ProfileSettings)
 	return request.then(response => response.data)
@@ -18,31 +13,6 @@ const changePassword = passWords => {
 
 const getProfileData = () => {
 	const request = axios.get(`${baseUrl}`)
-	return request.then(response => response.data)
-}
-
-const getNotifications = () => {
-	const request = axios.get(`${baseUrl}/notifications`)
-	return request.then(response => response.data)
-}
-
-const clearNotifications = () => {
-	const request = axios.delete(`${baseUrl}/notifications`)
-	return request.then(response => response.data)
-}
-
-const deleteNotification = id => {
-	const request = axios.delete(`${baseUrl}/notification/${id}`)
-	return request.then(response => response.data)
-}
-
-const readNotification = id => {
-	const request = axios.patch(`${baseUrl}/readnotification/${id}`)
-	return request.then(response => response.data)
-}
-
-const readAllNotifications = () => {
-	const request = axios.patch(`${baseUrl}/readnotifications`)
 	return request.then(response => response.data)
 }
 
@@ -67,8 +37,7 @@ const deleteUser = () => {
 }
 
 const profileService = {
-	setUpProfile, getProfileData, getNotifications, clearNotifications,
-	deleteNotification, readNotification, readAllNotifications, setProfilePic,
+	getProfileData, setProfilePic,
 	uploadPicture, deletePicture, editUserSettings, changePassword, deleteUser
 }
 

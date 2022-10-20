@@ -12,7 +12,7 @@ import ProfileSettings from "./components/profile/ProfileSettings";
 import NavBar from "./components/Navbar";
 import PathNotExists from "./components/PathNotExists";
 import ConfirmMail from "./components/login/ConfirmMail";
-// import RedirectPage from "./components/RedirectPage";
+import RedirectPage from "./components/RedirectPage";
 import DeleteUser from "./components/profile/DeleteUser"
 import Browsing from "./components/Browsing"
 import ResetPassword, {
@@ -20,6 +20,7 @@ import ResetPassword, {
 } from "./components/login/ResetPassword";
 import ChangePassword from "./components/profile/ChangePassword";
 import GithubAuth from "./components/GithubAuth";
+import "./css/App.css"
 
 const App = () => {
 	const dispatch = useDispatch();
@@ -33,7 +34,7 @@ const App = () => {
 
 	return (
 		<Router>
-			{/* <RedirectPage /> */}
+			<RedirectPage />
 			<NavBar />
 			<Routes>
 				<Route path="/" element={<Login />} />

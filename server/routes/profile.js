@@ -1,4 +1,4 @@
-module.exports = (app, pool, bcrypt, cookieParser, bodyParser) => {
+module.exports = (app, pool, bcrypt, cookieParser, bodyParser, upload, fs, path) => {
 	app.post("/api/profile/editsettings", async (request, response) => {
 		const cookie = request.cookies.refreshToken;
 		const { username, firstname, lastname, email } = request.body;
@@ -98,18 +98,18 @@ module.exports = (app, pool, bcrypt, cookieParser, bodyParser) => {
 		const cookie = request.cookies.refreshToken;
 		if (cookie) {
 			try {
-				const sql = "SELECT * FROM users WHERE token = $1";
+				let sql = "SELECT * FROM users WHERE token = $1";
 				const { rows } = await pool.query(sql, [cookie]);
 				const { password: removed_password, ...profileData } = rows[0];
 
-				// var sql = `SELECT * FROM user_pictures WHERE user_id = $1 AND profile_pic = 'YES'`
-				// var profile_pic = await pool.query(sql, [sess.userid])
+				sql = `SELECT * FROM user_pictures WHERE user_id = $1 AND profile_pic = 'YES'`
+				var profile_pic = await pool.query(sql, [rows[0]["id"]])
 
-				// if (profile_pic.rows[0]) {
-				// 	profileData.profile_pic = profile_pic.rows[0]
-				// } else {
-				// 	profileData.profile_pic = { user_id: sess.userid, picture_data: null }
-				// }
+				if (profile_pic.rows[0]) {
+					profileData.profile_pic = profile_pic.rows[0]
+				} else {
+					profileData.profile_pic = { user_id: rows[0]["id"], picture_data: null }
+				}
 
 				// var sql = `SELECT * FROM user_pictures WHERE user_id = $1 AND profile_pic = 'NO' ORDER BY picture_id`
 				// var other_pictures = await pool.query(sql, [sess.userid])
@@ -127,47 +127,44 @@ module.exports = (app, pool, bcrypt, cookieParser, bodyParser) => {
 		}
 	});
 
-	// app.post('/api/profile/setprofilepic', upload.single('file'), async (request, response) => {
-	// 	const sess = request.session
-	// 	const image = 'http://localhost:3000/images/' + request.file.filename
+	app.post('/api/profile/setprofilepic', upload.single('file'), async (request, response) => {
+		const cookie = request.cookies.refreshToken;
+		const image = 'http://localhost:3001/images/' + request.file.filename
 
-	// 	if (sess.userid) {
-	// 		if (request.file.size > 5242880)
-	// 			return response.send("The maximum size for uploaded images is 5 megabytes.")
-	// 		try {
-	// 			let sql = `SELECT * FROM user_pictures WHERE user_id = $1 AND profile_pic = 'YES'`
-	// 			let { rows } = await pool.query(sql, [sess.userid])
+		if (cookie) {
+			if (request.file.size > 5242880)
+				return response.send("The maximum size for uploaded images is 5 megabytes.")
+			try {
+				let sql = `SELECT * FROM users WHERE token = $1`
+				let user =  await pool.query(sql, [cookie])
+				sql = `SELECT * FROM user_pictures WHERE user_id = $1 AND profile_pic = 'YES'`
+				let { rows } = await pool.query(sql, [user.rows[0]['id']])
 
-	// 			if (rows.length === 0) {
-	// 				sql = `INSERT INTO user_pictures (user_id, picture_data, profile_pic) VALUES ($1, $2, 'YES')`
-	// 				await pool.query(sql, [sess.userid, image])
+				if (rows.length === 0) {
+					sql = `INSERT INTO user_pictures (user_id, picture_data, profile_pic) VALUES ($1, $2, 'YES')`
+					await pool.query(sql, [user.rows[0]['id'], image])
+				} else {
+					let oldImageData = rows[0]['picture_data']
+					const oldImage = path.resolve(__dirname, '../images') + oldImageData.replace('http://localhost:3001/images', '');
+					if (fs.existsSync(oldImage)) {
+						fs.unlink(oldImage, (err) => {
+							if (err) {
+								console.error(err);
+								return;
+							}
+						})
+					}
 
-	// 				sql = `UPDATE fame_rates SET picture_pts = picture_pts + 2, total_pts = total_pts + 2
-	// 				WHERE user_id = $1 AND picture_pts < 10 AND total_pts <= 98`
-	// 				await pool.query(sql, [sess.userid])
-
-	// 			} else {
-	// 				let oldImageData = rows[0]['picture_data']
-	// 				const oldImage = path.resolve(__dirname, '../images') + oldImageData.replace('http://localhost:3000/images', '');
-	// 				if (fs.existsSync(oldImage)) {
-	// 					fs.unlink(oldImage, (err) => {
-	// 						if (err) {
-	// 							console.error(err);
-	// 							return;
-	// 						}
-	// 					})
-	// 				}
-
-	// 				sql = `UPDATE user_pictures SET picture_data = $1 WHERE user_id = $2 AND profile_pic = 'YES'`
-	// 				await pool.query(sql, [image, sess.userid])
-	// 			}
-	// 			response.send(true)
-	// 		} catch (error) {
-	// 			console.log(error)
-	// 			response.send("Image uploading failed for some reason.")
-	// 		}
-	// 	}
-	// })
+					sql = `UPDATE user_pictures SET picture_data = $1 WHERE user_id = $2 AND profile_pic = 'YES'`
+					await pool.query(sql, [image, user.rows[0]['id']])
+				}
+				response.send(true)
+			} catch (error) {
+				console.log(error)
+				response.send("Image uploading failed for some reason.")
+			}
+		}
+	})
 
 	// app.post('/api/profile/imageupload', upload.single('file'), async (request, response) => {
 	// 	const sess = request.session
