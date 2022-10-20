@@ -11,7 +11,6 @@ const GithubAuth = () => {
 	useEffect(() => {
 		const token = new URLSearchParams(window.location.search).get(
 			"access_token");
-		console.log(token)
 
 		signUpService.checkGithubConnection({ token: token })
 			.then((response) => {

@@ -16,7 +16,6 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 			})
 			.catch((error) => {
 				response.send(false);
-				// console.log("error " + error);
 			});
 	});
 
@@ -31,11 +30,8 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 			const octokit = new Octokit({
 				auth: github_response.data.access_token,
 			});
-
 			const email = await octokit.request("GET /user/emails", {});
 			const user = await octokit.request("GET /user", {});
-			// console.log(email)
-			// console.log(user)
 
 			const userData = {
 				login: user.data.login,
@@ -70,14 +66,13 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 			} else {
 				let password = helperFunctions.makeToken(10);
 				sql =
-					"INSERT INTO users (username, firstname, lastname, email, password, github_token, verified) VALUES ($1,$2,$3,$4,$5,$6,'YES') RETURNING *";
+					"INSERT INTO users (username, firstname, lastname, email, password, verified) VALUES ($1,$2,$3,$4,$5,'YES') RETURNING *";
 				var rows1 = await pool.query(sql, [
 					userData.login,
 					userData.firstname,
 					userData.lastname,
 					userData.email,
 					password,
-					github_response.data.access_token,
 				]);
 				let id = rows1.rows[0]["id"];
 				let mail = userData.email;

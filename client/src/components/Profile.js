@@ -69,7 +69,6 @@ const Profile = () => {
 	}
 
 	const profile_pic = profileData.profile_pic['picture_data']
-	console.log(profile_pic)
 
 	const profilePictureStyle = {
 		width: '100%',

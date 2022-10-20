@@ -11,7 +11,6 @@ CREATE TABLE IF NOT EXISTS users (
 	password VARCHAR(255) NOT NULL,
 	verified enum_yesno DEFAULT 'NO',
 	token VARCHAR(1000),
-	github_token VARCHAR(500)
 );
 
 CREATE TABLE IF NOT EXISTS email_verify (
