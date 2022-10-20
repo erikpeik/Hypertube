@@ -19,6 +19,7 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 		});
 		const sql1 = `UPDATE users SET token = $1 WHERE id = $2`;
 		await pool.query(sql1, [refreshToken, id]);
+		return;
 	}
 
 	const signUpUser = async (userData, response) => {
@@ -48,6 +49,7 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 		});
 		const sql1 = `UPDATE users SET token = $1 WHERE id = $2`;
 		await pool.query(sql1, [refreshToken, id]);
+		return;
 	}
 
 	app.post("/api/oauth/githubconnect", (request, response) => {
@@ -95,9 +97,9 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 			]);
 
 			if (rows.length) {
-				logInUser(userData, rows[0]["id"], response)
+				await logInUser(userData, rows[0]["id"], response)
 			} else {
-				signUpUser(userData, response)
+				await signUpUser(userData, response)
 			}
 
 			response.redirect(`http://localhost:3000/profile`);
@@ -131,7 +133,6 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 
 	app.get("/api/oauth/42direct", async (request, response) => {
 		let code = request.query.code
-		console.log("CODE ", code)
 
 		// axios({
 		// 	method: "POST",
@@ -152,7 +153,7 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 		).then(async (fortytwo_response) => {
 			const { data } = await axios.get("https://api.intra.42.fr/v2/me", {
 				headers: {
-					Authorization: fortytwo_response.data.access_token,
+					Authorization: 'Bearer ' + fortytwo_response.data.access_token,
 				},
 			})
 
@@ -170,9 +171,9 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 			]);
 
 			if (rows.length) {
-				logInUser(userData, rows[0]["id"], response)
+				await logInUser(userData, rows[0]["id"], response)
 			} else {
-				signUpUser(userData, response)
+				await signUpUser(userData, response)
 			}
 
 			response.redirect(`http://localhost:3000/profile`);

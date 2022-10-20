@@ -1,7 +1,6 @@
 CREATE TYPE enum_yesno AS ENUM ('YES', 'NO');
 SET TIME ZONE 'Europe/Helsinki';
 
-
 CREATE TABLE IF NOT EXISTS users (
 	id SERIAL NOT NULL PRIMARY KEY,
 	username VARCHAR(255) NOT NULL,
@@ -10,7 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
 	email VARCHAR(255) NOT NULL,
 	password VARCHAR(255) NOT NULL,
 	verified enum_yesno DEFAULT 'NO',
-	token VARCHAR(1000),
+	token VARCHAR(1000)
 );
 
 CREATE TABLE IF NOT EXISTS email_verify (
