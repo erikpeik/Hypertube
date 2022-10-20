@@ -8,7 +8,7 @@ const RedirectPage = () => {
 	const user = useSelector(state => state.user)
 
 	useEffect(() => {
-		const redirectPages = ['/login', '/signup', '/login/resetpassword']
+		const redirectPages = ['/login', '/signup', '/login/resetpassword', '/oauth']
 
 		if (user !== null) {
 			if (user === '') {

@@ -35,8 +35,6 @@ const Signup = () => {
 	const submitUser = async (event) => {
 		event.preventDefault()
 
-
-
 		const signedUpUser = {
 			username: event.target.username.value,
 			firstname: event.target.firstname.value,
