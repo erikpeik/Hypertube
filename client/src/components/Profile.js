@@ -64,7 +64,7 @@ const Profile = () => {
 		getData();
 	}, [dispatch]);
 
-	if (isLoading) {
+	if (isLoading || !profileData.id) {
 		return <Loader text="Getting profile data..." />;
 	}
 
