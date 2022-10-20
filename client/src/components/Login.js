@@ -98,7 +98,6 @@ const Login = () => {
 				<img
 					alt='githublogo'
 					src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-
 					width="50"
 				></img>
 				</a>
