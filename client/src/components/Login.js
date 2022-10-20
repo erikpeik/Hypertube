@@ -53,6 +53,8 @@ const Login = () => {
 		},
 	});
 
+	let redirect_url = 'http://localhost:3001/api/oauth/42direct'
+
 	return (
 		<Container maxWidth="sm" sx={{ pt: 5, pb: 5 }}>
 			<Paper elevation={10} sx={{ padding: 3 }}>
@@ -99,6 +101,14 @@ const Login = () => {
 					alt='githublogo'
 					src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
 					width="50"
+				></img>
+				</a>
+				<a href={`https://api.intra.42.fr/oauth/authorize?client_id=${process.env.REACT_APP_FORTYTWO_CLIENT_ID}&redirect_uri=${redirect_url}&response_type=code&scope=public`}>
+				<img
+					alt='42logo'
+					src="https://api.intra.42.fr/assets/42_logo_api.svg"
+					width="50"
+					// onClick = {() => signUpService.connectWith42()}
 				></img>
 				</a>
 				<br></br>
