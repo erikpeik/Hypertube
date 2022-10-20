@@ -34,6 +34,7 @@ const NavBar = ( ) => {
 	} else {
 		pages = {
 			'Profile': '/profile',
+			'Browsing': '/browsing',
 			'Log Out': '/logout'
 		}
 	}

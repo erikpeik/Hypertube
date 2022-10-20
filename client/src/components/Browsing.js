@@ -1,5 +1,6 @@
 import browsingService from "../services/browsingService"
 import { useState, useEffect } from "react"
+import Loader from "./Loader";
 
 const Browsing = () => {
 	const [movies, setMovies] = useState(null)
@@ -9,7 +10,7 @@ const Browsing = () => {
 			setMovies(movies.data.movies || [])
 		})
 	}, [])
-	if (!movies) return <div>Loading...</div>
+	if (!movies) return <Loader />
 
 	return (
 		<>
