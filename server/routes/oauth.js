@@ -92,8 +92,6 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 				await pool.query(sql1, [refreshToken, id]);
 			}
 
-			console.log(userData);
-
 			response.redirect(`http://localhost:3000/profile`);
 		});
 	});

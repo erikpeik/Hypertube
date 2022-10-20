@@ -19,7 +19,6 @@ import ResetPassword, {
 	SetNewPassword,
 } from "./components/login/ResetPassword";
 import ChangePassword from "./components/profile/ChangePassword";
-import GithubAuth from "./components/GithubAuth";
 import "./css/App.css"
 
 const App = () => {
@@ -42,7 +41,6 @@ const App = () => {
 				<Route path="/signup" element={<Signup />} />
 				<Route path="/profile" element={<Profile />} />
 				<Route path="/browsing" element={<Browsing />} />
-				<Route path="/oauth" element={<GithubAuth />} />
 				<Route path="/confirm/:user/:code" element={<ConfirmMail />} />
 				<Route path="/login/resetpassword" element={<ResetPassword />} />
 				<Route path="/resetpassword/:user/:code" element={<SetNewPassword />} />

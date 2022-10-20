@@ -94,6 +94,15 @@ const Login = () => {
 						Submit
 					</Button>
 				</form>
+				<a href={`https://github.com/login/oauth/authorize?scope=user:email&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`}>
+				<img
+					alt='githublogo'
+					src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+
+					width="50"
+				></img>
+				</a>
+				<br></br>
 				<Button onClick={navigateToReset} sx={{ mt: 1 }}>
 					Forgot password?
 				</Button>
