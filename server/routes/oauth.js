@@ -24,8 +24,7 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 
 	const signUpUser = async (userData, response) => {
 		let password = helperFunctions.makeToken(10);
-		sql =
-			"INSERT INTO users (username, firstname, lastname, email, password, verified) VALUES ($1,$2,$3,$4,$5,'YES') RETURNING *";
+		sql = `INSERT INTO users (username, firstname, lastname, email, password, verified) VALUES ($1,$2,$3,$4,$5,'YES') RETURNING *`;
 		var rows1 = await pool.query(sql, [
 			userData.username,
 			userData.firstname,
@@ -52,132 +51,72 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 		return;
 	}
 
-	app.post("/api/oauth/githubconnect", (request, response) => {
-		const { token } = request.body;
-
-		axios
-			.get("https://api.github.com", {
-				headers: {
-					Authorization: "token " + token,
-				},
-			})
-			.then((res) => {
-				response.send(res.data);
-			})
-			.catch((error) => {
-				response.send(false);
-			});
-	});
-
 	app.get("/api/oauth/githubdirect", async (request, response) => {
-		axios({
+		const github_response = await axios({
 			method: "POST",
 			url: `${GITHUB_URL}?client_id=${process.env.GITHUB_CLIENT_ID}&client_secret=${process.env.GITHUB_CLIENT_SECRET}&code=${request.query.code}`,
-			headers: {
-				Accept: "application/json",
-			},
-		}).then(async (github_response) => {
-			const octokit = new Octokit({
-				auth: github_response.data.access_token,
-			});
-			const email = await octokit.request("GET /user/emails", {});
-			const user = await octokit.request("GET /user", {});
+			headers: { Accept: "application/json" }
+		})
 
-			const userData = {
-				username: user.data.login,
-				firstname: user.data.name.split(" ")[0],
-				lastname: user.data.name.split(" ")[1],
-				email: email.data[0].email,
-			};
+		const octokit = new Octokit({ auth: github_response.data.access_token });
+		const email = await octokit.request("GET /user/emails", {});
+		const user = await octokit.request("GET /user", {});
 
-			let sql = `SELECT * FROM users WHERE email = $1 OR username = $2`;
-			let { rows } = await pool.query(sql, [
-				email.data[0].email,
-				user.data.login,
-			]);
+		const userData = {
+			username: user.data.login,
+			firstname: user.data.name.split(" ")[0],
+			lastname: user.data.name.split(" ")[1],
+			email: email.data[0].email,
+		};
 
-			if (rows.length) {
-				await logInUser(userData, rows[0]["id"], response)
-			} else {
-				await signUpUser(userData, response)
-			}
+		let sql = `SELECT * FROM users WHERE email = $1 OR username = $2`;
+		let { rows } = await pool.query(sql, [email.data[0].email, user.data.login]);
 
-			response.redirect(`http://localhost:3000/profile`);
-		});
+		if (rows.length) {
+			await logInUser(userData, rows[0]["id"], response)
+		} else {
+			await signUpUser(userData, response)
+		}
+
+		response.redirect(`http://localhost:3000/profile`);
+
 	});
-
-	app.get("/api/oauth/42connect", async (request, response) => {
-		let stateToken = await helperFunctions.makeToken(30)
-		let redirect_url = 'http://localhost:3001/api/oauth/42direct'
-
-		response.redirect(`https://api.intra.42.fr/oauth/authorize?client_id=${process.env.FORTYTWO_CLIENT_ID}&redirect_uri=${redirect_url}&response_type=code&scope=public`);
-		// axios
-		// 	.get("https://api.intra.42.fr/oauth/authorize", {
-		// 		params:
-		// 		{
-		// 			client_id: process.env.FORTYTWO_CLIENT_ID,
-		// 			redirect_uri: 'http://localhost:3001/42direct',
-		// 			scope: 'public',
-		// 			state: stateToken,
-		// 			response_type: 'code'
-		// 		}
-		// 	})
-		// 	.then((res) => {
-		// 		console.log(res)
-		// 		response.send(res.data);
-		// 	})
-		// 	.catch((error) => {
-		// 		response.send(false);
-		// 	});
-	})
 
 	app.get("/api/oauth/42direct", async (request, response) => {
 		let code = request.query.code
 
-		// axios({
-		// 	method: "POST",
-		// 	url: `${FORTYTWO_URL}?grant_type=authorization_code&client_id=${process.env.FORTYTWO_CLIENT_ID}&client_secret=${process.env.FORTYTWO_CLIENT_SECRET}&code=${request.query.code}`,
-		// 	headers: {
-		// 		Accept: "application/json",
-		// 	},
-		// }).then(async (response) => {
-		// 	console.log(response)
-		// })
-		axios.post(`${FORTYTWO_URL}`, {
+		const fortytwo_response = await axios.post(`${FORTYTWO_URL}`, {
 			grant_type: 'authorization_code',
 			client_id: process.env.FORTYTWO_CLIENT_ID,
 			client_secret: process.env.FORTYTWO_CLIENT_SECRET,
 			code: code,
 			redirect_uri: 'http://localhost:3001/api/oauth/42direct'
-		}
-		).then(async (fortytwo_response) => {
-			const { data } = await axios.get("https://api.intra.42.fr/v2/me", {
-				headers: {
-					Authorization: 'Bearer ' + fortytwo_response.data.access_token,
-				},
-			})
-
-			const userData = {
-				username: data.login,
-				firstname: data.first_name,
-				lastname: data.last_name,
-				email: data.email,
-			};
-
-			let sql = `SELECT * FROM users WHERE email = $1 OR username = $2`;
-			let { rows } = await pool.query(sql, [
-				data.email,
-				data.login,
-			]);
-
-			if (rows.length) {
-				await logInUser(userData, rows[0]["id"], response)
-			} else {
-				await signUpUser(userData, response)
-			}
-
-			response.redirect(`http://localhost:3000/profile`);
 		})
+
+		const { data } = await axios.get("https://api.intra.42.fr/v2/me", {
+			headers: { Authorization: 'Bearer ' + fortytwo_response.data.access_token }
+		})
+
+		const userData = {
+			username: data.login,
+			firstname: data.first_name,
+			lastname: data.last_name,
+			email: data.email,
+		};
+
+		let sql = `SELECT * FROM users WHERE email = $1 OR username = $2`;
+		let { rows } = await pool.query(sql, [
+			data.email,
+			data.login,
+		]);
+
+		if (rows.length) {
+			await logInUser(userData, rows[0]["id"], response)
+		} else {
+			await signUpUser(userData, response)
+		}
+
+		response.redirect(`http://localhost:3000/profile`);
 
 	})
 
