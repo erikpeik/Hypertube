@@ -43,11 +43,9 @@ const VideoPlayer = () => {
 	};
 
 	const handlePlayerProgress = (state) => {
-		console.log("onProgress", state);
 		if (!playerState.seeking) {
 			setPlayerState({ ...playerState, ...state });
 		}
-		console.log("afterProgress", state);
 	};
 
 	const handlePlayerSeek = (newValue) => {
