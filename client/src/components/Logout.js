@@ -18,7 +18,7 @@ const Logout = ( ) => {
 		dispatch(resetProfileData())
 		dispatch(changeSeverity('success'))
 		if (notification !== "User has been successfully deleted. Bye bye!")
-			dispatch(changeNotification("Logged out. Thank you for using Matcha!"))
+			dispatch(changeNotification("Logged out. Thank you for using Hypertube!"))
 		// socket.emit("logOut", { socketID: socket.id })
 		navigate('/login')
 	}, [dispatch, navigate, notification])
