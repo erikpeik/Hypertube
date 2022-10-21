@@ -21,6 +21,7 @@ import ResetPassword, {
 import ChangePassword from "./components/profile/ChangePassword";
 import "./css/App.css"
 import VideoPlayer from "./components/VideoPlayer";
+import MoviePage from "./components/MoviePage";
 
 const App = () => {
 	const dispatch = useDispatch();
@@ -42,6 +43,7 @@ const App = () => {
 				<Route path="/signup" element={<Signup />} />
 				<Route path="/profile" element={<Profile />} />
 				<Route path="/browsing" element={<Browsing />} />
+				<Route path="/movie/:id" element={<MoviePage />} />
 				<Route path="/confirm/:user/:code" element={<ConfirmMail />} />
 				<Route path="/login/resetpassword" element={<ResetPassword />} />
 				<Route path="/resetpassword/:user/:code" element={<SetNewPassword />} />

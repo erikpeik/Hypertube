@@ -7,26 +7,28 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { CardActionArea } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const Browsing = () => {
 	const [movies, setMovies] = useState(null)
+	const navigate = useNavigate()
+
 	useEffect(() => {
 		browsingService.getMovies().then((movies) => {
 			console.log(movies.data)
 			setMovies(movies.data.movies || [])
 		})
 	}, [])
+
 	if (!movies) return <Loader />
 
-	movies.map(async (movie) => {
-		const IMDbData = await browsingService.getIMDbData({imdb_id: movie.imdb_code})
-		console.log (IMDbData)
-		return IMDbData
-	})
+	const navigateToMovie = (movie_id) => {
+		navigate(`/movie/${movie_id}`)
+	}
 
 	return (
 		<Box
-			container
+			container="true"
 			spacing={3}
 			style={{
 				direction: "column",
@@ -37,7 +39,7 @@ const Browsing = () => {
 			}}
 		>
 			{movies.map((movie) => (
-				<Box key={movie.id} item xs={3}>
+				<Box key={movie.id} item="true" xs={3} onClick={() => navigateToMovie(movie.imdb_code)}>
 					<Card sx={{ flexGrow: 1, height: 345, width: 245 }}>
 						<CardActionArea>
 							<CardMedia
