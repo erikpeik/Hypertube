@@ -1,0 +1,26 @@
+* {
+    margin: 0;
+    box-sizing: border-box;
+  }
+  
+  .header__section {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    background-color: rgb(70, 70, 172);
+  }
+  
+  .header__text {
+    color: white;
+    font-size: 28px;
+    font-weight: 800;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  .playerDiv {
+    width:100%;
+    position: relative;
+  }

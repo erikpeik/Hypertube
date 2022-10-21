@@ -20,6 +20,7 @@ import ResetPassword, {
 } from "./components/login/ResetPassword";
 import ChangePassword from "./components/profile/ChangePassword";
 import "./css/App.css"
+import VideoPlayer from "./components/VideoPlayer";
 
 const App = () => {
 	const dispatch = useDispatch();
@@ -48,6 +49,7 @@ const App = () => {
 				<Route path="/settings" element={<ProfileSettings />} />
 				<Route path="/logout" element={<Logout />} />
 				<Route path="/deleteuser" element={<DeleteUser />} />
+				<Route path="/videoplayer" element={<VideoPlayer />} />
 				<Route path="*" element={<PathNotExists />} />
 			</Routes>
 		</Router>
