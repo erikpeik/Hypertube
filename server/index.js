@@ -2,7 +2,7 @@ require("dotenv").config(); // to use .env variables
 const express = require("express");
 const app = express();
 const axios = require("axios");
-app.use('/images', express.static('./images')) // to serve static files to path /images, from images folder
+app.use("/images", express.static("./images")); // to serve static files to path /images, from images folder
 const cors = require("cors"); // Cross-origin resource sharing (CORS) middleware is required to allow requests from other origins
 const corsOptions = {
 	origin: "http://localhost:3000",
@@ -27,9 +27,9 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 
-const multer = require('multer') // for image upload and storage
-const fs = require('fs') // for deleting the files from the server
-const path = require('path')
+const multer = require("multer"); // for image upload and storage
+const fs = require("fs"); // for deleting the files from the server
+const path = require("path");
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
@@ -67,20 +67,52 @@ const transporter = nodemailer.createTransport({
 
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
-		cb(null, 'images/')
+		cb(null, "images/");
 	},
 	filename: (req, file, cb) => {
-		cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname))
+		cb(
+			null,
+			file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+		);
 	},
-})
-const upload = multer({ storage: storage })
+});
+const upload = multer({ storage: storage });
 
-const helperFunctions = require("./utils/helperFunctions.js")
+const helperFunctions = require("./utils/helperFunctions.js");
 require("./routes/signup.js")(app, pool, bcrypt, transporter, helperFunctions);
-require("./routes/login_logout.js")(app, pool, bcrypt, cookieParser, bodyParser, jwt);
-require("./routes/resetpassword.js")(app, pool, bcrypt, transporter, helperFunctions);
-require("./routes/profile.js")(app, pool, bcrypt, cookieParser, bodyParser, upload, fs, path);
-require("./routes/browsing.js")(app, pool, bcrypt, cookieParser, bodyParser, jwt);
+require("./routes/login_logout.js")(
+	app,
+	pool,
+	bcrypt,
+	cookieParser,
+	bodyParser,
+	jwt
+);
+require("./routes/resetpassword.js")(
+	app,
+	pool,
+	bcrypt,
+	transporter,
+	helperFunctions
+);
+require("./routes/profile.js")(
+	app,
+	pool,
+	bcrypt,
+	cookieParser,
+	bodyParser,
+	upload,
+	fs,
+	path
+);
+require("./routes/browsing.js")(
+	app,
+	pool,
+	bcrypt,
+	cookieParser,
+	bodyParser,
+	jwt
+);
 require("./routes/oauth.js")(app, pool, axios, helperFunctions, jwt);
 
 app.get("/", (req, res) => {

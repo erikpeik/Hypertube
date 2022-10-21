@@ -52,7 +52,9 @@ module.exports = function (app, pool, bcrypt, cookieParser, bodyParser, jwt) {
 		if (cookie) {
 			const sql = "SELECT * FROM users WHERE token = $1";
 			const { rows } = await pool.query(sql, [cookie]);
-			response.send({ name: rows[0]["username"], id: rows[0]["id"] });
+			if (rows.length) {
+				response.send({ name: rows[0]["username"], id: rows[0]["id"] });
+			} else response.send("");
 		} else response.send("");
 	});
 
@@ -66,7 +68,7 @@ module.exports = function (app, pool, bcrypt, cookieParser, bodyParser, jwt) {
 			const sql1 = `UPDATE users SET token = $1 WHERE id = $2`;
 			await pool.query(sql1, [0, userId]);
 		}
-		const cookie = response.clearCookie("refreshToken");
+		response.clearCookie("refreshToken");
 		response.status(200).json({ msg: "Logged out" });
 	});
 };
