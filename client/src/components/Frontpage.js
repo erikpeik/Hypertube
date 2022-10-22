@@ -21,6 +21,7 @@ const Frontpage = () => {
 					flexDirection: "column",
 					backgroundImage: `url(${backgroundImg})`,
 					backgroundSize: 'cover',
+					backgroundPosition: 'center',
 					backgroundRepeat: "repeat",
 				}}
 			>
