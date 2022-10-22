@@ -103,6 +103,7 @@ const NavBar = ( ) => {
 						component={Link}
 						to='/'
 					>
+						<Logo />
 					</Box>
 
 					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
