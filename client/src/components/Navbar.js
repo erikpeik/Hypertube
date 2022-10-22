@@ -7,6 +7,7 @@ import {
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import { useSelector } from 'react-redux'
+import { ReactComponent as Logo } from '../images/logo_nav.svg'
 
 const navbar_theme = createTheme({
 	palette: {
@@ -59,6 +60,7 @@ const NavBar = ( ) => {
 							height: '40px'
 						}}
 					>
+						<Logo />
 					</Box>
 					<Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
 						<IconButton
@@ -122,7 +124,7 @@ const NavBar = ( ) => {
 					</Box>
 				</Toolbar>
 			</Container>
-		</AppBar >
+		</AppBar>
 	)
 }
 

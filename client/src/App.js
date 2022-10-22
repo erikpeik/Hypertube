@@ -22,6 +22,7 @@ import ChangePassword from "./components/profile/ChangePassword";
 import "./css/App.css"
 import VideoPlayer from "./components/VideoPlayer";
 import MoviePage from "./components/MoviePage";
+import Frontpage from "./components/Frontpage";
 
 const App = () => {
 	const dispatch = useDispatch();
@@ -38,7 +39,7 @@ const App = () => {
 			<RedirectPage />
 			<NavBar />
 			<Routes>
-				<Route path="/" element={<Login />} />
+				<Route path="/" element={<Frontpage />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/signup" element={<Signup />} />
 				<Route path="/profile" element={<Profile />} />
