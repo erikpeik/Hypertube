@@ -1,0 +1,19 @@
+.container {
+
+  overflow: hidden;
+}
+
+.newsletter {
+  position: relative;
+  top: 150px;
+  width: 100%;
+  height: 25%;
+  background: rgba(56, 56, 56, 0.167);
+
+  -webkit-transition: top 0.5s; /* For Safari 3.1 to 6.0 */
+  transition: top 0.5s;
+}
+
+.container:hover .newsletter {
+  top: 50px;
+}
