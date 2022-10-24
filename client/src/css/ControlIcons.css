@@ -8,7 +8,7 @@
 	flex-direction: column;
 	justify-content: space-between;
 	z-index: 2;
-	background: rgba(0, 0, 0, 0.6);
+	background: rgba(0, 0, 0, 0.308);
 }
 
 .controls__icons {

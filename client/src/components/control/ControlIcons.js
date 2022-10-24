@@ -16,7 +16,7 @@ import {
 	VolumeOff,
 } from "@mui/icons-material";
 import Popover from "@mui/material/Popover";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const ControlIcons = ({
 	playandpause,
@@ -87,6 +87,13 @@ const ControlIcons = ({
 
 	const open = Boolean(anchorEl);
 	const id = open ? "playbackrate-popover" : undefined;
+
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			setShow(false);
+		}, 2000);
+		return () => clearTimeout(timer);
+	}, [show]);
 	return (
 		<div
 			onMouseEnter={() => setShow(true)}
