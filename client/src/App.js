@@ -23,6 +23,7 @@ import "./css/App.css"
 import VideoPlayer from "./components/VideoPlayer";
 import MoviePage from "./components/MoviePage";
 import Frontpage from "./components/Frontpage";
+import Footer from "./components/Footer";
 
 const App = () => {
 	const dispatch = useDispatch();
@@ -34,7 +35,7 @@ const App = () => {
 		});
 	}, [dispatch]);
 
-	return (
+	return <div className="content-wrap">
 		<Router>
 			<RedirectPage />
 			<NavBar />
@@ -56,7 +57,8 @@ const App = () => {
 				<Route path="*" element={<PathNotExists />} />
 			</Routes>
 		</Router>
-	);
-};
+		<Footer />
+	</div>
+}
 
 export default App;
