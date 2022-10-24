@@ -11,6 +11,7 @@ import {
   Button,
   CardActionArea,
   Paper,
+  Container,
 } from "@mui/material";
 import "../css/style.css";
 import { useNavigate } from "react-router-dom";
@@ -43,7 +44,7 @@ const Browsing = () => {
   };
 
   return (
-    <>
+    <Container sx={{maxWidth: 1080, justifyContent: "center",}}>
       <Paper
         style={{
           direction: "column",
@@ -115,7 +116,7 @@ const Browsing = () => {
           </Box>
         ))}
       </Box>
-    </>
+    </Container>
   );
 };
 
