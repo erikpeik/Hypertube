@@ -11,6 +11,7 @@
   color: white;
   -webkit-transition: top 0.5s; /* For Safari 3.1 to 6.0 */
   transition: top 0.5s;
+  margin-top: -150px;
 }
 
 .container:hover .newsletter {
