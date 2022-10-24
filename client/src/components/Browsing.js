@@ -75,7 +75,7 @@ const Browsing = () => {
       >
         {movies.map((movie) => (
           <Box
-            sx={{ margin: 1, marginBottom: 20, maxHeight: 345, maxWidth: 245 }}
+            sx={{ margin: 1, marginBottom: 10, maxHeight: 345, maxWidth: 245 }}
             key={movie.id}
             item="true"
             xs={3}
