@@ -18,30 +18,36 @@ import { useNavigate } from "react-router-dom";
 
 const Browsing = () => {
 	const [movies, setMovies] = useState(null);
+	const [page, setPage] = useState(1);
+	const [query, setQuery] = useState("");
 	const navigate = useNavigate();
 
-	const goSomewhere = (event) => {
-		event.preventDefault();
-		const query = event.target[0].value.trim();
+	const handleQueryChange = (event) => {
+		setQuery(event.target.value);
+	}
 
-		browsingService.getMovieQuery({ query }).then((movies) => {
+	useEffect(() => {
+		browsingService.getMovieQuery({ query, page }).then((movies) => {
+			console.log(movies.data);
+			setMovies(movies.data.movies || []);
+		});
+	}, [query, page]);
+
+	const submitMovieQuery = (event) => {
+		event.preventDefault();
+		const value = query.trim();
+
+		browsingService.getMovieQuery({ query: value, page }).then((movies) => {
 			console.log(movies.data.movies);
 			setMovies(movies.data.movies || []);
 		});
 	};
 
-	useEffect(() => {
-		browsingService.getMovies().then((movies) => {
-			console.log(movies.data);
-			setMovies(movies.data.movies || []);
-		});
-	}, []);
-
-	if (!movies) return <Loader />;
-
 	const navigateToMovie = (movie_id) => {
 		navigate(`/movie/${movie_id}`);
 	};
+
+	if (!movies) return <Loader />;
 
 	return (
 		<Container sx={{ maxWidth: 1080, justifyContent: "center", }}>
@@ -56,10 +62,13 @@ const Browsing = () => {
 					margin: 10,
 				}}
 			>
-				<form style={{ margin: 10 }} onSubmit={goSomewhere}>
-					<Input type="text" placeholder="Search" />
-					<Button type="submit">Search</Button>
-				</form>
+				<Input
+					type="text"
+					placeholder="Search"
+					value={query}
+					onChange={handleQueryChange}
+				/>
+				<Button type="submit" onClick={submitMovieQuery}>Search</Button>
 			</Paper>
 			<Box
 				container="true"

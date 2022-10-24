@@ -25,11 +25,9 @@ module.exports = function (app, pool, bcrypt, cookieParser, bodyParser, jwt) {
 	});
 
 	app.post(`${baseUrl}/movie_query`, async (req, res) => {
-		const { query } = req.body;
-		console.log(`${TORRENT_API}?query_term=${query}`)
-
+		const { query, page } = req.body;
 		axios
-			.get(`${TORRENT_API}?query_term=${query}`)
+			.get(`${TORRENT_API}?query_term=${query}&page=${page}`)
 			.then((response) => {
 				res.send(response.data);
 			})
