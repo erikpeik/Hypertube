@@ -117,7 +117,7 @@ const VideoPlayer = () => {
 					<ReactPlayer
 						width={"100%"}
 						height="100%"
-						url="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
+						url="http://localhost:3001/api/moviestream/pushthebutton"
 						ref={playerRef}
 						playing={playing}
 						muted={mute}

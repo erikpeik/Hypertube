@@ -157,7 +157,7 @@ const ControlIcons = ({
 			>
 				<Grid item>
 					<Typography variant="h5" style={{ color: "white" }}>
-						Tears Of Steel
+						Push the Button
 					</Typography>
 				</Grid>
 
