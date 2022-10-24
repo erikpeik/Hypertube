@@ -1,6 +1,6 @@
 * {
 	margin: 0;
-	font-family: 'Roboto', sans-serif;
+	font-family: "Roboto", sans-serif;
 }
 
 html {
@@ -11,8 +11,13 @@ html {
 body {
 	min-height: 100vh;
 	position: relative;
-	background-color: #F11926;
-	background-image: linear-gradient(43deg, #10004a 0%, #352e94 46%, #386193 100%);
+	background-color: #f11926;
+	background-image: linear-gradient(
+		43deg,
+		#10004a 0%,
+		#352e94 46%,
+		#386193 100%
+	);
 	background-attachment: fixed;
 }
 
@@ -30,8 +35,7 @@ body {
 	width: 100%;
 	background-color: rgb(245, 245, 245);
 	box-shadow: 0px -2px 6px -1px rgb(0 0 0 / 20%),
-		0px -4px 8px 0px rgb(0 0 0 / 14%),
-		0px -1px 15px 0px rgb(0 0 0 / 12%)
+		0px -4px 8px 0px rgb(0 0 0 / 14%), 0px -1px 15px 0px rgb(0 0 0 / 12%);
 }
 
 .footerText {
@@ -43,7 +47,7 @@ body {
 
 /* for image upload */
 
-input[type=file] {
+input[type="file"] {
 	display: none;
 }
 
