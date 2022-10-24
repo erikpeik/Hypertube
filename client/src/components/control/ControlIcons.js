@@ -215,11 +215,6 @@ const ControlIcons = ({
 								/>
 							)}
 						</IconButton>
-						<Typography
-							style={{ color: "#fff", paddingTop: "5px" }}
-						>
-							{volume * 100}
-						</Typography>
 						<Slider
 							min={0}
 							max={100}

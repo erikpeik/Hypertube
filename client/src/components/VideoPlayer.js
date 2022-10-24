@@ -18,8 +18,7 @@ const VideoPlayer = () => {
 		seeking: false,
 	});
 
-	const { playing, mute, volume, playerbackRate, played} =
-		playerState;
+	const { playing, mute, volume, playerbackRate, played } = playerState;
 
 	const handlePlayAndPause = () => {
 		setPlayerState({
@@ -49,13 +48,16 @@ const VideoPlayer = () => {
 	};
 
 	const handlePlayerSeek = (newValue) => {
-		setPlayerState({ ...playerState, played: parseFloat(newValue / 100) });
-		playerRef.current.seekTo(parseFloat(newValue / 100));
+		setPlayerState({
+			...playerState,
+			played: parseFloat(newValue.target.value / 100),
+		});
+		playerRef.current.seekTo(parseFloat(newValue.target.value / 100));
 	};
 
 	const handlePlayerMouseSeekUp = (newValue) => {
 		setPlayerState({ ...playerState, seeking: false });
-		playerRef.current.seekTo(newValue / 100);
+		playerRef.current.seekTo(newValue.target.value / 100);
 	};
 
 	const format = (seconds) => {
