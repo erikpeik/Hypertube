@@ -12,7 +12,7 @@ import {
   CardActionArea,
   Paper,
 } from "@mui/material";
-import "./style.css";
+import "../css/style.css";
 import { useNavigate } from "react-router-dom";
 
 const Browsing = () => {
@@ -55,7 +55,7 @@ const Browsing = () => {
           margin: 10,
         }}
       >
-        <form style={{margin: 10}} onSubmit={goSomewhere}>
+        <form style={{ margin: 10 }} onSubmit={goSomewhere}>
           <Input type="text" placeholder="Search" />
           <Button type="submit">Search</Button>
         </form>
@@ -100,14 +100,15 @@ const Browsing = () => {
                       overflow: "hidden",
                     }}
                   >
-                    {movie.title}
+                    {movie.title_long}
                   </Typography>
+                  <Typography>IMDB rate: {movie.rating}</Typography>
                 </CardContent>
                 <CardMedia
                   sx={{ borderRadius: 1 }}
                   component="img"
                   image={movie.medium_cover_image}
-                  alt={movie.title}
+                  alt={movie.title_long}
                 />
               </CardActionArea>
             </Card>
