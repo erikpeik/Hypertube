@@ -16,6 +16,7 @@ import {
 	VolumeOff,
 } from "@mui/icons-material";
 import Popover from "@mui/material/Popover";
+import { useState } from "react";
 
 const ControlIcons = ({
 	playandpause,
@@ -36,6 +37,7 @@ const ControlIcons = ({
 	playRate,
 	fullScreenMode,
 }) => {
+	const [show, setShow] = useState(false);
 	const PrettoSlider = styled(Slider)({
 		height: 5,
 		"& .MuiSlider-track": {
@@ -86,63 +88,66 @@ const ControlIcons = ({
 	const open = Boolean(anchorEl);
 	const id = open ? "playbackrate-popover" : undefined;
 	return (
-		<div className="controls__div">
+		<div
+			onMouseEnter={() => setShow(true)}
+			onMouseLeave={() => setShow(false)}
+			className="controls__div"
+		>
 			<Grid
 				container
 				direction="row"
 				alignItems="center"
 				justifyContent="start"
 				style={{ padding: 16 }}
-			>
-				<Grid item>
-					<Typography variant="h5" style={{ color: "white" }}>
-						Player
-					</Typography>
+			></Grid>
+			{show && (
+				<Grid
+					container
+					direction="row"
+					alignItems="center"
+					justifyContent="center"
+				>
+					<IconButton
+						className="controls__icons"
+						aria-label="reqind"
+						onClick={rewind}
+					>
+						<FastRewind
+							fontSize="large"
+							style={{ color: "white" }}
+						/>
+					</IconButton>
+
+					<IconButton
+						className="controls__icons"
+						aria-label="reqind"
+						onClick={playandpause}
+					>
+						{playing ? (
+							<PauseSharp
+								fontSize="large"
+								style={{ color: "white" }}
+							/>
+						) : (
+							<PlayArrowSharp
+								fontSize="large"
+								style={{ color: "white" }}
+							/>
+						)}
+					</IconButton>
+
+					<IconButton
+						className="controls__icons"
+						aria-label="reqind"
+						onClick={fastForward}
+					>
+						<FastForwardSharp
+							fontSize="large"
+							style={{ color: "white" }}
+						/>
+					</IconButton>
 				</Grid>
-			</Grid>
-			<Grid
-				container
-				direction="row"
-				alignItems="center"
-				justifyContent="center"
-			>
-				<IconButton
-					className="controls__icons"
-					aria-label="reqind"
-					onClick={rewind}
-				>
-					<FastRewind fontSize="large" style={{ color: "white" }} />
-				</IconButton>
-
-				<IconButton
-					className="controls__icons"
-					aria-label="reqind"
-					onClick={playandpause}
-				>
-					{playing ? (
-						<PauseSharp
-							fontSize="large"
-							style={{ color: "white" }}
-						/>
-					) : (
-						<PlayArrowSharp
-							fontSize="large"
-							style={{ color: "white" }}
-						/>
-					)}
-				</IconButton>
-
-				<IconButton
-					className="controls__icons"
-					aria-label="reqind"
-					onClick={fastForward}
-				>
-					<FastForwardSharp
-						fontSize="large"
-						style={{ color: "white" }}
-					/>
-				</IconButton>
-			</Grid>
+			)}
 			<Grid
 				container
 				direction="row"
@@ -150,132 +155,142 @@ const ControlIcons = ({
 				justifyContent="space-between"
 				style={{ padding: 16 }}
 			>
-				<Grid item>
-					<Typography variant="h5" style={{ color: "white" }}>
-						Push the Button
-					</Typography>
-				</Grid>
-
-				<Grid item xs={12}>
-					<PrettoSlider
-						min={0}
-						max={100}
-						value={played * 100}
-						onChange={onSeek}
-						onChangeCommitted={onSeekMouseUp}
-					/>
-					<Grid
-						container
-						direction="row"
-						justifyContent="space-between"
-					>
-						<Typography variant="h7" style={{ color: "white" }}>
-							{playedTime}
-						</Typography>
-						<Typography variant="h7" style={{ color: "white" }}>
-							{fullMovieTime}
-						</Typography>
-					</Grid>
-				</Grid>
-
-				<Grid item>
-					<Grid container alignItems="center" direction="row">
-						<IconButton
-							className="controls__icons"
-							aria-label="reqind"
-							onClick={playandpause}
-						>
-							{playing ? (
-								<PauseSharp
-									fontSize="large"
-									style={{ color: "white" }}
-								/>
-							) : (
-								<PlayArrowSharp
-									fontSize="large"
-									style={{ color: "white" }}
-								/>
-							)}
-						</IconButton>
-
-						<IconButton
-							className="controls__icons"
-							aria-label="reqind"
-							onClick={muting}
-						>
-							{muted ? (
-								<VolumeOff
-									fontSize="large"
-									style={{ color: "white" }}
-								/>
-							) : (
-								<VolumeUp
-									fontSize="large"
-									style={{ color: "white" }}
-								/>
-							)}
-						</IconButton>
-						<Slider
-							min={0}
-							max={100}
-							value={volume * 100}
-							className="volume__slider"
-							onChange={volumeChange}
-							onChangeCommitted={volumeSeek}
-						/>
-					</Grid>
-				</Grid>
-
-				<Grid item>
-					<Button
-						variant="text"
-						onClick={handlePopOver}
-						className="bottom__icons"
-					>
-						<Typography>{playerbackRate}X</Typography>
-					</Button>
-					<Popover
-						id={id}
-						open={open}
-						anchorEl={anchorEl}
-						onClose={handleClose}
-						anchorOrigin={{
-							vertical: "top",
-							horizontal: "center",
-						}}
-						transformOrigin={{
-							vertical: "bottom",
-							horizontal: "center",
-						}}
-					>
-						<Grid container direction="column-reverse">
-							{[0.5, 1, 1.5, 2].map((rate) => (
-								<Button
-									key={rate}
-									variant="text"
-									onClick={() => playRate(rate)}
-								>
-									<Typography
-										color={
-											rate === playerbackRate
-												? "secondary"
-												: "default"
-										}
-									>
-										{rate}
-									</Typography>
-								</Button>
-							))}
+				{show && (
+					<>
+						<Grid item>
+							<Typography variant="h5" style={{ color: "white" }}>
+								Push the Button
+							</Typography>
 						</Grid>
-					</Popover>
 
-					<IconButton
-						className="bottom__icons"
-						onClick={fullScreenMode}
-					>
-						<Fullscreen fontSize="large" />
-					</IconButton>
-				</Grid>
+						<Grid item xs={12}>
+							<PrettoSlider
+								min={0}
+								max={100}
+								value={played * 100}
+								onChange={onSeek}
+								onChangeCommitted={onSeekMouseUp}
+							/>
+							<Grid
+								container
+								direction="row"
+								justifyContent="space-between"
+							>
+								<Typography
+									variant="h7"
+									style={{ color: "white" }}
+								>
+									{playedTime}
+								</Typography>
+								<Typography
+									variant="h7"
+									style={{ color: "white" }}
+								>
+									{fullMovieTime}
+								</Typography>
+							</Grid>
+						</Grid>
+
+						<Grid item>
+							<Grid container alignItems="center" direction="row">
+								<IconButton
+									className="controls__icons"
+									aria-label="reqind"
+									onClick={playandpause}
+								>
+									{playing ? (
+										<PauseSharp
+											fontSize="large"
+											style={{ color: "white" }}
+										/>
+									) : (
+										<PlayArrowSharp
+											fontSize="large"
+											style={{ color: "white" }}
+										/>
+									)}
+								</IconButton>
+
+								<IconButton
+									className="controls__icons"
+									aria-label="reqind"
+									onClick={muting}
+								>
+									{muted ? (
+										<VolumeOff
+											fontSize="large"
+											style={{ color: "white" }}
+										/>
+									) : (
+										<VolumeUp
+											fontSize="large"
+											style={{ color: "white" }}
+										/>
+									)}
+								</IconButton>
+								<Slider
+									min={0}
+									max={100}
+									value={volume * 100}
+									className="volume__slider"
+									onChange={volumeChange}
+									onChangeCommitted={volumeSeek}
+								/>
+							</Grid>
+						</Grid>
+
+						<Grid item>
+							<Button
+								variant="text"
+								onClick={handlePopOver}
+								className="bottom__icons"
+							>
+								<Typography>{playerbackRate}X</Typography>
+							</Button>
+							<Popover
+								id={id}
+								open={open}
+								anchorEl={anchorEl}
+								onClose={handleClose}
+								anchorOrigin={{
+									vertical: "top",
+									horizontal: "center",
+								}}
+								transformOrigin={{
+									vertical: "bottom",
+									horizontal: "center",
+								}}
+							>
+								<Grid container direction="column-reverse">
+									{[0.5, 1, 1.5, 2].map((rate) => (
+										<Button
+											key={rate}
+											variant="text"
+											onClick={() => playRate(rate)}
+										>
+											<Typography
+												color={
+													rate === playerbackRate
+														? "secondary"
+														: "default"
+												}
+											>
+												{rate}
+											</Typography>
+										</Button>
+									))}
+								</Grid>
+							</Popover>
+
+							<IconButton
+								className="bottom__icons"
+								onClick={fullScreenMode}
+							>
+								<Fullscreen fontSize="large" />
+							</IconButton>
+						</Grid>
+					</>
+				)}
 			</Grid>
 		</div>
 	);
