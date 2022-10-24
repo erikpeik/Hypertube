@@ -105,7 +105,7 @@ const Browsing = () => {
                   <Typography>IMDB rate: {movie.rating}</Typography>
                 </CardContent>
                 <CardMedia
-                  sx={{ borderRadius: 1, maxWidth: 245, maxHeight: 345 }}
+                  sx={{ borderRadius: 1, width: 245, height: 345 }}
                   component="img"
                   image={movie.medium_cover_image}
                   alt={movie.title_long}
