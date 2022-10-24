@@ -115,6 +115,7 @@ require("./routes/browsing.js")(
 );
 require("./routes/oauth.js")(app, pool, axios, helperFunctions, jwt);
 require("./routes/streaming.js")(app, fs)
+require("./routes/torrent.js")(app, path)
 
 app.get("/", (req, res) => {
 	res.send("Welcome to Hypertube");

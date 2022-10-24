@@ -4,11 +4,12 @@ module.exports = (app, fs) => {
 		const id = request.params.id
 
 		const moviefile = `movies/${id}.mp4`
+
 		const stats = fs.statSync(moviefile)
 		const fileSize = stats.size
 		const range = request.headers.range
 		if (range) {
-			console.log("Movie Range: " , range)
+			console.log("Requested Movie Range: ", range)
 			const parts = range.replace(/bytes=/, "").split("-")
 			const start = parseInt(parts[0], 10)
 			const end = parts[1]
@@ -25,12 +26,14 @@ module.exports = (app, fs) => {
 			response.writeHead(206, head);
 			file.pipe(response);
 		} else {
+			console.log("No Movie Range Defined")
 			const head = {
 				'Content-Length': fileSize,
 				'Content-Type': 'video/mp4',
 			}
 			response.writeHead(200, head)
-			fs.createReadStream(moviefile).pipe(response)
+			const readStream = fs.createReadStream(moviefile)
+			readStream.pipe(response)
 		}
 	})
 
