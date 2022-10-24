@@ -37,28 +37,46 @@ const Browsing = () => {
         justifyContent: "center",
         display: "flex",
         flexWrap: "wrap",
+        width: '100%',
+        height: '100%'
       }}
     >
       {movies.map((movie) => (
         <Box
-          class="container"
+          sx={{ margin: 1, marginBottom: 20, maxHeight: 345, maxWidth: 245}}
           key={movie.id}
           item="true"
           xs={3}
           onClick={() => navigateToMovie(movie.imdb_code)}
         >
-          <Card sx={{ flexGrow: 1, height: 345, width: 245 }}>
+          <Card class="container" sx={{ flexGrow: 1}}>
             <CardActionArea>
+              <CardContent
+                style={{
+                  textOverflow: "ellipsis",
+                }}
+                class="newsletter"
+              >
+                <Typography
+                  gutterBottom
+                  variant="h7"
+                  style={{
+                    whiteSpace: "pre-line",
+                    overflowWrap: "break-word",
+                    wordWrap: "break-word",
+                    hyphens: "auto",
+
+                  }}
+                >
+                  {movie.title}
+                </Typography>
+              </CardContent>
               <CardMedia
+                sx={{ borderRadius: 2 }}
                 component="img"
                 image={movie.medium_cover_image}
                 alt={movie.title}
               />
-              <CardContent>
-                <Typography class="newsletter" gutterBottom variant="h7">
-                  {movie.title}
-                </Typography>
-              </CardContent>
             </CardActionArea>
           </Card>
         </Box>
