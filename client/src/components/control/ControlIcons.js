@@ -95,11 +95,7 @@ const ControlIcons = ({
 		return () => clearTimeout(timer);
 	}, [show]);
 	return (
-		<div
-			onMouseEnter={() => setShow(true)}
-			onMouseLeave={() => setShow(false)}
-			className="controls__div"
-		>
+		<div onMouseOverCapture={() => setShow(true)} className="controls__div">
 			<Grid
 				container
 				direction="row"
