@@ -87,7 +87,6 @@ const ControlIcons = ({
 	const id = open ? "playbackrate-popover" : undefined;
 	return (
 		<div className="controls__div">
-			{/* Top Segment */}
 			<Grid
 				container
 				direction="row"
@@ -101,8 +100,6 @@ const ControlIcons = ({
 					</Typography>
 				</Grid>
 			</Grid>
-
-			{/* Middle Segment */}
 			<Grid
 				container
 				direction="row"
@@ -146,8 +143,6 @@ const ControlIcons = ({
 					/>
 				</IconButton>
 			</Grid>
-
-			{/* Bottom Segment */}
 			<Grid
 				container
 				direction="row"
@@ -261,6 +256,7 @@ const ControlIcons = ({
 						<Grid container direction="column-reverse">
 							{[0.5, 1, 1.5, 2].map((rate) => (
 								<Button
+									key={rate}
 									variant="text"
 									onClick={() => playRate(rate)}
 								>
