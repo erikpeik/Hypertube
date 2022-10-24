@@ -13,7 +13,7 @@ const RedirectPage = () => {
 		if (user !== null) {
 			if (user === '') {
 				if (!redirectPages.includes(location.pathname) && location.pathname.includes('resetpassword') === false) {
-					navigate('/login')
+					navigate('/')
 				}
 			} else {
 				if (redirectPages.includes(location.pathname)) {

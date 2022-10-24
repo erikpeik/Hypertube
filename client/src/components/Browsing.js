@@ -8,20 +8,28 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { CardActionArea } from "@mui/material";
 import "./style.css";
+import { useNavigate } from "react-router-dom";
 
 const Browsing = () => {
   const [movies, setMovies] = useState(null);
+  const navigate = useNavigate();
+
   useEffect(() => {
     browsingService.getMovies().then((movies) => {
       console.log(movies.data);
       setMovies(movies.data.movies || []);
     });
   }, []);
+
   if (!movies) return <Loader />;
+
+  const navigateToMovie = (movie_id) => {
+    navigate(`/movie/${movie_id}`);
+  };
 
   return (
     <Box
-      container
+      container="true"
       spacing={3}
       style={{
         direction: "column",
@@ -32,29 +40,27 @@ const Browsing = () => {
       }}
     >
       {movies.map((movie) => (
-        <Box key={movie.id} item xs={3}>
-          <Card
-            class="container"
-            sx={{ margin: 2, flexGrow: 1, height: 345, width: 245 }}
-          >
+        <Box
+          class="container"
+          key={movie.id}
+          item="true"
+          xs={3}
+          onClick={() => navigateToMovie(movie.imdb_code)}
+        >
+          <Card sx={{ flexGrow: 1, height: 345, width: 245 }}>
             <CardActionArea>
               <CardMedia
                 component="img"
                 image={movie.medium_cover_image}
                 alt={movie.title}
               />
-              <CardContent className="newsletter">
-                <Typography gutterBottom variant="h7">
+              <CardContent>
+                <Typography class="newsletter" gutterBottom variant="h7">
                   {movie.title}
                 </Typography>
               </CardContent>
             </CardActionArea>
           </Card>
-          <div class="container">
-            <div class="newsletter">
-              <p>weee!</p>
-            </div>
-          </div>
         </Box>
       ))}
     </Box>

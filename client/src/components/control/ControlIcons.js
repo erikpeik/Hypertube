@@ -1,4 +1,5 @@
 import "../../css/ControlIcons.css";
+import * as React from "react";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { IconButton } from "@mui/material";
@@ -11,10 +12,30 @@ import {
 	FastForwardSharp,
 	VolumeUp,
 	Fullscreen,
-    PauseSharp 
+	PauseSharp,
+	VolumeOff,
 } from "@mui/icons-material";
+import Popover from "@mui/material/Popover";
 
-const ControlIcons = ({ playandpause, playing }) => {
+const ControlIcons = ({
+	playandpause,
+	playing,
+	rewind,
+	fastForward,
+	played,
+	onSeek,
+	onSeekMouseUp,
+	playedTime,
+	fullMovieTime,
+	muting,
+	muted,
+	volume,
+	volumeChange,
+	volumeSeek,
+	playerbackRate,
+	playRate,
+	fullScreenMode,
+}) => {
 	const PrettoSlider = styled(Slider)({
 		height: 5,
 		"& .MuiSlider-track": {
@@ -52,6 +73,18 @@ const ControlIcons = ({ playandpause, playing }) => {
 			},
 		},
 	});
+
+	const [anchorEl, setAnchorEl] = React.useState(null);
+	const handlePopOver = (event) => {
+		setAnchorEl(event.currentTarget);
+	};
+
+	const handleClose = () => {
+		setAnchorEl(null);
+	};
+
+	const open = Boolean(anchorEl);
+	const id = open ? "playbackrate-popover" : undefined;
 	return (
 		<div className="controls__div">
 			{/* Top Segment */}
@@ -76,7 +109,11 @@ const ControlIcons = ({ playandpause, playing }) => {
 				alignItems="center"
 				justifyContent="center"
 			>
-				<IconButton className="controls__icons" aria-label="reqind">
+				<IconButton
+					className="controls__icons"
+					aria-label="reqind"
+					onClick={rewind}
+				>
 					<FastRewind fontSize="large" style={{ color: "white" }} />
 				</IconButton>
 
@@ -98,7 +135,11 @@ const ControlIcons = ({ playandpause, playing }) => {
 					)}
 				</IconButton>
 
-				<IconButton className="controls__icons" aria-label="reqind">
+				<IconButton
+					className="controls__icons"
+					aria-label="reqind"
+					onClick={fastForward}
+				>
 					<FastForwardSharp
 						fontSize="large"
 						style={{ color: "white" }}
@@ -121,17 +162,23 @@ const ControlIcons = ({ playandpause, playing }) => {
 				</Grid>
 
 				<Grid item xs={12}>
-					<PrettoSlider min={0} max={100} defaultValue={20} />
+					<PrettoSlider
+						min={0}
+						max={100}
+						value={played * 100}
+						onChange={onSeek}
+						onChangeCommitted={onSeekMouseUp}
+					/>
 					<Grid
 						container
 						direction="row"
 						justifyContent="space-between"
 					>
 						<Typography variant="h7" style={{ color: "white" }}>
-							00:26
+							{playedTime}
 						</Typography>
 						<Typography variant="h7" style={{ color: "white" }}>
-							12:30
+							{fullMovieTime}
 						</Typography>
 					</Grid>
 				</Grid>
@@ -159,33 +206,82 @@ const ControlIcons = ({ playandpause, playing }) => {
 						<IconButton
 							className="controls__icons"
 							aria-label="reqind"
+							onClick={muting}
 						>
-							<VolumeUp
-								fontSize="large"
-								style={{ color: "white" }}
-							/>
+							{muted ? (
+								<VolumeOff
+									fontSize="large"
+									style={{ color: "white" }}
+								/>
+							) : (
+								<VolumeUp
+									fontSize="large"
+									style={{ color: "white" }}
+								/>
+							)}
 						</IconButton>
-
 						<Typography
 							style={{ color: "#fff", paddingTop: "5px" }}
 						>
-							40
+							{volume * 100}
 						</Typography>
 						<Slider
 							min={0}
 							max={100}
-							defaultValue={100}
+							value={volume * 100}
 							className="volume__slider"
+							onChange={volumeChange}
+							onChangeCommitted={volumeSeek}
 						/>
 					</Grid>
 				</Grid>
 
 				<Grid item>
-					<Button variant="text" className="bottom__icons">
-						<Typography>1X</Typography>
+					<Button
+						variant="text"
+						onClick={handlePopOver}
+						className="bottom__icons"
+					>
+						<Typography>{playerbackRate}X</Typography>
 					</Button>
+					<Popover
+						id={id}
+						open={open}
+						anchorEl={anchorEl}
+						onClose={handleClose}
+						anchorOrigin={{
+							vertical: "top",
+							horizontal: "center",
+						}}
+						transformOrigin={{
+							vertical: "bottom",
+							horizontal: "center",
+						}}
+					>
+						<Grid container direction="column-reverse">
+							{[0.5, 1, 1.5, 2].map((rate) => (
+								<Button
+									variant="text"
+									onClick={() => playRate(rate)}
+								>
+									<Typography
+										color={
+											rate === playerbackRate
+												? "secondary"
+												: "default"
+										}
+									>
+										{rate}
+									</Typography>
+								</Button>
+							))}
+						</Grid>
+					</Popover>
 
-					<IconButton className="bottom__icons">
+					<IconButton
+						className="bottom__icons"
+						onClick={fullScreenMode}
+					>
 						<Fullscreen fontSize="large" />
 					</IconButton>
 				</Grid>
