@@ -44,7 +44,7 @@ const Browsing = () => {
 	};
 
 	return (
-		<Container sx={{ maxWidth: 1080, justifyContent: "center" }}>
+		<Container sx={{ maxWidth: 1080, justifyContent: "center", }}>
 			<Paper
 				style={{
 					direction: "column",
@@ -78,9 +78,9 @@ const Browsing = () => {
 					<Box
 						sx={{
 							margin: 1,
-							marginBottom: 10,
+							marginBottom: 3,
 							maxHeight: 345,
-							maxWidth: 245,
+							maxWidth: 245
 						}}
 						key={movie.id}
 						item="true"
@@ -108,16 +108,10 @@ const Browsing = () => {
 									>
 										{movie.title_long}
 									</Typography>
-									<Typography>
-										IMDB rate: {movie.rating}
-									</Typography>
+									<Typography>IMDB rate: {movie.rating}</Typography>
 								</CardContent>
 								<CardMedia
-									sx={{
-										borderRadius: 1,
-										width: 245,
-										height: 345,
-									}}
+									sx={{ borderRadius: 1, width: 245, height: 345 }}
 									component="img"
 									image={movie.medium_cover_image}
 									alt={movie.title_long}
