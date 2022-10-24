@@ -6,11 +6,16 @@ const getMovies = () => {
 	return request.then(response => response.data)
 }
 
+const getMovieQuery = values => {
+	const request = axios.post(`${baseUrl}/movie_query`, values)
+	return request.then(response => response.data)
+}
+
 const getIMDbData = imdb_id => {
 	const request = axios.post(`${baseUrl}/imdb_data`, imdb_id)
 	return request.then(response => response.data)
 }
 
-const browsingService = { getMovies, getIMDbData }
+const browsingService = { getMovies, getIMDbData, getMovieQuery }
 
 export default browsingService
