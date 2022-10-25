@@ -17,8 +17,8 @@ const useFetch = (query, page) => {
 			setLoading(true)
 			setError(false)
 			const res = await axios.post(`${baseUrl}`, { query, page })
-			console.log('res', res)
-			setMovies(res.data.movies)
+			const newMovie = res.data.data.movies || []
+			setMovies((prev) => [...prev, ...newMovie])
 			setLoading(false)
 		} catch (err) {
 			setError(err)

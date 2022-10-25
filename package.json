@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "react-infinite-scroll-component": "^6.1.0",
-    "react-scroll": "^1.8.8"
-  }
-}

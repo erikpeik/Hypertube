@@ -1,6 +1,5 @@
 import browsingService from "../services/browsingService";
-import { useState, useEffect } from "react";
-import Scroll from "./Scroll";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Loader from "./Loader";
 import {
 	Box,
@@ -16,39 +15,51 @@ import {
 } from "@mui/material";
 import "../css/style.css";
 import { useNavigate } from "react-router-dom";
+import useFetch from "../hooks/useFetch";
 
 const Browsing = () => {
-	const [movies, setMovies] = useState(null);
 	const [page, setPage] = useState(1);
 	const [query, setQuery] = useState("");
+	const { loading, error, movies } = useFetch(query, page);
+	const loader = useRef();
 	const navigate = useNavigate();
 
 	const handleQueryChange = (event) => {
 		setQuery(event.target.value);
 	};
 
+	const handleObserver = useCallback((entries) => {
+		const target = entries[0];
+		if (target.isIntersecting) {
+			setPage((prev) => prev + 1);
+		}
+	}, [])
+
 	useEffect(() => {
-		browsingService.getMovieQuery({ query: "", page }).then((movies) => {
-			console.log(movies.data);
-			setMovies(movies.data.movies || []);
-		});
-	}, [page]);
+		const options = {
+			root: null,
+			rootMargin: '20px',
+			threshold: 0
+		}
+		const observer = new IntersectionObserver(handleObserver, options);
+		if (loader.current) observer.observe(loader.current);
+	}, [handleObserver])
 
 	const submitMovieQuery = (event) => {
 		event.preventDefault();
-		const value = query.trim();
+		// const value = query.trim();
 
-		browsingService.getMovieQuery({ query: value, page }).then((movies) => {
-			console.log(movies.data.movies);
-			setMovies(movies.data.movies || []);
-		});
+		// browsingService.getMovieQuery({ query: value, page }).then((movies) => {
+		// 	console.log(movies.data.movies);
+		// 	setMovies(movies.data.movies || []);
+		// });
 	};
 
 	const navigateToMovie = (movie_id) => {
-		navigate(`/movie/${movie_id}`,{state: movies.filter(movie => movie.imdb_code === movie_id)});
+		navigate(`/movie/${movie_id}`, { state: movies.filter(movie => movie.imdb_code === movie_id) });
 	};
 
-	if (!movies) return <Loader />;
+	// if (!movies) return <Loader />;
 
 	return (
 		<Container sx={{ maxWidth: 1080, justifyContent: "center" }}>
@@ -138,8 +149,10 @@ const Browsing = () => {
 						</Card>
 					</Box>
 				))}
-      </Box>
-      <Scroll/>
+			</Box>
+			{loading && <p style={{ color: "white" }}>Loading...</p>}
+			{error && <p>Error!</p>}
+			<div ref={loader} />
 		</Container>
 	);
 };
