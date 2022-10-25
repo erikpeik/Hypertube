@@ -1,5 +1,6 @@
 import browsingService from "../services/browsingService";
 import { useState, useEffect } from "react";
+import Scroll from "./Scroll";
 import Loader from "./Loader";
 import {
 	Box,
@@ -137,7 +138,8 @@ const Browsing = () => {
 						</Card>
 					</Box>
 				))}
-			</Box>
+      </Box>
+      <Scroll/>
 		</Container>
 	);
 };
