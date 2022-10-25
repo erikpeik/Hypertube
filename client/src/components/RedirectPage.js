@@ -17,7 +17,7 @@ const RedirectPage = () => {
 				}
 			} else {
 				if (redirectPages.includes(location.pathname)) {
-					navigate('/profile')
+					navigate('/browsing')
 				}
 			}
 		}
