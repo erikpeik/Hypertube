@@ -1,6 +1,5 @@
 import browsingService from "../services/browsingService";
 import { useState, useEffect, useCallback, useRef } from "react";
-import Loader from "./Loader";
 import {
 	Box,
 	Card,
@@ -97,7 +96,7 @@ const Browsing = () => {
 					height: "100%",
 				}}
 			>
-				{movies.map((movie) => (
+				{movies.map((movie, value) => (
 					<Box
 						sx={{
 							margin: 1,
@@ -105,7 +104,7 @@ const Browsing = () => {
 							maxHeight: 345,
 							maxWidth: 245,
 						}}
-						key={movie.id}
+						key={value}
 						item="true"
 						xs={3}
 						onClick={() => navigateToMovie(movie.imdb_code)}

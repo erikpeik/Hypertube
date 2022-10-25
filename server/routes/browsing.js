@@ -37,4 +37,14 @@ module.exports = function (app, pool, bcrypt, cookieParser, bodyParser, jwt) {
 				res.status(500).send({ error: "Something went wrong" });
 			})
 	});
+
+	app.post(`${baseUrl}/check_image`, async (req, res) => {
+		const url = req.body.url;
+		try {
+			await axios.get(url)
+			res.status(200).send({ status: 'true' });
+		} catch (error) {
+			res.status(400).send({ status: 'failed' });
+		}
+	});
 };
