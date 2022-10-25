@@ -1,16 +1,18 @@
 import { useState, useEffect } from "react";
-import { useParams } from 'react-router-dom'
+import { useParams, useLocation } from 'react-router-dom'
 import {
-	Typography, Paper, Grid,
+	Typography, Paper, Grid, Button
 } from '@mui/material'
 import { Container } from '@mui/system'
 import Loader from "./Loader";
 import browsingService from "../services/browsingService";
+import streamingService from "../services/streamingService";
 import VideoPlayer from "./VideoPlayer";
 
 const MoviePage = () => {
 	const [imdbData, setImdbData] = useState(null)
 	const params = useParams()
+	const location = useLocation()
 
 	useEffect(() => {
 		browsingService.getIMDbData({ imdb_id: params.id }).then(movieData => {
@@ -21,11 +23,14 @@ const MoviePage = () => {
 
 	if (!imdbData) return <Loader />
 
+	const torrentInfo = location.state[0].torrents
+
 	const movieData = imdbData.filter((data, i) => i !== 14)
 
 	return (
 		<>
 			<VideoPlayer />
+			<Button onClick={() => {streamingService.getTorrent(params.id, torrentInfo)}}>Get Movie</Button>
 			<Container maxWidth='md' sx={{ pt: 5, pb: 5 }}>
 				<Paper elevation={10} sx={{ padding: 3 }}>
 					{movieData.map((value, i) => (
