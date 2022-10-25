@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useLocation } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import {
 	Typography, Paper, Grid, Button
 } from '@mui/material'
@@ -12,25 +12,26 @@ import VideoPlayer from "./VideoPlayer";
 const MoviePage = () => {
 	const [imdbData, setImdbData] = useState(null)
 	const params = useParams()
-	const location = useLocation()
 
 	useEffect(() => {
 		browsingService.getIMDbData({ imdb_id: params.id }).then(movieData => {
 			console.log(movieData)
 			setImdbData(Object.entries(movieData) || '')
-		})
+		});
 	}, [params])
 
 	if (!imdbData) return <Loader />
 
-	const torrentInfo = location.state[0].torrents
-
 	const movieData = imdbData.filter((data, i) => i !== 14)
+
+	const getTorrent = () => {
+		streamingService.getTorrent(params.id).then(response => console.log(response))
+	}
 
 	return (
 		<>
 			<VideoPlayer />
-			<Button onClick={() => {streamingService.getTorrent(params.id, torrentInfo)}}>Get Movie</Button>
+			<Button onClick={() => {getTorrent()}}>Get Movie</Button>
 			<Container maxWidth='md' sx={{ pt: 5, pb: 5 }}>
 				<Paper elevation={10} sx={{ padding: 3 }}>
 					{movieData.map((value, i) => (

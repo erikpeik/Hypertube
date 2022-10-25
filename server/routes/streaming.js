@@ -1,8 +1,11 @@
-module.exports = (app, fs, path) => {
+module.exports = (app, fs, path, axios) => {
 
-	app.get('/api/torrent', (request, response) => {
+	const getMagnetLink = (hash, torrent_url, film_title) => {
+		return `magnet:?xt=urn:btih:${hash}&dn=${film_title.split(' ').join('+')}`
+	}
+
+	const downloadTorrent = async (magnet_link) => new Promise((resolve) => {
 		let torrentStream = require('torrent-stream');
-		let magnet_link = "magnet:?xt=urn:btih:072DBC2326D0C9ADE755A10B775DFEB3E370C51F&dn=Tom+and+Jerry+Cowboy+Up%21+%282022%29+%5B720p%5D+%5BWEBRip%5D&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.dler.org%3A6969%2Fannounce&tr=udp%3A%2F%2Fopentracker.i2p.rocks%3A6969%2Fannounce&tr=udp%3A%2F%2F47.ip-51-68-199.eu%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2920%2Fannounce&tr=udp%3A%2F%2Ftracker.pirateparty.gr%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.cyberia.is%3A6969%2Fannounce"
 
 		let videoPath = path.resolve(__dirname, '../movies')
 		console.log("Downloading files to: ", videoPath)
@@ -12,20 +15,27 @@ module.exports = (app, fs, path) => {
 		}
 		let engine = torrentStream(magnet_link, options);
 
+		let files = []
+
 		engine.on('ready', () => {
-			engine.files.forEach(function (file) {
-				let fileName = file.name;
-				let filePath = file.path;
-				console.log(fileName + ' - ' + filePath);
-				file.select(file.name)
+			engine.files.forEach(file => {
+				if (file.name.endsWith('.mp4') || file.name.endsWith('.srt')) {
+					let fileName = file.name;
+					let filePath = file.path;
+					let fileSize = file.length;
+					files.push({ name: fileName, path: filePath, size: fileSize })
+					console.log("We WOULD now download: " + fileName);
+					// file.select(file.name)
+				}
 			})
 		})
 
 		engine.on('download', () => {
 			console.log("Downloading...")
+			resolve(files)
 		})
 
-		engine.on('idle', () => {
+		engine.on('idle', (files) => {
 			console.log("All files downloaded");
 			engine.destroy(() => {
 				console.log("Engine connection destroyed");
@@ -70,14 +80,42 @@ module.exports = (app, fs, path) => {
 		}
 	})
 
-	app.post('/api/streaming/torrent/:id', (request, response) => {
-		const id = request.params.id
-		const torrentInfo = request.body
+	app.post('/api/streaming/torrent/:id', async (request, response) => {
+		const imdb_id = request.params.id
+		const APIInfo = await axios.get(`${process.env.TORRENT_API}?query_term=${imdb_id}`)
 
-		console.log("Film ID: ", id)
+		let torrentInfo = APIInfo.data.data.movies[0].torrents
+
+		console.log("Film ID: ", imdb_id)
 		console.log("Torrent info: ", torrentInfo)
 
-		response.status(200)
+		if (torrentInfo.length > 1)
+			torrentInfo.sort((a, b) => (a.seeds > b.seeds ? -1 : 1))
+
+		let film_title = APIInfo.data.data.movies[0].title_long
+		let hash = torrentInfo[0].hash
+		let torrent_url = torrentInfo[0].url
+
+		let magnet_link = getMagnetLink(hash, torrent_url, film_title)
+
+		let torrent_files = await downloadTorrent(magnet_link)
+		console.log("Torrent files: ", torrent_files)
+
+		let responseSent = false
+
+		await new Promise(r => setTimeout(r, 5000));
+
+		fs.watch(`movies/${torrent_files[0].path}`, (curr, prev) => {
+			fs.stat(`movies/${torrent_files[0].path}`, (err, stats) => {
+				if (stats.size > 100000000 && responseSent === false) {
+					console.log(stats.size)
+				// if (stats.size > torrent_files[0].size / 10 && responseSent === false) {
+					response.status(200).send(`Ready to play film ${film_title}`)
+					responseSent = true
+				}
+			})
+		})
+
 	})
 
 };
