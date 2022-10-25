@@ -1,10 +1,10 @@
-module.exports = (app, fs, path, axios) => {
+module.exports = (app, fs, path, axios, pool) => {
 
 	const getMagnetLink = (hash, torrent_url, film_title) => {
 		return `magnet:?xt=urn:btih:${hash}&dn=${film_title.split(' ').join('+')}`
 	}
 
-	const downloadTorrent = async (magnet_link) => new Promise((resolve) => {
+	const downloadTorrent = async (magnet_link, imdb_id) => new Promise((resolve) => {
 		let torrentStream = require('torrent-stream');
 
 		let videoPath = path.resolve(__dirname, '../movies')
@@ -18,14 +18,19 @@ module.exports = (app, fs, path, axios) => {
 		let files = []
 
 		engine.on('ready', () => {
-			engine.files.forEach(file => {
+			engine.files.forEach(async (file) => {
 				if (file.name.endsWith('.mp4') || file.name.endsWith('.srt')) {
-					let fileName = file.name;
-					let filePath = file.path;
-					let fileSize = file.length;
-					files.push({ name: fileName, path: filePath, size: fileSize })
-					console.log("We WOULD now download: " + fileName);
-					// file.select(file.name)
+					files.push({ name: file.name, path: file.path, size: file.length })
+					console.log("Now downloading: " + file.name);
+					file.select(file.name)
+
+					let sql = `SELECT * FROM downloads WHERE imdb_id = $1 AND path = $2`
+					const { rows } = await pool.query(sql, [imdb_id, `movies/${file.path}`])
+
+					if (rows.length === 0) {
+						sql = `INSERT INTO downloads (path, file_type, file_size, imdb_id) VALUES ($1,$2,$3,$4)`
+						pool.query(sql, [`movies/${file.path}`, file.name.slice(-3), file.length, imdb_id])
+					}
 				}
 			})
 		})
@@ -43,10 +48,17 @@ module.exports = (app, fs, path, axios) => {
 		})
 	})
 
-	app.get('/api/moviestream/:id', (request, response) => {
+	app.get('/api/moviestream/:id', async (request, response) => {
 		const id = request.params.id
 
-		const moviefile = `movies/${id}.mp4`
+		let sql = `SELECT * FROM downloads WHERE imdb_id = $1 AND file_type = 'mp4'`
+		const { rows } = await pool.query(sql, [id])
+
+		let moviefile
+		if (rows.length > 0)
+			moviefile = rows[0]['path']
+		else
+			moviefile = `movies/pushthebutton.mp4`
 
 		const stats = fs.statSync(moviefile)
 		const fileSize = stats.size
@@ -82,6 +94,19 @@ module.exports = (app, fs, path, axios) => {
 
 	app.post('/api/streaming/torrent/:id', async (request, response) => {
 		const imdb_id = request.params.id
+
+		let sql = `SELECT * FROM downloads WHERE imdb_id = $1 AND file_type = 'mp4'`
+		const { rows } = await pool.query(sql, [imdb_id])
+
+		let responseSent = false
+
+		if (rows.length > 0 && rows[0]['completed'] === 'YES')
+			return response.status(200).send(`Ready to play`)
+		else if (rows.length > 0 && fs.existsSync(rows[0]['path']) && fs.statSync(rows[0]['path']).size > 50000000) {
+			response.status(200).send(`Ready to play`)
+			responseSent = true
+		}
+
 		const APIInfo = await axios.get(`${process.env.TORRENT_API}?query_term=${imdb_id}`)
 
 		let torrentInfo = APIInfo.data.data.movies[0].torrents
@@ -98,24 +123,21 @@ module.exports = (app, fs, path, axios) => {
 
 		let magnet_link = getMagnetLink(hash, torrent_url, film_title)
 
-		let torrent_files = await downloadTorrent(magnet_link)
+		let torrent_files = await downloadTorrent(magnet_link, imdb_id)
 		console.log("Torrent files: ", torrent_files)
-
-		let responseSent = false
 
 		await new Promise(r => setTimeout(r, 5000));
 
 		fs.watch(`movies/${torrent_files[0].path}`, (curr, prev) => {
 			fs.stat(`movies/${torrent_files[0].path}`, (err, stats) => {
-				if (stats.size > 100000000 && responseSent === false) {
+				if (stats.size > 50000000 && responseSent === false) {
 					console.log(stats.size)
-				// if (stats.size > torrent_files[0].size / 10 && responseSent === false) {
-					response.status(200).send(`Ready to play film ${film_title}`)
+					// if (stats.size > torrent_files[0].size / 10 && responseSent === false) {
+					response.status(200).send(`Ready to play`)
 					responseSent = true
 				}
 			})
 		})
-
 	})
 
 };

@@ -6,7 +6,7 @@ import screenfull from "screenfull";
 import Container from "@mui/material/Container";
 import ControlIcons from "./control/ControlIcons";
 
-const VideoPlayer = () => {
+const VideoPlayer = ({ imdb_id, status }) => {
 	const playerRef = useRef(null);
 	const playerDivRef = useRef(null);
 	const [playerState, setPlayerState] = useState({
@@ -112,6 +112,12 @@ const VideoPlayer = () => {
 		screenfull.toggle(playerDivRef.current);
 	};
 
+	let stream_url
+	if (status === 'pending')
+		stream_url = "http://localhost:3001/api/moviestream/pushthebutton"
+	if (status === 'ready')
+		stream_url = `http://localhost:3001/api/moviestream/${imdb_id}`
+
 	return (
 		<>
 			<Container maxWidth="md">
@@ -119,7 +125,7 @@ const VideoPlayer = () => {
 					<ReactPlayer
 						width={"100%"}
 						height="100%"
-						url="http://localhost:3001/api/moviestream/pushthebutton"
+						url={stream_url}
 						ref={playerRef}
 						playing={playing}
 						muted={mute}
