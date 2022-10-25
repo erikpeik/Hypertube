@@ -8,15 +8,15 @@ import {
 	createTheme,
 	Box,
 	Grid,
-	Avatar
+	Avatar,
 } from "@mui/material";
-import AspectRatio from '@mui/joy/AspectRatio'
+import AspectRatio from "@mui/joy/AspectRatio";
 import { Container } from "@mui/system";
 import Notification from "./Notification";
 import { getProfileData } from "../reducers/profileReducer";
-import { changeSeverity } from '../reducers/severityReducer'
-import { changeNotification } from '../reducers/notificationReducer'
-import profileService from '../services/profileService'
+import { changeSeverity } from "../reducers/severityReducer";
+import { changeNotification } from "../reducers/notificationReducer";
+import profileService from "../services/profileService";
 import Loader from "./Loader";
 
 const theme = createTheme({
@@ -68,14 +68,14 @@ const Profile = () => {
 		return <Loader text="Getting profile data..." />;
 	}
 
-	const profile_pic = profileData.profile_pic['picture_data']
+	const profile_pic = profileData.profile_pic["picture_data"];
 
 	const profilePictureStyle = {
-		width: '100%',
-		aspectRatio: '1/1',
-		borderRadius: '50%',
-		objectFit: 'cover',
-	}
+		width: "100%",
+		aspectRatio: "1/1",
+		borderRadius: "50%",
+		objectFit: "cover",
+	};
 
 	const ProfileData = {
 		"First name:": profileData.firstname,
@@ -96,28 +96,31 @@ const Profile = () => {
 			}
 		}
 	};
-
 	const setProfilePicture = async (event) => {
-		const image = event.target.files[0]
-		if (image.size > 5242880) {
-			dispatch(changeSeverity('error'))
-			dispatch(changeNotification("The maximum size for uploaded images is 5 megabytes."))
-
+		const image = event.target.files[0];
+		console.log(image);
+		if (image.size > 5242880 ) {
+			dispatch(changeSeverity("error"));
+			dispatch(
+				changeNotification(
+					"The maximum size for uploaded images is 5 megabytes."
+				)
+			);
 		} else {
-			let formData = new FormData()
-			formData.append('file', image)
-			const result = await profileService.setProfilePic(formData)
+			let formData = new FormData();
+			formData.append("file", image);
+			const result = await profileService.setProfilePic(formData);
 			if (result === true) {
-				dispatch(getProfileData())
-				dispatch(changeSeverity('success'))
-				dispatch(changeNotification("Profile picture set!"))
+				dispatch(getProfileData());
+				dispatch(changeSeverity("success"));
+				dispatch(changeNotification("Profile picture set!"));
 			} else {
-				dispatch(changeSeverity('error'))
-				dispatch(changeNotification(result))
+				dispatch(changeSeverity("error"));
+				dispatch(changeNotification(result));
 			}
 		}
-		event.target.value = ''
-	}
+		event.target.value = "";
+	};
 
 	return (
 		<Container maxWidth="md" sx={{ pt: 5, pb: 5 }}>
@@ -131,11 +134,11 @@ const Profile = () => {
 						mb: 2,
 					}}
 				>
-					<Box sx={{ width: '200px', display: 'inline-block' }}>
+					<Box sx={{ width: "200px", display: "inline-block" }}>
 						<AspectRatio ratio={1}>
 							<Avatar
 								src={profile_pic}
-								alt='profile'
+								alt="profile"
 								style={profilePictureStyle}
 							/>
 						</AspectRatio>
@@ -161,10 +164,19 @@ const Profile = () => {
 					Edit profile
 				</Button>
 				<Button theme={theme}>
-					<label htmlFor="set_profilepic" className="styled-image-upload">
+					<label
+						htmlFor="set_profilepic"
+						className="styled-image-upload"
+					>
 						Set profile picture
 					</label>
-					<input type="file" name="file" id="set_profilepic" accept="image/jpeg, image/png, image/jpg" onChange={setProfilePicture}></input>
+					<input
+						type="file"
+						name="file"
+						id="set_profilepic"
+						accept="image/jpeg, image/png, image/jpg"
+						onChange={setProfilePicture}
+					></input>
 				</Button>
 				<Button
 					theme={theme}

@@ -24,7 +24,7 @@ const Browsing = () => {
 
 	const handleQueryChange = (event) => {
 		setQuery(event.target.value);
-	}
+	};
 
 	useEffect(() => {
 		browsingService.getMovieQuery({ query, page }).then((movies) => {
@@ -50,7 +50,7 @@ const Browsing = () => {
 	if (!movies) return <Loader />;
 
 	return (
-		<Container sx={{ maxWidth: 1080, justifyContent: "center", }}>
+		<Container sx={{ maxWidth: 1080, justifyContent: "center" }}>
 			<Paper
 				style={{
 					direction: "column",
@@ -68,7 +68,9 @@ const Browsing = () => {
 					value={query}
 					onChange={handleQueryChange}
 				/>
-				<Button type="submit" onClick={submitMovieQuery}>Search</Button>
+				<Button type="submit" onClick={submitMovieQuery}>
+					Search
+				</Button>
 			</Paper>
 			<Box
 				container="true"
@@ -89,7 +91,7 @@ const Browsing = () => {
 							margin: 1,
 							marginBottom: 3,
 							maxHeight: 345,
-							maxWidth: 245
+							maxWidth: 245,
 						}}
 						key={movie.id}
 						item="true"
@@ -117,10 +119,16 @@ const Browsing = () => {
 									>
 										{movie.title_long}
 									</Typography>
-									<Typography>IMDB rate: {movie.rating}</Typography>
+									<Typography>
+										IMDB rate: {movie.rating}
+									</Typography>
 								</CardContent>
 								<CardMedia
-									sx={{ borderRadius: 1, width: 245, height: 345 }}
+									sx={{
+										borderRadius: 1,
+										width: 245,
+										height: 345,
+									}}
 									component="img"
 									image={movie.medium_cover_image}
 									alt={movie.title_long}
