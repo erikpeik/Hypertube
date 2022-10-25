@@ -107,11 +107,7 @@ require("./routes/profile.js")(
 );
 require("./routes/browsing.js")(
 	app,
-	pool,
-	bcrypt,
-	cookieParser,
-	bodyParser,
-	jwt
+	axios
 );
 require("./routes/oauth.js")(app, pool, axios, helperFunctions, jwt);
 require("./routes/streaming.js")(app, fs, path, axios, pool)

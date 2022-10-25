@@ -1,5 +1,4 @@
-module.exports = function (app, pool, bcrypt, cookieParser, bodyParser, jwt) {
-	const axios = require("axios");
+module.exports = function (app, axios) {
 	const baseUrl = "/api/browsing";
 	const { TORRENT_API, OMDB_API_KEY } = process.env;
 
@@ -29,8 +28,15 @@ module.exports = function (app, pool, bcrypt, cookieParser, bodyParser, jwt) {
 		const limit = page === 1 ? 20 : 22;
 		axios
 			.get(`${TORRENT_API}?query_term=${query}&page=${page}&limit=${limit}`)
-			.then((response) => {
-				res.send(response.data);
+			.then(async (response) => {
+				let movies = response.data.data.movies;
+				// for (let i = 0; i < movies.length; i++) {
+				// 	await axios.get(movies[i].medium_cover_image).catch((error) => {
+				// 		console.log("image missing")
+				// 		movies.splice(i, 1);
+				// 	});
+				// }
+				res.send(movies);
 			})
 			.catch((error) => {
 				console.log(error);

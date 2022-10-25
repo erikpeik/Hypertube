@@ -143,6 +143,10 @@ const Browsing = () => {
 									component="img"
 									image={movie.medium_cover_image}
 									alt={movie.title_long}
+									onError={(e) => {
+										e.target.onerror = null;
+										e.target.src = require('../images/no_image.png');
+									}}
 								/>
 							</CardActionArea>
 						</Card>

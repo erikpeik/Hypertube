@@ -12,7 +12,7 @@ const getMovieQuery = async (values) => {
 	}
 	console.log("values", values);
 	const request = axios.post(`${baseUrl}/movie_query`, values);
-	return request.then((response) => response.data);
+	return request.then((response) => response);
 };
 
 const getIMDbData = async (imdb_id) => {

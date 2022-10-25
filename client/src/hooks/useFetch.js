@@ -13,7 +13,7 @@ const useFetch = (query, page) => {
 			setLoading(true)
 			setError(false)
 			const res = await axios.post(`${baseUrl}`, { query, page })
-			const newMovie = res.data.data.movies || []
+			const newMovie = res.data || []
 			if (page > 1) {
 				newMovie.splice(0, 2)
 			}
