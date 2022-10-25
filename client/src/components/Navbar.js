@@ -8,6 +8,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu'
 import { useSelector } from 'react-redux'
 import { ReactComponent as Logo } from '../images/logo_nav.svg'
+import UserMenu from "./navbar/UserMenu"
 
 const navbar_theme = createTheme({
 	palette: {
@@ -123,6 +124,7 @@ const NavBar = ( ) => {
 							})
 						}
 					</Box>
+					<UserMenu user={user} />
 				</Toolbar>
 			</Container>
 		</AppBar>
