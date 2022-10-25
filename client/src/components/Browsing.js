@@ -27,11 +27,11 @@ const Browsing = () => {
 	}
 
 	useEffect(() => {
-		browsingService.getMovieQuery({ query, page }).then((movies) => {
+		browsingService.getMovieQuery({ query: "", page }).then((movies) => {
 			console.log(movies.data);
 			setMovies(movies.data.movies || []);
 		});
-	}, [query, page]);
+	}, [page]);
 
 	const submitMovieQuery = (event) => {
 		event.preventDefault();
@@ -44,7 +44,7 @@ const Browsing = () => {
 	};
 
 	const navigateToMovie = (movie_id) => {
-		navigate(`/movie/${movie_id}`);
+		navigate(`/movie/${movie_id}`,{state: movies.filter(movie => movie.imdb_code === movie_id)});
 	};
 
 	if (!movies) return <Loader />;

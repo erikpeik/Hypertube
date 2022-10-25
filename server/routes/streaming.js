@@ -70,4 +70,14 @@ module.exports = (app, fs, path) => {
 		}
 	})
 
+	app.post('/api/streaming/torrent/:id', (request, response) => {
+		const id = request.params.id
+		const torrentInfo = request.body
+
+		console.log("Film ID: ", id)
+		console.log("Torrent info: ", torrentInfo)
+
+		response.status(200)
+	})
+
 };
