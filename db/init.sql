@@ -36,3 +36,13 @@ CREATE TABLE IF NOT EXISTS user_pictures (
 	profile_pic enum_yesno DEFAULT 'NO',
 	FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS downloads (
+	file_id SERIAL NOT NULL PRIMARY KEY,
+	path VARCHAR(1000) NOT NULL,
+	file_type VARCHAR(10) NOT NULL,
+	file_size BIGINT NOT NULL,
+	completed enum_yesno DEFAULT 'NO',
+	imdb_id TEXT NOT NULL,
+	download_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

@@ -11,6 +11,7 @@ import VideoPlayer from "./VideoPlayer";
 
 const MoviePage = () => {
 	const [imdbData, setImdbData] = useState(null)
+	const [playerStatus, setPlayerStatus] = useState('pending')
 	const params = useParams()
 
 	useEffect(() => {
@@ -25,12 +26,17 @@ const MoviePage = () => {
 	const movieData = imdbData.filter((data, i) => i !== 14)
 
 	const getTorrent = () => {
-		streamingService.getTorrent(params.id).then(response => console.log(response))
+		streamingService.getTorrent(params.id).then(response => {
+			console.log(response)
+			if (response === "Ready to play") {
+				setPlayerStatus('ready')
+			}
+		})
 	}
 
 	return (
 		<>
-			<VideoPlayer />
+			<VideoPlayer imdb_id={params.id} status={playerStatus}/>
 			<Button onClick={() => {getTorrent()}}>Get Movie</Button>
 			<Container maxWidth='md' sx={{ pt: 5, pb: 5 }}>
 				<Paper elevation={10} sx={{ padding: 3 }}>
