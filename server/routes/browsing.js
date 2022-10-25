@@ -26,8 +26,9 @@ module.exports = function (app, pool, bcrypt, cookieParser, bodyParser, jwt) {
 
 	app.post(`${baseUrl}/movie_query`, async (req, res) => {
 		const { query, page } = req.body;
+		const limit = page === 1 ? 20 : 22;
 		axios
-			.get(`${TORRENT_API}?query_term=${query}&page=${page}`)
+			.get(`${TORRENT_API}?query_term=${query}&page=${page}&limit=${limit}`)
 			.then((response) => {
 				res.send(response.data);
 			})

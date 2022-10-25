@@ -8,16 +8,15 @@ const useFetch = (query, page) => {
 	const [error, setError] = useState(false);
 	const [movies, setMovies] = useState([]);
 
-	if (query === "") {
-		query = '0';
-	}
-
 	const sendQuery = useCallback(async () => {
 		try {
 			setLoading(true)
 			setError(false)
 			const res = await axios.post(`${baseUrl}`, { query, page })
 			const newMovie = res.data.data.movies || []
+			if (page > 1) {
+				newMovie.splice(0, 2)
+			}
 			setMovies((prev) => [...prev, ...newMovie])
 			setLoading(false)
 		} catch (err) {
