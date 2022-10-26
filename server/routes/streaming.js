@@ -42,6 +42,10 @@ module.exports = (app, fs, path, axios, pool) => {
 
 		engine.on('idle', (files) => {
 			console.log("All files downloaded");
+
+			sql = `UPDATE downloads SET completed = 'YES' WHERE imdb_id = $1`
+			pool.query(sql, [imdb_id])
+
 			engine.destroy(() => {
 				console.log("Engine connection destroyed");
 			})
@@ -60,8 +64,7 @@ module.exports = (app, fs, path, axios, pool) => {
 		else
 			moviefile = `movies/pushthebutton.mp4`
 
-		const stats = fs.statSync(moviefile)
-		const fileSize = stats.size
+		const fileSize = fs.statSync(moviefile).size
 		const range = request.headers.range
 		if (range) {
 			console.log("Requested Movie Range: ", range)
@@ -71,7 +74,7 @@ module.exports = (app, fs, path, axios, pool) => {
 				? parseInt(parts[1], 10)
 				: fileSize - 1
 			const chunksize = (end - start) + 1
-			const file = fs.createReadStream(moviefile, { start, end })
+			const videoStream = fs.createReadStream(moviefile, { start, end })
 			const head = {
 				'Content-Range': `bytes ${start}-${end}/${fileSize}`,
 				'Accept-Ranges': 'bytes',
@@ -79,7 +82,7 @@ module.exports = (app, fs, path, axios, pool) => {
 				'Content-Type': 'video/mp4',
 			}
 			response.writeHead(206, head);
-			file.pipe(response);
+			videoStream.pipe(response);
 		} else {
 			console.log("No Movie Range Defined")
 			const head = {
@@ -87,8 +90,8 @@ module.exports = (app, fs, path, axios, pool) => {
 				'Content-Type': 'video/mp4',
 			}
 			response.writeHead(200, head)
-			const readStream = fs.createReadStream(moviefile)
-			readStream.pipe(response)
+			const videoStream = fs.createReadStream(moviefile)
+			videoStream.pipe(response)
 		}
 	})
 
@@ -126,8 +129,10 @@ module.exports = (app, fs, path, axios, pool) => {
 		let torrent_files = await downloadTorrent(magnet_link, imdb_id)
 		console.log("Torrent files: ", torrent_files)
 
-		// while (!fs.existsSync(torrent_files[0].path))
-			await new Promise(r => setTimeout(r, 5000));
+		console.log(fs.existsSync(`movies/${torrent_files[0].path}`))
+		while (fs.existsSync(`movies/${torrent_files[0].path}`) === false)
+			await new Promise(r => setTimeout(r, 1000));
+		console.log(fs.existsSync(`movies/${torrent_files[0].path}`))
 
 		fs.watch(`movies/${torrent_files[0].path}`, (curr, prev) => {
 			fs.stat(`movies/${torrent_files[0].path}`, (err, stats) => {
