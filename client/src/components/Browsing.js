@@ -19,9 +19,14 @@ import LoaderDots from "./LoaderDots";
 const Browsing = (props) => {
 	const [page, setPage] = useState(1);
 	const [query, setQuery] = useState("");
-	const [name, setName] = useState("");
+	const [name, setName] = useState([]);
 	const [submittedQuery, setSubmittedQuery] = useState("");
-	const { loading, error, movies } = useFetch(submittedQuery, page, setPage, name);
+	const { loading, error, movies } = useFetch(
+		submittedQuery,
+		page,
+		setPage,
+		name
+	);
 	const loader = useRef();
 	const navigate = useNavigate();
 
@@ -29,19 +34,29 @@ const Browsing = (props) => {
 		setQuery(event.target.value);
 	};
 
-
 	// console.log(strAscending)
-  const strAscending = [...movies].sort((a, b) => {
-    return a.title > b.title ? 1 : -1;
-  });
 
-  console.log(strAscending)
-
-  const handleSortClick = () => {
-    setName(strAscending)
-    console.log('asdasdasd')
+	const handleSortClick = () => {
+		// const strAscending = [...movies].sort((a, b) => {
+		//   return a.title > b.title ? 1 : -1;
+		// });
+		// console.log(strAscending)
+		let val = movies.sort(function (a, b) {
+			let dateA = a.title.toLowerCase();
+			let dateB = b.title.toLowerCase();
+			if (dateA < dateB) {
+				return -1;
+			} else if (dateA > dateB) {
+				return 1;
+			}
+			return 0;
+		});
+		setName(val);
 	};
 
+  // useEffect(() => {
+  //   setName(props.name)
+  // },[props.name])
 
 	const handleObserver = useCallback((entries) => {
 		const target = entries[0];
@@ -107,12 +122,10 @@ const Browsing = (props) => {
 					<Button type="submit" onClick={submitMovieQuery}>
 						Search
 					</Button>
-        </Paper>
-        </Box>
+				</Paper>
+			</Box>
 
-        <Button onClick={handleSortClick}>
-          Sort by Name
-        </Button>
+			<Button onClick={handleSortClick}>Sort by Name</Button>
 
 			<Box
 				container="true"
