@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { changeNotification } from "../../reducers/notificationReducer";
 import { changeSeverity } from "../../reducers/severityReducer";
 import Box from "@mui/material/Box";
-import FormControl from "@mui/material/FormControl";
 import { Button, Paper, TextField } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import commentService from "../../services/commentService";
@@ -19,14 +18,12 @@ const theme = createTheme({
 	},
 });
 
-const NewComment = () => {
+const NewComment = ({ movieId }) => {
 	const [newComment, setNewComment] = useState("");
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	const user = useSelector((state) => state.user);
-
-	console.log("here", user);
 	useEffect(() => {
 		if (user === undefined && user === "") {
 			navigate("/login");
@@ -35,7 +32,7 @@ const NewComment = () => {
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		commentService.addComment(newComment).then((result) => {
+		commentService.addComment(newComment, movieId).then((result) => {
 			if (result === true) {
 				dispatch(changeSeverity("success"));
 				dispatch(changeNotification("Comment added."));
@@ -48,8 +45,8 @@ const NewComment = () => {
 	return (
 		<>
 			<Box>
-				<Paper sx={{ display: "flex", flexWrap: "wrap" }}>
-					<FormControl fullWidth>
+				<form onSubmit={handleSubmit}>
+					<Paper sx={{ display: "flex", flexWrap: "wrap" }}>
 						<TextField
 							fullWidth
 							onChange={(e) => {
@@ -62,18 +59,17 @@ const NewComment = () => {
 							autoComplete="comment"
 							required
 						/>
-					</FormControl>
-				</Paper>
-				<Button
-					type="submit"
-					variant="contained"
-					theme={theme}
-					size="large"
-					sx={{ mt: 1 }}
-					onSubmit={handleSubmit}
-				>
-					Submit
-				</Button>
+					</Paper>
+					<Button
+						type="submit"
+						variant="contained"
+						theme={theme}
+						size="large"
+						sx={{ mt: 1 }}
+					>
+						Submit
+					</Button>
+				</form>
 			</Box>
 		</>
 	);

@@ -1,10 +1,18 @@
 import "../css/movie.css";
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from "react-router-dom";
 import {
-	Typography, Paper, Grid, Button, Box, Card, CardActionArea, CardContent, CardMedia
-} from '@mui/material'
-import { Container } from '@mui/system'
+	Typography,
+	Paper,
+	Grid,
+	Button,
+	Box,
+	Card,
+	CardActionArea,
+	CardContent,
+	CardMedia,
+} from "@mui/material";
+import { Container } from "@mui/system";
 import Loader from "./Loader";
 import browsingService from "../services/browsingService";
 import streamingService from "../services/streamingService";
@@ -15,25 +23,26 @@ const MoviePage = () => {
 	const [imdbData, setImdbData] = useState(null);
 	const [playerStatus, setPlayerStatus] = useState("pending");
 	const [show, setShow] = useState(false);
-	const [recommendedMovies, setRecommendedMovies] = useState(null)
+	const [recommendedMovies, setRecommendedMovies] = useState(null);
 	const params = useParams();
-	const navigate = useNavigate()
+	const navigate = useNavigate();
 
 	useEffect(() => {
-		browsingService.getIMDbData({ imdb_id: params.id }).then(movieData => {
-			setImdbData(Object.entries(movieData) || '')
+		browsingService
+			.getIMDbData({ imdb_id: params.id })
+			.then((movieData) => {
+				setImdbData(Object.entries(movieData) || "");
+			});
+		browsingService.getRecommendedMovies(params.id).then((response) => {
+			setRecommendedMovies(response.data.movies || []);
 		});
-		browsingService.getRecommendedMovies(params.id)
-			.then(response => {
-				setRecommendedMovies(response.data.movies || [])
-			})
-	}, [params])
+	}, [params]);
 
-	if (!imdbData || !recommendedMovies) return <Loader />
+	if (!imdbData || !recommendedMovies) return <Loader />;
 
 	const movieData = imdbData.filter((data, i) => {
-		return (i <= 12 || data[0] === 'imdbRating' || data[0] === 'imdbVotes')
-	})
+		return i <= 12 || data[0] === "imdbRating" || data[0] === "imdbVotes";
+	});
 
 	const getTorrent = () => {
 		streamingService.getTorrent(params.id).then((response) => {
@@ -41,12 +50,16 @@ const MoviePage = () => {
 			if (response === "Ready to play") {
 				setPlayerStatus("ready");
 			}
-		})
-	}
+		});
+	};
 
 	const navigateToMovie = (movie_id) => {
-		navigate(`/movie/${movie_id}`, { state: recommendedMovies.filter(movie => movie.imdb_code === movie_id) });
-		window.location.reload()
+		navigate(`/movie/${movie_id}`, {
+			state: recommendedMovies.filter(
+				(movie) => movie.imdb_code === movie_id
+			),
+		});
+		window.location.reload();
 	};
 
 	return (
@@ -69,7 +82,7 @@ const MoviePage = () => {
 			<h5 className="comment" onClick={() => setShow(!show)}>
 				Comments ▼{" "}
 			</h5>
-			{show && <Comments />}
+			{show && <Comments movieId={params.id} />}
 			<Container maxWidth="md" sx={{ pt: 5, pb: 5 }}>
 				<Paper elevation={10} sx={{ padding: 3 }}>
 					{movieData.map((value, i) => (
@@ -101,7 +114,9 @@ const MoviePage = () => {
 					))}
 				</Paper>
 				<Paper sx={{ mt: 4 }}>
-					<Typography sx={{ display: 'flex', justifyContent: 'center' }}>
+					<Typography
+						sx={{ display: "flex", justifyContent: "center" }}
+					>
 						If you liked this, you might also like:
 					</Typography>
 					<Box
@@ -115,7 +130,7 @@ const MoviePage = () => {
 							// flexWrap: "wrap",
 							width: "100%",
 							height: "100%",
-							overflowX: 'auto'
+							overflowX: "auto",
 						}}
 					>
 						{recommendedMovies.map((movie, value) => (
@@ -131,7 +146,10 @@ const MoviePage = () => {
 								xs={3}
 								onClick={() => navigateToMovie(movie.imdb_code)}
 							>
-								<Card className="container" sx={{ flexGrow: 1 }}>
+								<Card
+									className="container"
+									sx={{ flexGrow: 1 }}
+								>
 									<CardActionArea>
 										<CardContent
 											style={{
@@ -167,7 +185,7 @@ const MoviePage = () => {
 											alt={movie.title_long}
 											onError={(e) => {
 												e.target.onerror = null;
-												e.target.src = require('../images/no_image.png');
+												e.target.src = require("../images/no_image.png");
 											}}
 										/>
 									</CardActionArea>

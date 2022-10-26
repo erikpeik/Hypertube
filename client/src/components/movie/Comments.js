@@ -6,11 +6,11 @@ import NewComment from "./NewComment";
 const imgLink =
 	"https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260";
 
-const Comments = () => {
+const Comments = ({movieId}) => {
 	return (
 		<>
 			<Container maxWidth="md" sx={{ pt: 5, pb: 5 }}>
-				<NewComment/>
+				<NewComment movieId={movieId} />
 				<Paper style={{ padding: "40px 20px", marginTop: 100 }}>
 					<Grid container wrap="nowrap" spacing={2}>
 						<Grid item>
