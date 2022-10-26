@@ -17,11 +17,12 @@ import { useNavigate } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import LoaderDots from "./LoaderDots";
 
-const Browsing = () => {
+const Browsing = (props) => {
 	const [page, setPage] = useState(1);
 	const [query, setQuery] = useState("");
+	const [name, setName] = useState("");
 	const [submittedQuery, setSubmittedQuery] = useState("");
-	const { loading, error, movies } = useFetch(submittedQuery, page, setPage);
+	const { loading, error, movies } = useFetch(submittedQuery, page, setPage, name);
 	const loader = useRef();
 	const navigate = useNavigate();
 
@@ -29,37 +30,63 @@ const Browsing = () => {
 		setQuery(event.target.value);
 	};
 
+
+	// console.log(strAscending)
+  const strAscending = [...movies].sort((a, b) => {
+    return a.title > b.title ? 1 : -1;
+  });
+
+  console.log(strAscending)
+
+  const handleSortClick = () => {
+    setName(strAscending)
+    console.log('asdasdasd')
+	};
+
+
 	const handleObserver = useCallback((entries) => {
 		const target = entries[0];
 		if (target.isIntersecting) {
 			setPage((prev) => prev + 1);
 		}
-	}, [])
+	}, []);
 
 	useEffect(() => {
 		const options = {
 			root: null,
-			rootMargin: '20px',
-			threshold: 0
-		}
+			rootMargin: "20px",
+			threshold: 0,
+		};
 		const observer = new IntersectionObserver(handleObserver, options);
 		if (loader.current) observer.observe(loader.current);
-	}, [handleObserver])
+	}, [handleObserver]);
 
 	const submitMovieQuery = (event) => {
 		event.preventDefault();
 		const value = query.trim();
-		console.log('value', value);
+		console.log("value", value);
 		setSubmittedQuery(value);
 	};
 
 	const navigateToMovie = (movie_id) => {
-		navigate(`/movie/${movie_id}`, { state: movies.filter(movie => movie.imdb_code === movie_id) });
+		navigate(`/movie/${movie_id}`, {
+			state: movies.filter((movie) => movie.imdb_code === movie_id),
+		});
 	};
 
 	return (
-		<Container sx={{ maxWidth: 1080, display: 'flex', flexDirection: 'column' }}>
-			<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', mt: 1 }}>
+		<Container
+			sx={{ maxWidth: 1080, display: "flex", flexDirection: "column" }}
+		>
+			<Box
+				sx={{
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+					flexDirection: "column",
+					mt: 1,
+				}}
+			>
 				<Paper
 					style={{
 						direction: "column",
@@ -67,7 +94,7 @@ const Browsing = () => {
 						justifyContent: "center",
 						display: "flex",
 						width: "100%",
-						maxWidth: '1030px',
+						maxWidth: "1030px",
 						height: "100%",
 						margin: 10,
 					}}
@@ -81,8 +108,13 @@ const Browsing = () => {
 					<Button type="submit" onClick={submitMovieQuery}>
 						Search
 					</Button>
-				</Paper>
-			</Box>
+        </Paper>
+        </Box>
+
+        <Button onClick={handleSortClick}>
+          Sort by Name
+        </Button>
+
 			<Box
 				container="true"
 				spacing={3}
@@ -145,7 +177,7 @@ const Browsing = () => {
 									alt={movie.title_long}
 									onError={(e) => {
 										e.target.onerror = null;
-										e.target.src = require('../images/no_image.png');
+										e.target.src = require("../images/no_image.png");
 									}}
 								/>
 							</CardActionArea>
