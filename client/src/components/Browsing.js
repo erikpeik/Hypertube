@@ -18,10 +18,10 @@ import LoaderDots from "./LoaderDots";
 
 const Browsing = (props) => {
 	const [page, setPage] = useState(1);
-  const [query, setQuery] = useState("");
+	const [query, setQuery] = useState("");
 
-  const [name, setName] = useState([]);
-  const [rate, setRate] = useState([]);
+	const [name, setName] = useState([]);
+	const [rate, setRate] = useState([]);
 	const [year, setYear] = useState([]);
 	const [seed, setSeed] = useState([]);
 
@@ -30,10 +30,10 @@ const Browsing = (props) => {
 		submittedQuery,
 		page,
 		setPage,
-    name,
-    rate,
-    year,
-    seed
+		name,
+		rate,
+		year,
+		seed
 	);
 	const loader = useRef();
 	const navigate = useNavigate();
@@ -63,32 +63,32 @@ const Browsing = (props) => {
 	};
 
 	const handleSortClickByRate = () => {
-			let val = movies.sort(function (a, b) {
-				return b.rating - a.rating;
-			});
-			setRate(val);
-  };
+		let val = movies.sort(function (a, b) {
+			return b.rating - a.rating;
+		});
+		setRate(val);
+	};
 
-  const handleSortClickByYear = () => {
-    let val = movies.sort(function (a, b) {
-      return b.year - a.year;
-    });
-    setYear(val);
-  }
+	const handleSortClickByYear = () => {
+		let val = movies.sort(function (a, b) {
+			return b.year - a.year;
+		});
+		setYear(val);
+	};
 
-  const handleSortClickBySeed = () => {
-			let val = movies.sort(function (a, b) {
-				return b.torrents[0].seeds - a.torrents[0].seeds;
-			});
-			setSeed(val);
-  }
+	const handleSortClickBySeed = () => {
+		let val = movies.sort(function (a, b) {
+			return b.torrents[0].seeds - a.torrents[0].seeds;
+		});
+		setSeed(val);
+	};
 
 	useEffect(() => {
-    setName(props.name);
-    setRate(props.rate);
-    setYear(props.year);
-    setSeed(props.seed);
-	}, [props.name, props.rate, props.year, props.seed]);
+		setName(null);
+		setRate(null);
+		setYear(null);
+		setSeed(null);
+	}, [name, rate, year, seed]);
 
 	const handleObserver = useCallback((entries) => {
 		const target = entries[0];
