@@ -1,3 +1,5 @@
+const { response } = require("express");
+
 module.exports = function (app, pool) {
 	app.post("/api/newcomment/:id", async (request, response) => {
 		const imdb_id = request.params.id;
@@ -19,5 +21,20 @@ module.exports = function (app, pool) {
 				}
 			} else response.send("");
 		} else response.send("");
+	});
+
+	app.get("api/getcomments/:token", async (request, response) => {
+		const imdb_id = request.params.token;
+		console.log("HERE");
+		if (imdb_id !== "") {
+			try {
+				sql = "SELECT * FROM comments WHERE imdb_id = $1";
+				const { comments } = await pool.query(sql, [imdb_id]);
+				console.log("HERE", comments);
+				response.send(true);
+			} catch (error) {
+				console.log("ERROR: ", error);
+			}
+		} else response.send(false);
 	});
 };
