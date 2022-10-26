@@ -30,12 +30,16 @@ module.exports = function (app, axios) {
 			.get(`${TORRENT_API}?query_term=${query}&page=${page}&limit=${limit}`)
 			.then(async (response) => {
 				let movies = response.data.data.movies;
-				// for (let i = 0; i < movies.length; i++) {
-				// 	await axios.get(movies[i].medium_cover_image).catch((error) => {
-				// 		console.log("image missing")
-				// 		movies.splice(i, 1);
-				// 	});
-				// }
+				await Promise.all(
+					movies.map(async (movie) => {
+						await axios
+							.get(movie.medium_cover_image)
+							.catch((error) => {
+								console.log("image missing")
+								movie.medium_cover_image = '../images/no_image.png';
+							});
+					})
+				)
 				res.send(movies);
 			})
 			.catch((error) => {
