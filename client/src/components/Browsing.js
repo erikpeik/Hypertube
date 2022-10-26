@@ -18,14 +18,22 @@ import LoaderDots from "./LoaderDots";
 
 const Browsing = (props) => {
 	const [page, setPage] = useState(1);
-	const [query, setQuery] = useState("");
-	const [name, setName] = useState([]);
+  const [query, setQuery] = useState("");
+
+  const [name, setName] = useState([]);
+  const [rate, setRate] = useState([]);
+	const [year, setYear] = useState([]);
+	const [seed, setSeed] = useState([]);
+
 	const [submittedQuery, setSubmittedQuery] = useState("");
 	const { loading, error, movies } = useFetch(
 		submittedQuery,
 		page,
 		setPage,
-		name
+    name,
+    rate,
+    year,
+    seed
 	);
 	const loader = useRef();
 	const navigate = useNavigate();
@@ -34,7 +42,7 @@ const Browsing = (props) => {
 		setQuery(event.target.value);
 	};
 
-	// console.log(movies);
+	console.log(movies);
 
 	const handleSortClickByName = () => {
 		// const strAscending = [...movies].sort((a, b) => {
@@ -54,26 +62,33 @@ const Browsing = (props) => {
 		setName(val);
 	};
 
-  const handleSortClickByRate = (event) => {
-    event.preventDefault();
-    console.log(event.target.id)
-    if (event.target.id === "rate") {
-      let val = movies.sort(function (a, b) {
-        return b.rating - a.rating;
-      });
-      setName(val);
-    } else setName(null)
-    if (event.target.id === 'date') {
-      let val = movies.sort(function (a, b) {
-        return b.year - a.year;
-      });
-      setName(val);
-    } else setName(null)
-	};
+	const handleSortClickByRate = () => {
+			let val = movies.sort(function (a, b) {
+				return b.rating - a.rating;
+			});
+			setRate(val);
+  };
+
+  const handleSortClickByYear = () => {
+    let val = movies.sort(function (a, b) {
+      return b.year - a.year;
+    });
+    setYear(val);
+  }
+
+  const handleSortClickBySeed = () => {
+			let val = movies.sort(function (a, b) {
+				return b.torrents[0].seeds - a.torrents[0].seeds;
+			});
+			setSeed(val);
+  }
 
 	useEffect(() => {
-    setName(props.name)
-	},[props.name])
+    setName(props.name);
+    setRate(props.rate);
+    setYear(props.year);
+    setSeed(props.seed);
+	}, [props.name, props.rate, props.year, props.seed]);
 
 	const handleObserver = useCallback((entries) => {
 		const target = entries[0];
@@ -143,8 +158,15 @@ const Browsing = (props) => {
 			</Box>
 
 			<Button onClick={handleSortClickByName}>Sort by Name</Button>
-			<Button id="rate" onClick={handleSortClickByRate}>Sort by Rate</Button>
-			<Button id="date" onClick={handleSortClickByRate}>Sort by Release Year</Button>
+			<Button id="rate" onClick={handleSortClickByRate}>
+				Sort by Rate
+			</Button>
+			<Button id="date" onClick={handleSortClickByYear}>
+				Sort by Release Year
+			</Button>
+			<Button id="seed" onClick={handleSortClickBySeed}>
+				Sort by Seed
+			</Button>
 
 			<Box
 				container="true"
