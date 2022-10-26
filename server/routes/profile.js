@@ -113,7 +113,6 @@ module.exports = (app, pool, bcrypt, upload, fs, path) => {
 						picture_data: null,
 					};
 				}
-
 				response.send(profileData);
 			} catch (error) {
 				response.send(false);

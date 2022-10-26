@@ -1,12 +1,21 @@
 import "../../css/movie.css";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Divider, Avatar, Grid, Paper } from "@mui/material";
 import { Container } from "@mui/system";
 import NewComment from "./NewComment";
+import commentService from "../../services/commentService";
 const imgLink =
 	"https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260";
 
-const Comments = ({movieId}) => {
+const Comments = ({ movieId }) => {
+	const [comments, setComments] = useState([]);
+
+	useEffect(() => {
+		commentService.getComments(movieId).then((response) => {
+			setComments(response.data.comments || "");
+		});
+	}, [movieId]);
+	console.log(comments)
 	return (
 		<>
 			<Container maxWidth="md" sx={{ pt: 5, pb: 5 }}>
