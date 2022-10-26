@@ -16,7 +16,6 @@ const MoviePage = () => {
 
 	useEffect(() => {
 		browsingService.getIMDbData({ imdb_id: params.id }).then(movieData => {
-			console.log(movieData)
 			setImdbData(Object.entries(movieData) || '')
 		});
 	}, [params])
@@ -36,7 +35,7 @@ const MoviePage = () => {
 
 	return (
 		<>
-			<VideoPlayer imdb_id={params.id} status={playerStatus}/>
+			<VideoPlayer imdb_id={params.id} movieTitle={movieData[0][1]} status={playerStatus}/>
 			<Button onClick={() => {getTorrent()}}>Get Movie</Button>
 			<Container maxWidth='md' sx={{ pt: 5, pb: 5 }}>
 				<Paper elevation={10} sx={{ padding: 3 }}>

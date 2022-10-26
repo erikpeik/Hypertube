@@ -6,7 +6,7 @@ import screenfull from "screenfull";
 import Container from "@mui/material/Container";
 import ControlIcons from "./control/ControlIcons";
 
-const VideoPlayer = ({ imdb_id, status }) => {
+const VideoPlayer = ({ imdb_id, status, movieTitle }) => {
 	const playerRef = useRef(null);
 	const playerDivRef = useRef(null);
 	const [playerState, setPlayerState] = useState({
@@ -133,6 +133,7 @@ const VideoPlayer = ({ imdb_id, status }) => {
 						playbackRate={playerbackRate}
 					/>
 					<ControlIcons
+						movieTitle={movieTitle}
 						playandpause={handlePlayAndPause}
 						playing={playing}
 						rewind={handleRewind}

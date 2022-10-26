@@ -36,6 +36,7 @@ const ControlIcons = ({
 	playerbackRate,
 	playRate,
 	fullScreenMode,
+	movieTitle
 }) => {
 	const [show, setShow] = useState(false);
 	const PrettoSlider = styled(Slider)({
@@ -162,7 +163,7 @@ const ControlIcons = ({
 					<>
 						<Grid item>
 							<Typography variant="h5" style={{ color: "white" }}>
-								Push the Button
+								{movieTitle}
 							</Typography>
 						</Grid>
 
