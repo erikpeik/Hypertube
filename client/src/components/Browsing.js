@@ -34,9 +34,9 @@ const Browsing = (props) => {
 		setQuery(event.target.value);
 	};
 
-	// console.log(strAscending)
+	// console.log(movies);
 
-	const handleSortClick = () => {
+	const handleSortClickByName = () => {
 		// const strAscending = [...movies].sort((a, b) => {
 		//   return a.title > b.title ? 1 : -1;
 		// });
@@ -54,9 +54,26 @@ const Browsing = (props) => {
 		setName(val);
 	};
 
-  // useEffect(() => {
-  //   setName(props.name)
-  // },[props.name])
+  const handleSortClickByRate = (event) => {
+    event.preventDefault();
+    console.log(event.target.id)
+    if (event.target.id === "rate") {
+      let val = movies.sort(function (a, b) {
+        return b.rating - a.rating;
+      });
+      setName(val);
+    } else setName(null)
+    if (event.target.id === 'date') {
+      let val = movies.sort(function (a, b) {
+        return b.year - a.year;
+      });
+      setName(val);
+    } else setName(null)
+	};
+
+	useEffect(() => {
+    setName(props.name)
+	},[props.name])
 
 	const handleObserver = useCallback((entries) => {
 		const target = entries[0];
@@ -125,7 +142,9 @@ const Browsing = (props) => {
 				</Paper>
 			</Box>
 
-			<Button onClick={handleSortClick}>Sort by Name</Button>
+			<Button onClick={handleSortClickByName}>Sort by Name</Button>
+			<Button id="rate" onClick={handleSortClickByRate}>Sort by Rate</Button>
+			<Button id="date" onClick={handleSortClickByRate}>Sort by Release Year</Button>
 
 			<Box
 				container="true"
