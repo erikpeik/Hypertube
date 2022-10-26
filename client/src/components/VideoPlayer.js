@@ -1,6 +1,5 @@
 import "../css/VideoPlayer.css";
-import * as React from "react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import ReactPlayer from "react-player";
 import screenfull from "screenfull";
 import Container from "@mui/material/Container";

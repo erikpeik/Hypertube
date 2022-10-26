@@ -50,6 +50,21 @@ module.exports = function (app, axios) {
 			})
 	});
 
+	app.get(`${baseUrl}/recommended_movies/:id`, async (req, res) => {
+		const imdb_id = req.params.id
+		const movie_details = await axios.get(`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`)
+		const movie_id = movie_details.data.data.movie.id
+		axios
+			.get(`https://yts.mx/api/v2/movie_suggestions.json?movie_id=${movie_id}`)
+			.then((response) => {
+				res.send(response.data);
+			})
+			.catch((error) => {
+				console.log(error);
+				res.status(500).send({ error: "Something went wrong" });
+			});
+	});
+
 	app.post(`${baseUrl}/check_image`, async (req, res) => {
 		const url = req.body.url;
 		try {

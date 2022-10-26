@@ -20,11 +20,16 @@ const getIMDbData = async (imdb_id) => {
 	return request.then((response) => response.data);
 };
 
+const getRecommendedMovies = async (movie_id) => {
+	const request = axios.get(`${baseUrl}/recommended_movies/${movie_id}`);
+	return request.then((response) => response.data);
+}
+
 const checkImage = async (values) => {
 	const request = axios.post(`${baseUrl}/check_image`, values );
 	return request.then((response) => response.data);
 }
 
-const browsingService = { getMovies, getIMDbData, getMovieQuery, checkImage };
+const browsingService = { getMovies, getIMDbData, getMovieQuery, getRecommendedMovies, checkImage };
 
 export default browsingService;
