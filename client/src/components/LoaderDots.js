@@ -11,7 +11,7 @@ const loadingCircle = {
 	display: 'block',
 	width: '1em',
 	height: '1em',
-	backgroundColor: '#3A36DB',
+	backgroundColor: '#6e6af7',
 	borderRadius: '0.5rem'
 }
 
@@ -38,39 +38,37 @@ const loadingCircleVariants = {
 };
 const loadingCircleTransition = {
 	duration: 0.4,
-	yoyo: Infinity,
+	repeat: Infinity,
+	repeatType: "reverse",
 	ease: 'easeInOut'
 }
 
 const LoaderDots = () => {
 	return (
-		<>
-			<div className="fixed  w-full min-h-screen z-50 bg-black opacity-30" />
-			<div className="flex fixed w-full justify-center items-center h-screen">
-				<motion.div
-					style={loadingContainer}
-					variants={loadingContainerVariants}
-					initial="start"
-					animate="end"
-				>
-					<motion.span
-						style={loadingCircle}
-						variants={loadingCircleVariants}
-						transition={loadingCircleTransition}
-					></motion.span>
-					<motion.span
-						style={loadingCircle}
-						variants={loadingCircleVariants}
-						transition={loadingCircleTransition}
-					></motion.span>
-					<motion.span
-						style={loadingCircle}
-						variants={loadingCircleVariants}
-						transition={loadingCircleTransition}
-					></motion.span>
-				</motion.div>
-			</div>
-		</>
+		<div style={{ display: 'flex', justifyContent: 'center' }}>
+			<motion.div
+				style={loadingContainer}
+				variants={loadingContainerVariants}
+				initial="start"
+				animate="end"
+			>
+				<motion.span
+					style={loadingCircle}
+					variants={loadingCircleVariants}
+					transition={loadingCircleTransition}
+				></motion.span>
+				<motion.span
+					style={loadingCircle}
+					variants={loadingCircleVariants}
+					transition={loadingCircleTransition}
+				></motion.span>
+				<motion.span
+					style={loadingCircle}
+					variants={loadingCircleVariants}
+					transition={loadingCircleTransition}
+				></motion.span>
+			</motion.div>
+		</div>
 	)
 }
 
