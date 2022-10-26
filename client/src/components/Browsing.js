@@ -1,4 +1,3 @@
-import browsingService from "../services/browsingService";
 import { useState, useEffect, useCallback, useRef } from "react";
 import {
 	Box,

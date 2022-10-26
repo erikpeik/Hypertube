@@ -1,6 +1,6 @@
 import backgroundImg from '../images/image_background.png'
 import { Container, Typography, Button, Grid, ImageList, ImageListItem } from '@mui/material'
-import { ReactComponent as Logo } from '../images/logo_front.svg'
+import { ReactComponent as Logo } from '../images/logo.svg'
 import { Link } from 'react-router-dom'
 import bittorrent from '../images/bittorrent-animation.gif'
 import AspectRatio from '@mui/joy/AspectRatio';
@@ -26,13 +26,13 @@ const Frontpage = () => {
 				}}
 			>
 				<Logo
+					fill='#FFFFFF'
 					style={{
 						width: '300px',
 						maxWidth: "80vw",
 						margin: 'auto',
 						marginTop: '20px'
 					}}
-
 				/>
 				<Typography
 					align="center"
