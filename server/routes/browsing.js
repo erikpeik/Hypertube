@@ -35,7 +35,6 @@ module.exports = function (app, axios) {
 						await axios
 							.get(movie.medium_cover_image)
 							.catch((error) => {
-								console.log("image missing")
 								movie.medium_cover_image = '../images/no_image.png';
 							});
 					})

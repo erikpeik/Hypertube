@@ -15,6 +15,7 @@ import {
 import "../css/style.css";
 import { useNavigate } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
+import LoaderDots from "./LoaderDots";
 
 const Browsing = () => {
 	const [page, setPage] = useState(1);
@@ -153,7 +154,7 @@ const Browsing = () => {
 					</Box>
 				))}
 			</Box>
-			{loading && <p style={{ color: "white" }}>Loading...</p>}
+			{loading && <LoaderDots />}
 			{error && <p>Error!</p>}
 			<div ref={loader} />
 		</Container>
