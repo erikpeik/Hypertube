@@ -20,7 +20,8 @@ import LoaderDots from "./LoaderDots";
 const Browsing = () => {
 	const [page, setPage] = useState(1);
 	const [query, setQuery] = useState("");
-	const { loading, error, movies } = useFetch(query, page);
+	const [submittedQuery, setSubmittedQuery] = useState("");
+	const { loading, error, movies } = useFetch(submittedQuery, page, setPage);
 	const loader = useRef();
 	const navigate = useNavigate();
 
@@ -47,43 +48,41 @@ const Browsing = () => {
 
 	const submitMovieQuery = (event) => {
 		event.preventDefault();
-		// const value = query.trim();
-
-		// browsingService.getMovieQuery({ query: value, page }).then((movies) => {
-		// 	console.log(movies.data.movies);
-		// 	setMovies(movies.data.movies || []);
-		// });
+		const value = query.trim();
+		console.log('value', value);
+		setSubmittedQuery(value);
 	};
 
 	const navigateToMovie = (movie_id) => {
 		navigate(`/movie/${movie_id}`, { state: movies.filter(movie => movie.imdb_code === movie_id) });
 	};
 
-	// if (!movies) return <Loader />;
-
 	return (
-		<Container sx={{ maxWidth: 1080, justifyContent: "center" }}>
-			<Paper
-				style={{
-					direction: "column",
-					alignItems: "center",
-					justifyContent: "center",
-					display: "flex",
-					width: 400,
-					height: "100%",
-					margin: 10,
-				}}
-			>
-				<Input
-					type="text"
-					placeholder="Search"
-					value={query}
-					onChange={handleQueryChange}
-				/>
-				<Button type="submit" onClick={submitMovieQuery}>
-					Search
-				</Button>
-			</Paper>
+		<Container sx={{ maxWidth: 1080, display: 'flex', flexDirection: 'column' }}>
+			<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', mt: 1 }}>
+				<Paper
+					style={{
+						direction: "column",
+						alignItems: "center",
+						justifyContent: "center",
+						display: "flex",
+						width: "100%",
+						maxWidth: '1030px',
+						height: "100%",
+						margin: 10,
+					}}
+				>
+					<Input
+						type="text"
+						placeholder="Search"
+						value={query}
+						onChange={handleQueryChange}
+					/>
+					<Button type="submit" onClick={submitMovieQuery}>
+						Search
+					</Button>
+				</Paper>
+			</Box>
 			<Box
 				container="true"
 				spacing={3}

@@ -26,19 +26,22 @@ module.exports = function (app, axios) {
 	app.post(`${baseUrl}/movie_query`, async (req, res) => {
 		const { query, page } = req.body;
 		const limit = page === 1 ? 20 : 22;
+		// console.log(`${TORRENT_API}?query_term=${query}&page=${page}&limit=${limit}`)
 		axios
 			.get(`${TORRENT_API}?query_term=${query}&page=${page}&limit=${limit}`)
 			.then(async (response) => {
 				let movies = response.data.data.movies;
-				await Promise.all(
-					movies.map(async (movie) => {
-						await axios
-							.get(movie.medium_cover_image)
-							.catch((error) => {
-								movie.medium_cover_image = '../images/no_image.png';
-							});
-					})
-				)
+				if (movies) {
+					await Promise.all(
+						movies.map(async (movie) => {
+							await axios
+								.get(movie.medium_cover_image)
+								.catch((error) => {
+									movie.medium_cover_image = '../images/no_image.png';
+								});
+						})
+					)
+				}
 				res.send(movies);
 			})
 			.catch((error) => {
