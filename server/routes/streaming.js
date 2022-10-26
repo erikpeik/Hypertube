@@ -129,10 +129,8 @@ module.exports = (app, fs, path, axios, pool) => {
 		let torrent_files = await downloadTorrent(magnet_link, imdb_id)
 		console.log("Torrent files: ", torrent_files)
 
-		console.log(fs.existsSync(`movies/${torrent_files[0].path}`))
 		while (fs.existsSync(`movies/${torrent_files[0].path}`) === false)
 			await new Promise(r => setTimeout(r, 1000));
-		console.log(fs.existsSync(`movies/${torrent_files[0].path}`))
 
 		fs.watch(`movies/${torrent_files[0].path}`, (curr, prev) => {
 			fs.stat(`movies/${torrent_files[0].path}`, (err, stats) => {

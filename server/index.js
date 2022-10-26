@@ -9,19 +9,12 @@ const corsOptions = {
 	credentials: true,
 	optionSuccessStatus: 200,
 };
-
 app.use(cors(corsOptions));
+
 app.use(express.json({ limit: "50mb" })); // needed to attach JSON data to POST body property
 const nodemailer = require("nodemailer"); // middleware to send e-mails
 const bcrypt = require("bcrypt"); // For password hashing and comparing
-const session = require("express-session"); // for session management
-app.use(
-	session({
-		secret: "hypertubec2r2p6",
-		saveUninitialized: true,
-		resave: true,
-	})
-);
+
 const http = require("http").Server(app);
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
@@ -80,35 +73,10 @@ const upload = multer({ storage: storage });
 
 const helperFunctions = require("./utils/helperFunctions.js");
 require("./routes/signup.js")(app, pool, bcrypt, transporter, helperFunctions);
-require("./routes/login_logout.js")(
-	app,
-	pool,
-	bcrypt,
-	cookieParser,
-	bodyParser,
-	jwt
-);
-require("./routes/resetpassword.js")(
-	app,
-	pool,
-	bcrypt,
-	transporter,
-	helperFunctions
-);
-require("./routes/profile.js")(
-	app,
-	pool,
-	bcrypt,
-	cookieParser,
-	bodyParser,
-	upload,
-	fs,
-	path
-);
-require("./routes/browsing.js")(
-	app,
-	axios
-);
+require("./routes/login_logout.js")(app, pool, bcrypt, jwt);
+require("./routes/resetpassword.js")(app, pool, bcrypt, transporter, helperFunctions);
+require("./routes/profile.js")(app, pool, bcrypt, upload, fs,path);
+require("./routes/browsing.js")(app, axios);
 require("./routes/oauth.js")(app, pool, axios, helperFunctions, jwt);
 require("./routes/streaming.js")(app, fs, path, axios, pool)
 

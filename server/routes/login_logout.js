@@ -1,4 +1,4 @@
-module.exports = function (app, pool, bcrypt, cookieParser, bodyParser, jwt) {
+module.exports = function (app, pool, bcrypt, jwt) {
 	app.post("/api/login", async (request, response) => {
 		const { username, password } = request.body;
 

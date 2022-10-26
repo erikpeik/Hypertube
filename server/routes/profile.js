@@ -1,13 +1,4 @@
-module.exports = (
-	app,
-	pool,
-	bcrypt,
-	cookieParser,
-	bodyParser,
-	upload,
-	fs,
-	path
-) => {
+module.exports = (app, pool, bcrypt, upload, fs, path) => {
 	app.post("/api/profile/editsettings", async (request, response) => {
 		const cookie = request.cookies.refreshToken;
 		const { username, firstname, lastname, email } = request.body;
