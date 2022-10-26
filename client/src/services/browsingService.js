@@ -20,8 +20,8 @@ const getIMDbData = async (imdb_id) => {
 	return request.then((response) => response.data);
 };
 
-const getRecommendedMovies = async (movie_id) => {
-	const request = axios.get(`${baseUrl}/recommended_movies/${movie_id}`);
+const getRecommendedMovies = async (imdb_id) => {
+	const request = axios.get(`${baseUrl}/recommended_movies/${imdb_id}`);
 	return request.then((response) => response.data);
 }
 
