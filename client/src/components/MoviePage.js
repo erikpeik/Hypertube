@@ -28,7 +28,9 @@ const MoviePage = () => {
 
 	if (!imdbData || !recommendedMovies) return <Loader />
 
-	const movieData = imdbData.filter((data, i) => i !== 14)
+	const movieData = imdbData.filter((data, i) => {
+		return (i <= 12 || data[0] === 'imdbRating' || data[0] === 'imdbVotes')
+	})
 
 	const getTorrent = () => {
 		streamingService.getTorrent(params.id).then(response => {
