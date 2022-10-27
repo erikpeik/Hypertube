@@ -4,6 +4,7 @@ import { Divider, Avatar, Grid, Paper } from "@mui/material";
 import { Container } from "@mui/system";
 import NewComment from "./NewComment";
 import commentService from "../../services/commentService";
+import { format } from "timeago.js";
 const imgLink =
 	"https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260";
 
@@ -15,13 +16,14 @@ const Comments = ({ movieId }) => {
 			setComments(response || "");
 		});
 	}, [movieId]);
-	console.log(comments);
+
 	return (
 		<>
 			<Container maxWidth="md" sx={{ pt: 5, pb: 5 }}>
 				<NewComment movieId={movieId} />
-				<Paper style={{ padding: "40px 20px", marginTop: 100 }}>
-					{comments.length > 0 &&
+				<Paper style={{ padding: "20px 20px", marginTop: 10 }}>
+					{comments.length > 0 ? (
+						comments.sort((a, b) => b.id - a.id) &&
 						comments.map((c) => {
 							return (
 								<Grid
@@ -59,7 +61,7 @@ const Comments = ({ movieId }) => {
 												color: "gray",
 											}}
 										>
-											posted 1 minute ago
+											{format(c.created_at)}
 										</p>
 										<Divider
 											variant="fullWidth"
@@ -68,7 +70,17 @@ const Comments = ({ movieId }) => {
 									</Grid>
 								</Grid>
 							);
-						})}
+						})
+					) : (
+						<p
+							style={{
+								textAlign: "left",
+								color: "gray",
+							}}
+						>
+							No comments. 😔
+						</p>
+					)}
 				</Paper>
 			</Container>
 		</>

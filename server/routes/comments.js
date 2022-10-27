@@ -12,6 +12,10 @@ module.exports = function (app, pool) {
 				sql = "SELECT * FROM user_pictures WHERE user_id = $1";
 				const { rows } = await pool.query(sql, [user_id]);
 				const picture_path = rows[0]["picture_data"];
+				if (!picture_path) {
+					picture_path =
+						"https://www.kindpng.com/picc/m/52-526237_avatar-profile-hd-png-download.png";
+				}
 				try {
 					sql =
 						"INSERT INTO comments (user_id, username, user_pic, imdb_id, comment) VALUES ($1, $2, $3, $4, $5) RETURNING *";

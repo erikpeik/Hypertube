@@ -30,8 +30,7 @@ const NewComment = ({ movieId }) => {
 		}
 	}, [user, navigate]);
 
-	const handleSubmit = async (event) => {
-		event.preventDefault();
+	const handleSubmit = async () => {
 		commentService.addComment(newComment, movieId).then((result) => {
 			if (result === true) {
 				dispatch(changeSeverity("success"));
@@ -46,7 +45,7 @@ const NewComment = ({ movieId }) => {
 		<>
 			<Box>
 				<form onSubmit={handleSubmit}>
-					<Paper sx={{ display: "flex", flexWrap: "wrap" }}>
+					<Paper style={{ padding: "20px 20px", marginTop: 10 }}>
 						<TextField
 							fullWidth
 							onChange={(e) => {

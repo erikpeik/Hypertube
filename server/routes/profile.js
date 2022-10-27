@@ -122,58 +122,63 @@ module.exports = (app, pool, bcrypt, upload, fs, path) => {
 		}
 	});
 
-	app.post("/api/profile/setprofilepic", upload.single("file"), async (request, response) => {
-		const cookie = request.cookies.refreshToken;
-		const image =
-			"http://localhost:3001/images/" + request.file.filename;
+	app.post(
+		"/api/profile/setprofilepic",
+		upload.single("file"),
+		async (request, response) => {
+			const cookie = request.cookies.refreshToken;
+			const image =
+				"http://localhost:3001/images/" + request.file.filename;
 
-		if (cookie) {
-			if (request.file.size > 5242880)
-				return response.send(
-					"The maximum size for uploaded images is 5 megabytes."
-				);
-			if (
-				request.file.mimetype !== "image/png" &&
-				request.file.mimetype !== "image/jpg" &&
-				request.file.mimetype !== "image/jpeg"
-			)
-				return response.send("Not right file type!");
-			try {
-				let sql = `SELECT * FROM users WHERE token = $1`;
-				let user = await pool.query(sql, [cookie]);
-				sql = `SELECT * FROM user_pictures WHERE user_id = $1 AND profile_pic = 'YES'`;
-				let { rows } = await pool.query(sql, [user.rows[0]["id"]]);
+			if (cookie) {
+				if (request.file.size > 5242880)
+					return response.send(
+						"The maximum size for uploaded images is 5 megabytes."
+					);
+				if (
+					request.file.mimetype !== "image/png" &&
+					request.file.mimetype !== "image/jpg" &&
+					request.file.mimetype !== "image/jpeg"
+				)
+					return response.send("Not right file type!");
+				try {
+					let sql = `SELECT * FROM users WHERE token = $1`;
+					let user = await pool.query(sql, [cookie]);
+					sql = `SELECT * FROM user_pictures WHERE user_id = $1 AND profile_pic = 'YES'`;
+					let { rows } = await pool.query(sql, [user.rows[0]["id"]]);
 
-				if (rows.length === 0) {
-					sql = `INSERT INTO user_pictures (user_id, picture_data, profile_pic) VALUES ($1, $2, 'YES')`;
-					await pool.query(sql, [user.rows[0]["id"], image]);
-				} else {
-					let oldImageData = rows[0]["picture_data"];
-					const oldImage =
-						path.resolve(__dirname, "../images") +
-						oldImageData.replace(
-							"http://localhost:3001/images",
-							""
-						);
-					if (fs.existsSync(oldImage)) {
-						fs.unlink(oldImage, (err) => {
-							if (err) {
-								console.error(err);
-								return;
-							}
-						});
+					if (rows.length === 0) {
+						sql = `INSERT INTO user_pictures (user_id, picture_data, profile_pic) VALUES ($1, $2, 'YES')`;
+						await pool.query(sql, [user.rows[0]["id"], image]);
+					} else {
+						let oldImageData = rows[0]["picture_data"];
+						const oldImage =
+							path.resolve(__dirname, "../images") +
+							oldImageData.replace(
+								"http://localhost:3001/images",
+								""
+							);
+						if (fs.existsSync(oldImage)) {
+							fs.unlink(oldImage, (err) => {
+								if (err) {
+									console.error(err);
+									return;
+								}
+							});
+						}
+
+						sql = `UPDATE user_pictures SET picture_data = $1 WHERE user_id = $2 AND profile_pic = 'YES'`;
+						await pool.query(sql, [image, user.rows[0]["id"]]);
+						sql = `UPDATE comments SET user_pic = $1 WHERE user_id = $2`;
+						await pool.query(sql, [image, user.rows[0]["id"]]);
 					}
-
-					sql = `UPDATE user_pictures SET picture_data = $1 WHERE user_id = $2 AND profile_pic = 'YES'`;
-					await pool.query(sql, [image, user.rows[0]["id"]]);
+					response.send(true);
+				} catch (error) {
+					console.log(error);
+					response.send("Image uploading failed for some reason.");
 				}
-				response.send(true);
-			} catch (error) {
-				console.log(error);
-				response.send("Image uploading failed for some reason.");
 			}
 		}
-	}
 	);
 
 	app.delete("/api/profile/deleteuser", async (request, response) => {
