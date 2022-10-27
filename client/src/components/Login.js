@@ -45,7 +45,7 @@ const Login = () => {
 	const theme = createTheme({
 		palette: {
 			primary: {
-				main: "#000000",
+				main: "#fcba03",
 			},
 			secondary: {
 				main: "#F5F5F5",
@@ -53,10 +53,10 @@ const Login = () => {
 		},
 	});
 
-	let redirect_url = 'http://localhost:3001/api/oauth/42direct'
+	let redirect_url = "http://localhost:3001/api/oauth/42direct";
 
 	return (
-		<Container maxWidth="sm" sx={{ pt: 5, pb: 5 }}>
+		<Container maxWidth="sm" sx={{ display: "grid", pt: 5, pb: 5}}>
 			<Paper elevation={10} sx={{ padding: 3 }}>
 				<Typography
 					variant="h5"
@@ -96,25 +96,31 @@ const Login = () => {
 						Submit
 					</Button>
 				</form>
-				<a href={`https://github.com/login/oauth/authorize?scope=user:email&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`}>
-				<img
-					alt='githublogo'
-					src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-					width="50"
-				></img>
-				</a>
-				<a href={`https://api.intra.42.fr/oauth/authorize?client_id=${process.env.REACT_APP_FORTYTWO_CLIENT_ID}&redirect_uri=${redirect_url}&response_type=code&scope=public`}>
-				<img
-					alt='42logo'
-					src="https://api.intra.42.fr/assets/42_logo_api.svg"
-					width="50"
-					// onClick = {() => signUpService.connectWith42()}
-				></img>
-				</a>
-				<br></br>
-				<Button onClick={navigateToReset} sx={{ mt: 1 }}>
-					Forgot password?
-				</Button>
+				<Container maxWidth="md" sx={{ display: "flex", justifyContent: "center", alignItems: "center", pt: 1, pb: 1}}>
+					<a
+						href={`https://github.com/login/oauth/authorize?scope=user:email&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`}
+					>
+						<img
+							alt="githublogo"
+							src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+							width="50"
+						></img>
+					</a>
+					<a
+						href={`https://api.intra.42.fr/oauth/authorize?client_id=${process.env.REACT_APP_FORTYTWO_CLIENT_ID}&redirect_uri=${redirect_url}&response_type=code&scope=public`}
+					>
+						<img
+							alt="42logo"
+							src="https://api.intra.42.fr/assets/42_logo_api.svg"
+							width="50"
+							// onClick = {() => signUpService.connectWith42()}
+						></img>
+					</a>
+					<br></br>
+				</Container>
+					<Button onClick={navigateToReset} sx={{ mt: 1}}>
+						Forgot password?
+					</Button>
 				<Notification />
 			</Paper>
 		</Container>
