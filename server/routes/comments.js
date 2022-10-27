@@ -12,7 +12,6 @@ module.exports = function (app, pool) {
 				sql = "SELECT * FROM user_pictures WHERE user_id = $1";
 				const { rows } = await pool.query(sql, [user_id]);
 				let picture_path
-				console.log(rows[0])
 				if (rows[0] !== undefined)
 					picture_path = rows[0]["picture_data"];
 				else {
