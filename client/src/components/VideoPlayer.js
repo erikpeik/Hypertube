@@ -4,6 +4,7 @@ import ReactPlayer from "react-player";
 import screenfull from "screenfull";
 import Container from "@mui/material/Container";
 import ControlIcons from "./control/ControlIcons";
+import { useParams } from "react-router-dom";
 
 const VideoPlayer = ({ imdb_id, status, movieTitle }) => {
 	const playerRef = useRef(null);
@@ -133,6 +134,19 @@ const VideoPlayer = ({ imdb_id, status, movieTitle }) => {
 					controls={true}
 					onProgress={handlePlayerProgress}
 					playbackRate={playerbackRate}
+					config={{
+						file: {
+							forceVideo: true,
+							forceAudio: true,
+							tracks: [{
+								kind: "subtitles",
+								src: require('./Borat.2006.SPANiSH.720p.WEB.h264-ENDURANCE_fin.vtt'),
+								srcLang: "fi",
+								label: "fi",
+								default: true,
+							}]
+						}
+					}}
 				/>
 			</Container>
 			{/* <Container maxWidth="md">
