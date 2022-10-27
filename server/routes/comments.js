@@ -1,5 +1,3 @@
-const { response } = require("express");
-
 module.exports = function (app, pool) {
 	app.post("/api/newcomment/:id", async (request, response) => {
 		const imdb_id = request.params.id;
@@ -8,12 +6,22 @@ module.exports = function (app, pool) {
 		if (cookie) {
 			let sql = "SELECT * FROM users WHERE token = $1";
 			const { rows } = await pool.query(sql, [cookie]);
+			const user_id = rows[0]["id"];
+			const username = rows[0]["username"];
 			if (rows.length) {
-				const user_id = rows[0]["id"];
+				sql = "SELECT * FROM user_pictures WHERE user_id = $1";
+				const { rows } = await pool.query(sql, [user_id]);
+				const picture_path = rows[0]["picture_data"];
 				try {
 					sql =
-						"INSERT INTO comments (user_id, imdb_id, comment) VALUES ($1, $2, $3) RETURNING *";
-					await pool.query(sql, [user_id, imdb_id, comment.comment]);
+						"INSERT INTO comments (user_id, username, user_pic, imdb_id, comment) VALUES ($1, $2, $3, $4, $5) RETURNING *";
+					await pool.query(sql, [
+						user_id,
+						username,
+						picture_path,
+						imdb_id,
+						comment.comment,
+					]);
 					response.send(true);
 					return;
 				} catch (error) {
@@ -23,15 +31,13 @@ module.exports = function (app, pool) {
 		} else response.send("");
 	});
 
-	app.get("api/getcomments/:token", async (request, response) => {
+	app.get("/api/getcomments/:token", async (request, response) => {
 		const imdb_id = request.params.token;
-		console.log("HERE");
 		if (imdb_id !== "") {
 			try {
 				sql = "SELECT * FROM comments WHERE imdb_id = $1";
-				const { comments } = await pool.query(sql, [imdb_id]);
-				console.log("HERE", comments);
-				response.send(true);
+				const comments = await pool.query(sql, [imdb_id]);
+				response.send(comments.rows);
 			} catch (error) {
 				console.log("ERROR: ", error);
 			}

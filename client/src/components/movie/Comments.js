@@ -8,42 +8,67 @@ const imgLink =
 	"https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260";
 
 const Comments = ({ movieId }) => {
-	const [comments, setComments] = useState([]);
+	const [comments, setComments] = useState({});
 
 	useEffect(() => {
 		commentService.getComments(movieId).then((response) => {
-			setComments(response.data.comments || "");
+			setComments(response || "");
 		});
 	}, [movieId]);
-	console.log(comments)
+	console.log(comments);
 	return (
 		<>
 			<Container maxWidth="md" sx={{ pt: 5, pb: 5 }}>
 				<NewComment movieId={movieId} />
 				<Paper style={{ padding: "40px 20px", marginTop: 100 }}>
-					<Grid container wrap="nowrap" spacing={2}>
-						<Grid item>
-							<Avatar alt="Remy Sharp" src={imgLink} />
-						</Grid>
-						<Grid justifyContent="left" item xs zeroMinWidth>
-							<h4 style={{ margin: 0, textAlign: "left" }}>
-								Michel Michel
-							</h4>
-							<p style={{ textAlign: "left" }}>
-								Lorem ipsum dolor sit amet, consectetur
-								adipiscing elit. Aenean luctus ut est sed
-								faucibus. Duis bibendum ac ex vehicula laoreet.
-								Suspendisse congue vulputate lobortis.
-								Pellentesque at interdum tortor. Quisque arcu
-								quam, malesuada vel mauris et, posuere sagittis
-								ipsum.{" "}
-							</p>
-							<p style={{ textAlign: "left", color: "gray" }}>
-								posted 1 minute ago
-							</p>
-						</Grid>
-					</Grid>
-					<Divider variant="fullWidth" style={{ margin: "30px 0" }} />
+					{comments.length > 0 &&
+						comments.map((c) => {
+							return (
+								<Grid
+									container
+									wrap="nowrap"
+									spacing={2}
+									key={c.id}
+								>
+									<Grid item>
+										<Avatar
+											alt="Remy Sharp"
+											src={c.user_pic}
+										/>
+									</Grid>
+									<Grid
+										justifyContent="left"
+										item
+										xs
+										zeroMinWidth
+									>
+										<h4
+											style={{
+												margin: 0,
+												textAlign: "left",
+											}}
+										>
+											{c.username}
+										</h4>
+										<p style={{ textAlign: "left" }}>
+											{c.comment}{" "}
+										</p>
+										<p
+											style={{
+												textAlign: "left",
+												color: "gray",
+											}}
+										>
+											posted 1 minute ago
+										</p>
+										<Divider
+											variant="fullWidth"
+											style={{ margin: "30px 0" }}
+										/>
+									</Grid>
+								</Grid>
+							);
+						})}
 				</Paper>
 			</Container>
 		</>
