@@ -18,7 +18,7 @@ const theme = createTheme({
 	},
 });
 
-const NewComment = ({ movieId }) => {
+const NewComment = ({ movieId, setRefresh }) => {
 	const [newComment, setNewComment] = useState("");
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -30,11 +30,13 @@ const NewComment = ({ movieId }) => {
 		}
 	}, [user, navigate]);
 
-	const handleSubmit = async () => {
+	const handleSubmit = async (event) => {
+		event.preventDefault()
 		commentService.addComment(newComment, movieId).then((result) => {
 			if (result === true) {
 				dispatch(changeSeverity("success"));
 				dispatch(changeNotification("Comment added."));
+				setRefresh(Math.random(1, 1000))
 			} else {
 				dispatch(changeSeverity("error"));
 				dispatch(changeNotification(result));

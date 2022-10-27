@@ -11,8 +11,11 @@ module.exports = function (app, pool) {
 			if (rows.length) {
 				sql = "SELECT * FROM user_pictures WHERE user_id = $1";
 				const { rows } = await pool.query(sql, [user_id]);
-				const picture_path = rows[0]["picture_data"];
-				if (!picture_path) {
+				let picture_path
+				console.log(rows[0])
+				if (rows[0] !== undefined)
+					picture_path = rows[0]["picture_data"];
+				else {
 					picture_path =
 						"https://www.kindpng.com/picc/m/52-526237_avatar-profile-hd-png-download.png";
 				}

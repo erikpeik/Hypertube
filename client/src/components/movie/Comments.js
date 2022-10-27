@@ -5,22 +5,21 @@ import { Container } from "@mui/system";
 import NewComment from "./NewComment";
 import commentService from "../../services/commentService";
 import { format } from "timeago.js";
-const imgLink =
-	"https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260";
 
 const Comments = ({ movieId }) => {
 	const [comments, setComments] = useState({});
+	const [refresh, setRefresh] = useState(null)
 
 	useEffect(() => {
 		commentService.getComments(movieId).then((response) => {
 			setComments(response || "");
 		});
-	}, [movieId]);
+	}, [movieId, refresh]);
 
 	return (
 		<>
 			<Container maxWidth="md" sx={{ pt: 5, pb: 5 }}>
-				<NewComment movieId={movieId} />
+				<NewComment movieId={movieId} setRefresh={setRefresh}/>
 				<Paper style={{ padding: "20px 20px", marginTop: 10 }}>
 					{comments.length > 0 ? (
 						comments.sort((a, b) => b.id - a.id) &&
