@@ -1,4 +1,7 @@
-module.exports = (app, fs, path, axios, pool) => {
+module.exports = (app, fs, path, axios, pool, ffmpeg) => {
+
+	let superFile = ""
+
 	const getMagnetLink = (torrentInfo, film_title) => {
 		let hash = torrentInfo.hash;
 		let torrent_url = torrentInfo.url;
@@ -15,25 +18,25 @@ module.exports = (app, fs, path, axios, pool) => {
 
 			let options = {
 				trackers: [
-				'udp://tracker.opentrackr.org:1337',
-				'udp://9.rarbg.com:2810',
-				'udp://tracker.openbittorrent.com:80',
-				'udp://tracker.openbittorrent.com:6969',
-				'udp://opentracker.i2p.rocks:6969',
-				'udp://tracker.torrent.eu.org:451',
-				'udp://open.stealth.si:80',
-				'udp://vibe.sleepyinternetfun.xyz:1738',
-				'udp://tracker2.dler.org:80',
-				'udp://tracker1.bt.moack.co.kr:80',
-				'udp://tracker.zerobytes.xyz:1337',
-				'udp://tracker.tiny-vps.com:6969',
-				'udp://tracker.theoks.net:6969',
-				'udp://tracker.swateam.org.uk:2710',
-				'udp://tracker.publictracker.xyz:6969',
-				'udp://tracker.monitorit4.me:6969',
-				'udp://tracker.moeking.me:6969',
-				'udp://tracker.lelux.fi:6969',
-				'udp://tracker.encrypted-data.xyz:1337',
+					'udp://tracker.opentrackr.org:1337',
+					'udp://9.rarbg.com:2810',
+					'udp://tracker.openbittorrent.com:80',
+					'udp://tracker.openbittorrent.com:6969',
+					'udp://opentracker.i2p.rocks:6969',
+					'udp://tracker.torrent.eu.org:451',
+					'udp://open.stealth.si:80',
+					'udp://vibe.sleepyinternetfun.xyz:1738',
+					'udp://tracker2.dler.org:80',
+					'udp://tracker1.bt.moack.co.kr:80',
+					'udp://tracker.zerobytes.xyz:1337',
+					'udp://tracker.tiny-vps.com:6969',
+					'udp://tracker.theoks.net:6969',
+					'udp://tracker.swateam.org.uk:2710',
+					'udp://tracker.publictracker.xyz:6969',
+					'udp://tracker.monitorit4.me:6969',
+					'udp://tracker.moeking.me:6969',
+					'udp://tracker.lelux.fi:6969',
+					'udp://tracker.encrypted-data.xyz:1337',
 				],
 				path: videoPath, // Where to save the files. Overrides `tmp`.
 			};
@@ -42,6 +45,7 @@ module.exports = (app, fs, path, axios, pool) => {
 			let files = [];
 
 			engine.on("ready", () => {
+				superFile = engine.files.reduce((a, b) => (a.length > b.length ? a : b));
 				engine.files.forEach(async (file) => {
 					if (
 						file.name.endsWith(".mp4") ||
@@ -79,17 +83,17 @@ module.exports = (app, fs, path, axios, pool) => {
 				resolve(files);
 			});
 
-		engine.on('idle', (files) => {
-			console.log("All files downloaded");
+			engine.on('idle', (files) => {
+				console.log("All files downloaded");
 
-			sql = `UPDATE downloads SET completed = 'YES' WHERE imdb_id = $1`
-			pool.query(sql, [imdb_id])
+				sql = `UPDATE downloads SET completed = 'YES' WHERE imdb_id = $1`
+				pool.query(sql, [imdb_id])
 
-			engine.destroy(() => {
-				console.log("Engine connection destroyed");
+				engine.destroy(() => {
+					console.log("Engine connection destroyed");
+				})
 			})
 		})
-	})
 
 	app.get("/api/moviestream/:id", async (request, response) => {
 		const id = request.params.id;
@@ -113,10 +117,16 @@ module.exports = (app, fs, path, axios, pool) => {
 				"Content-Range": `bytes ${start}-${end}/${fileSize}`,
 				"Accept-Ranges": "bytes",
 				"Content-Length": contentLength,
-				"Content-Type": "video/mp4"
+				"Content-Type": "video/mp4",
+				"Cache-Control": "no-cache",
+				"Connection": "upgrade, keep-alive"
 			};
 			response.writeHead(206, head);
-			const videoStream = fs.createReadStream(moviefile, { start, end })
+			const videoStream = fs.createReadStream(moviefile, { start: start, end: end })
+			// ffmpeg(videoStream)
+			// 	.format('webm')
+			// 	.on('error', () => { })
+			// 	.pipe(response);
 			videoStream.pipe(response);
 		} else {
 			console.log("No Movie Range Defined");

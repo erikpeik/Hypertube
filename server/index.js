@@ -37,6 +37,8 @@ const pool = new Pool({
 	port: 5432,
 });
 
+const ffmpeg = require('fluent-ffmpeg');
+
 const connectToDatabase = () => {
 	pool.connect((err, client, release) => {
 		if (err) {
@@ -84,7 +86,7 @@ require("./routes/resetpassword.js")(
 require("./routes/profile.js")(app, pool, bcrypt, upload, fs, path);
 require("./routes/browsing.js")(app, axios);
 require("./routes/oauth.js")(app, pool, axios, helperFunctions, jwt);
-require("./routes/streaming.js")(app, fs, path, axios, pool);
+require("./routes/streaming.js")(app, fs, path, axios, pool, ffmpeg);
 require("./routes/comments.js")(app, pool);
 
 app.get("/", (req, res) => {

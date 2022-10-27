@@ -124,16 +124,16 @@ const VideoPlayer = ({ imdb_id, status, movieTitle }) => {
 					<source src={stream_url} type="video/mp4" />
 				</video> */}
 				<ReactPlayer
-						width={"100%"}
-						height="100%"
-						url={stream_url}
-						ref={playerRef}
-						playing={playing}
-						muted={mute}
-						controls={true}
-						onProgress={handlePlayerProgress}
-						playbackRate={playerbackRate}
-		/>
+					width={"100%"}
+					height="100%"
+					url={stream_url}
+					ref={playerRef}
+					playing={playing}
+					muted={mute}
+					controls={true}
+					onProgress={handlePlayerProgress}
+					playbackRate={playerbackRate}
+				/>
 			</Container>
 			{/* <Container maxWidth="md">
 				<div className="playerDiv" ref={playerDivRef}>
