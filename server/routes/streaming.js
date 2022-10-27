@@ -1,8 +1,9 @@
 module.exports = (app, fs, path, axios, pool) => {
-	const getMagnetLink = (hash, torrent_url, film_title) => {
-		return `magnet:?xt=urn:btih:${hash}&dn=${film_title
-			.split(" ")
-			.join("+")}`;
+	const getMagnetLink = (torrentInfo, film_title) => {
+		let hash = torrentInfo.hash;
+		let torrent_url = torrentInfo.url;
+
+		return `magnet:?xt=urn:btih:${hash}&dn=${film_title.split(" ").join("+")}`;
 	};
 
 	const downloadTorrent = async (magnet_link, imdb_id) =>
@@ -13,6 +14,27 @@ module.exports = (app, fs, path, axios, pool) => {
 			console.log("Downloading files to: ", videoPath);
 
 			let options = {
+				trackers: [
+				'udp://tracker.opentrackr.org:1337',
+				'udp://9.rarbg.com:2810',
+				'udp://tracker.openbittorrent.com:80',
+				'udp://tracker.openbittorrent.com:6969',
+				'udp://opentracker.i2p.rocks:6969',
+				'udp://tracker.torrent.eu.org:451',
+				'udp://open.stealth.si:80',
+				'udp://vibe.sleepyinternetfun.xyz:1738',
+				'udp://tracker2.dler.org:80',
+				'udp://tracker1.bt.moack.co.kr:80',
+				'udp://tracker.zerobytes.xyz:1337',
+				'udp://tracker.tiny-vps.com:6969',
+				'udp://tracker.theoks.net:6969',
+				'udp://tracker.swateam.org.uk:2710',
+				'udp://tracker.publictracker.xyz:6969',
+				'udp://tracker.monitorit4.me:6969',
+				'udp://tracker.moeking.me:6969',
+				'udp://tracker.lelux.fi:6969',
+				'udp://tracker.encrypted-data.xyz:1337',
+				],
 				path: videoPath, // Where to save the files. Overrides `tmp`.
 			};
 			let engine = torrentStream(magnet_link, options);
@@ -31,7 +53,7 @@ module.exports = (app, fs, path, axios, pool) => {
 							size: file.length,
 						});
 						console.log("Now downloading: " + file.name);
-						file.select(file.name);
+						file.select();
 
 						let sql = `SELECT * FROM downloads WHERE imdb_id = $1 AND path = $2`;
 						const { rows } = await pool.query(sql, [
@@ -83,20 +105,18 @@ module.exports = (app, fs, path, axios, pool) => {
 		const range = request.headers.range
 		if (range) {
 			console.log("Requested Movie Range: ", range)
-			const parts = range.replace(/bytes=/, "").split("-")
-			const start = parseInt(parts[0], 10)
-			const end = parts[1]
-				? parseInt(parts[1], 10)
-				: fileSize - 1
-			const chunksize = (end - start) + 1
-			const videoStream = fs.createReadStream(moviefile, { start, end })
+			const CHUNK_SIZE = 10 ** 6;
+			const start = Number(range.replace(/\D/g, ""))
+			const end = Math.min(start + CHUNK_SIZE, fileSize - 1);
+			const contentLength = (end - start) + 1
 			const head = {
 				"Content-Range": `bytes ${start}-${end}/${fileSize}`,
 				"Accept-Ranges": "bytes",
-				"Content-Length": chunksize,
-				"Content-Type": "video/mp4",
+				"Content-Length": contentLength,
+				"Content-Type": "video/mp4"
 			};
 			response.writeHead(206, head);
+			const videoStream = fs.createReadStream(moviefile, { start, end })
 			videoStream.pipe(response);
 		} else {
 			console.log("No Movie Range Defined");
@@ -129,23 +149,17 @@ module.exports = (app, fs, path, axios, pool) => {
 			responseSent = true;
 		}
 
-		const APIInfo = await axios.get(
+		const movieInfo = await axios.get(
 			`${process.env.TORRENT_API}?query_term=${imdb_id}`
-		);
+		).then(response => response.data.data.movies[0]);
 
-		let torrentInfo = APIInfo.data.data.movies[0].torrents;
-
-		console.log("Film ID: ", imdb_id);
-		console.log("Torrent info: ", torrentInfo);
+		let torrentInfo = movieInfo.torrents;
+		let film_title = movieInfo.title_long;
 
 		if (torrentInfo.length > 1)
 			torrentInfo.sort((a, b) => (a.seeds > b.seeds ? -1 : 1));
 
-		let film_title = APIInfo.data.data.movies[0].title_long;
-		let hash = torrentInfo[0].hash;
-		let torrent_url = torrentInfo[0].url;
-
-		let magnet_link = getMagnetLink(hash, torrent_url, film_title);
+		let magnet_link = getMagnetLink(torrentInfo[0], film_title);
 
 		let torrent_files = await downloadTorrent(magnet_link, imdb_id);
 		console.log("Torrent files: ", torrent_files);

@@ -113,13 +113,29 @@ const VideoPlayer = ({ imdb_id, status, movieTitle }) => {
 
 	let stream_url
 	if (status === 'pending')
-		stream_url = "http://localhost:3001/api/moviestream/pushthebutton"
+		stream_url = `https://www.youtube.com/watch?v=MPY_EuvimH0`
 	if (status === 'ready')
 		stream_url = `http://localhost:3001/api/moviestream/${imdb_id}`
 
 	return (
 		<>
 			<Container maxWidth="md">
+				{/* <video id="videoPlayer" controls muted="muted">
+					<source src={stream_url} type="video/mp4" />
+				</video> */}
+				<ReactPlayer
+						width={"100%"}
+						height="100%"
+						url={stream_url}
+						ref={playerRef}
+						playing={playing}
+						muted={mute}
+						controls={true}
+						onProgress={handlePlayerProgress}
+						playbackRate={playerbackRate}
+		/>
+			</Container>
+			{/* <Container maxWidth="md">
 				<div className="playerDiv" ref={playerDivRef}>
 					<ReactPlayer
 						width={"100%"}
@@ -152,7 +168,7 @@ const VideoPlayer = ({ imdb_id, status, movieTitle }) => {
 						fullScreenMode={handleFullScreenMode}
 					/>
 				</div>
-			</Container>
+			</Container> */}
 		</>
 	);
 };

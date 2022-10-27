@@ -24,6 +24,7 @@ services:
     env_file:
       - .env
     environment:
+      - GENERATE_SOURCEMAP=false
       - NODE_PATH=src
       - WATCHPACK_POLLING=true
       - CHOKIDAR_USEPOLLING=true
