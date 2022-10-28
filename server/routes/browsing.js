@@ -28,7 +28,9 @@ module.exports = function (app, axios) {
 		const limit = page === 1 ? 20 : 22;
 		// console.log(`${TORRENT_API}?query_term=${query}&page=${page}&limit=${limit}`)
 		axios
-			.get(`${TORRENT_API}?query_term=${query}&page=${page}&limit=${limit}`)
+			.get(
+				`${TORRENT_API}?query_term=${query}&page=${page}&limit=${limit}`
+			)
 			.then(async (response) => {
 				let movies = response.data.data.movies;
 				if (movies) {
@@ -37,25 +39,30 @@ module.exports = function (app, axios) {
 							await axios
 								.get(movie.medium_cover_image)
 								.catch((error) => {
-									movie.medium_cover_image = '../images/no_image.png';
+									movie.medium_cover_image =
+										"../images/no_image.png";
 								});
 						})
-					)
+					);
 				}
 				res.send(movies);
 			})
 			.catch((error) => {
 				console.log(error);
 				res.status(500).send({ error: "Something went wrong" });
-			})
+			});
 	});
 
 	app.get(`${baseUrl}/recommended_movies/:id`, async (req, res) => {
-		const imdb_id = req.params.id
-		const movie_details = await axios.get(`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`)
-		const movie_id = movie_details.data.data.movie.id
+		const imdb_id = req.params.id;
+		const movie_details = await axios.get(
+			`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`
+		);
+		const movie_id = movie_details.data.data.movie.id;
 		axios
-			.get(`https://yts.mx/api/v2/movie_suggestions.json?movie_id=${movie_id}`)
+			.get(
+				`https://yts.mx/api/v2/movie_suggestions.json?movie_id=${movie_id}`
+			)
 			.then((response) => {
 				res.send(response.data);
 			})
@@ -68,10 +75,10 @@ module.exports = function (app, axios) {
 	app.post(`${baseUrl}/check_image`, async (req, res) => {
 		const url = req.body.url;
 		try {
-			await axios.get(url)
-			res.status(200).send({ status: 'true' });
+			await axios.get(url);
+			res.status(200).send({ status: "true" });
 		} catch (error) {
-			res.status(400).send({ status: 'failed' });
+			res.status(400).send({ status: "failed" });
 		}
 	});
 };

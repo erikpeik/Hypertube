@@ -10,7 +10,7 @@ import cover3 from '../images/images_list/3.jpg'
 import cover4 from '../images/images_list/4.jpg'
 import cover5 from '../images/images_list/5.jpg'
 
-const Frontpage = () => {
+const Frontpage = ({t}) => {
 	return (
 		<>
 			<Container
@@ -43,7 +43,7 @@ const Frontpage = () => {
 						fontSize: 20
 					}}
 				>
-					Get endless entertainment, right at your fingertips.
+					{t("landing.1")}
 				</Typography>
 				<Button
 					to="/signup"
@@ -58,7 +58,7 @@ const Frontpage = () => {
 						width: "80vw",
 					}}
 				>
-					Sign Up Now without any cost
+					{t("landing.2")}
 				</Button>
 			</Container>
 			<Container
@@ -80,7 +80,7 @@ const Frontpage = () => {
 							fontSize: 20
 						}}
 					>
-						Stream movies online with no subscription required.
+						{t("landing.3")}
 					</Typography>
 					<Typography
 						align="center"
@@ -90,7 +90,7 @@ const Frontpage = () => {
 							fontSize: 20
 						}}
 					>
-						With BitTorrent protocol, movies are downloaded securely and quickly.
+						{t("landing.4")}
 					</Typography>
 				</Grid>
 				<Grid item sx={{ display: "flex", justifyContent: "center", flexGrow: 1 }}>
@@ -104,7 +104,7 @@ const Frontpage = () => {
 					align="center"
 					sx={{ color: "white", m: "auto", fontWeight: 700, fontSize: 20, mt: 1, mb: 1 }}
 				>
-					Newest movies and oldest classics, all in one place.
+					{t("landing.5")}
 				</Typography>
 				<ImageList sx={{ width: "100%", height: "100%" }} cols={5} rowHeight="auto">
 					<ImageListItem>
