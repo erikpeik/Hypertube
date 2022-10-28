@@ -53,8 +53,8 @@ const App = () => {
 					<Routes>
 						<Route path="/" element={<Frontpage t={t} />} />
 						<Route path="/login" element={<Login t={t} />} />
-						<Route path="/signup" element={<Signup />} />
-						<Route path="/profile" element={<Profile />} />
+						<Route path="/signup" element={<Signup t={t} />} />
+						<Route path="/profile" element={<Profile t={t} />} />
 						<Route path="/browsing" element={<Browsing />} />
 						<Route path="/movie/:id" element={<MoviePage />} />
 						<Route

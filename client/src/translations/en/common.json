@@ -9,7 +9,43 @@
 	"login": {
 		"1": "Login",
 		"2": "Login and start chillin' now!",
-		"3": "Submit",
-        "4": "Forgot password?"
+		"3": "Username or e-mail address",
+		"4": "Password",
+		"5": "Submit",
+		"6": "Forgot password?"
+	},
+	"register": {
+		"1": "Sign up",
+		"2": "Create your account!",
+		"3": "Username",
+		"4": "First name",
+		"5": "Last name",
+		"6": "E-mail",
+		"7": "Password",
+		"8": "Confirm password",
+		"9": "Submit"
+	},
+	"profile": {
+		"0": "The maximum size for uploaded images is 5 megabytes.",
+		"1": "First name",
+		"2": "Last name",
+		"3": "E-mail",
+		"4": "Edit profile",
+		"5": "Set profile picture",
+		"6": "Change passwords",
+		"7": "Delete user",
+		"8": "Profile picture set!"
+	},
+	"del": {
+		"1": "Are you sure you want to completely delete your account?",
+		"2": "Are you really, REALLY sure?",
+		"3": "Are you 100% sure?"
+	},
+	"nav": {
+		"1": "Login",
+		"2": "Signup",
+		"3": "Profile",
+		"4": "Browsing",
+		"5": "Log Out"
 	}
 }

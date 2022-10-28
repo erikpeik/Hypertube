@@ -6,10 +6,46 @@
 		"4": "Prin protocolul BitTorrent, filmele sunt descărcate în siguranță și rapid.",
 		"5": "Cele mai noi și cele mai vechi clasice, toate într-un singur loc."
 	},
-    "login": {
-        "1":"Autentificare",
-        "2":"Autentifica-te și începe relaxarea!",
-        "3":"Submite",
-        "4":"Ați uitat parola?"
-    }
+	"login": {
+		"1": "Autentificare",
+		"2": "Autentifica-te și începe relaxarea!",
+		"3": "Utilizator sau adresa de email",
+		"4": "Parola",
+		"5": "Submite",
+		"6": "Ați uitat parola?"
+	},
+	"register": {
+		"1": "Înscrie-te",
+		"2": "Creează-ți contul!",
+		"3": "Numele de utilizator",
+		"4": "Nume",
+		"5": "Prenume",
+		"6": "E-mail",
+		"7": "Parolă",
+		"8": "Confirmă parola",
+		"9": "Submite"
+	},
+	"profile": {
+		"0": "Dimensiunea maximă pentru imaginile încărcate este de 5 megabytes.",
+		"1": "Prenume",
+		"2": "Nume",
+		"3": "E-mail",
+		"4": "Editează profilul",
+		"5": "Adaugă poză de profil",
+		"6": "Schimbă parola",
+		"7": "Șterge utilizator",
+		"8": "Poza de profil setată!"
+	},
+	"del": {
+		"1": "Sigur doriți să vă ștergeți complet contul?",
+		"2": "Sigur, sigur???",
+		"3": "100% sigur?"
+	},
+	"nav": {
+		"1": "Autentificare",
+		"2": "Înscrie-te",
+		"3": "Profil",
+		"4": "Filme",
+		"5": "Deconectați-vă"
+	}
 }

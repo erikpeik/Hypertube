@@ -35,22 +35,7 @@ const deleteTheme = createTheme({
 	},
 });
 
-const ProfileInput = ({ text, input }) => {
-	return (
-		<Grid item xs={12} sm={6} sx={{ display: "inline" }}>
-			<Typography
-				sx={{ width: 170, display: "inline-block", fontWeight: "700" }}
-			>
-				{text}
-			</Typography>
-			<Typography sx={{ width: "fit-content", display: "inline" }}>
-				{input}
-			</Typography>
-		</Grid>
-	);
-};
-
-const Profile = () => {
+const Profile = ({ t }) => {
 	const [isLoading, setLoading] = useState(true);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -77,20 +62,10 @@ const Profile = () => {
 		objectFit: "cover",
 	};
 
-	const ProfileData = {
-		"First name:": profileData.firstname,
-		"Last name:": profileData.lastname,
-		"Email address:": profileData.email,
-	};
-
 	const deleteUser = () => {
-		if (
-			window.confirm(
-				"Are you sure you want to completely delete your account?"
-			)
-		) {
-			if (window.confirm("Are you really, REALLY sure?")) {
-				if (window.confirm("Are you 100% sure?")) {
+		if (window.confirm(`${t("del.1")}`)) {
+			if (window.confirm(`${t("del.2")}`)) {
+				if (window.confirm(`${t("del.3")}`)) {
 					navigate("/deleteuser");
 				}
 			}
@@ -99,13 +74,9 @@ const Profile = () => {
 	const setProfilePicture = async (event) => {
 		const image = event.target.files[0];
 		console.log(image);
-		if (image.size > 5242880 ) {
+		if (image.size > 5242880) {
 			dispatch(changeSeverity("error"));
-			dispatch(
-				changeNotification(
-					"The maximum size for uploaded images is 5 megabytes."
-				)
-			);
+			dispatch(changeNotification(`${t("profile.0")}`));
 		} else {
 			let formData = new FormData();
 			formData.append("file", image);
@@ -113,7 +84,7 @@ const Profile = () => {
 			if (result === true) {
 				dispatch(getProfileData());
 				dispatch(changeSeverity("success"));
-				dispatch(changeNotification("Profile picture set!"));
+				dispatch(changeNotification(`${t("profile.8")}`));
 			} else {
 				dispatch(changeSeverity("error"));
 				dispatch(changeNotification(result));
@@ -149,26 +120,30 @@ const Profile = () => {
 						</Typography>
 					</Box>
 				</Grid>
-				<Grid container spacing={1} direction="row" sx={{ mb: 2 }}>
-					{Object.keys(ProfileData).map((key, index) => {
-						return (
-							<ProfileInput
-								key={index}
-								text={key}
-								input={ProfileData[key]}
-							/>
-						);
-					})}
-				</Grid>
+				<Container
+					sx={{
+						pb: "5",
+						display: "flex",
+						flexDirection: "column",
+						alignItems: "center",
+					}}
+				>
+					<h4>{t("profile.1")}</h4>
+					<Typography>{profileData.firstname}</Typography>
+					<h4>{t("profile.2")}</h4>
+					<Typography>{profileData.lastname}</Typography>
+					<h4>{t("profile.3")}</h4>
+					<Typography>{profileData.email}</Typography>
+				</Container>
 				<Button theme={theme} onClick={() => navigate("/settings")}>
-					Edit profile
+					{t("profile.4")}
 				</Button>
 				<Button theme={theme}>
 					<label
 						htmlFor="set_profilepic"
 						className="styled-image-upload"
 					>
-						Set profile picture
+						{t("profile.5")}
 					</label>
 					<input
 						type="file"
@@ -182,14 +157,14 @@ const Profile = () => {
 					theme={theme}
 					onClick={() => navigate("/changepassword")}
 				>
-					Change password
+					{t("profile.6")}
 				</Button>
 				<Button
 					theme={deleteTheme}
 					variant="contained"
 					onClick={() => deleteUser()}
 				>
-					Delete user
+					{t("profile.7")}
 				</Button>
 			</Paper>
 			<Notification />

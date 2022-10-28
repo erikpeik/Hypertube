@@ -73,7 +73,7 @@ const Login = ({ t }) => {
 						fullWidth
 						margin="normal"
 						name="username"
-						label="Username or e-mail address"
+						label={t("login.3")}
 						placeholder="Username or email address"
 						required
 					></TextField>
@@ -82,7 +82,7 @@ const Login = ({ t }) => {
 						margin="dense"
 						type="password"
 						name="password"
-						label="Password"
+						label={t("login.4")}
 						placeholder="Password"
 						required
 					></TextField>
@@ -93,7 +93,7 @@ const Login = ({ t }) => {
 						size="large"
 						sx={{ mt: 1 }}
 					>
-						{t("login.3")}
+						{t("login.5")}
 					</Button>
 				</form>
 				<Container
@@ -128,7 +128,7 @@ const Login = ({ t }) => {
 					<br></br>
 				</Container>
 				<Button onClick={navigateToReset} sx={{ mt: 1 }}>
-					{t("login.4")}
+					{t("login.6")}
 				</Button>
 				<Notification />
 			</Paper>
