@@ -53,32 +53,22 @@ const Browsing = (props) => {
 
 	// console.log(movies);
 
-// ========= UNDER Construction =========
+	// ========= UNDER Construction =========
 
-	function checkCategory(category) {
-		return category === "Horror";
-	}
 	const handleSortClickByHorror = () => {
-		let val = movies.sort(movie => {
-			let test = movie.genres.filter(a => a === 'Horror')
-			console.log(test[0])
+		let val = movies.sort((movie) => {
+			let test = movie.genres.filter((genre) => genre === "Horror");
+			console.log(test);
 			if (test[0] === 'Horror') {
-				return -1
-			} else return;
-			// return movie.genres.map(check => {
-			// 	let gas = check.splice('Horror')
-			// 	console.log(gas)
-			// 	if (check === 'Horror')
-			// 		return 1
-			// 	else
-			// 		return -1
-			// })
-		})
+				return -1;
+			} else {
+				return test.splice(0, test[0]);
+			}
+		});
 		setHorror(val);
 	};
 
 	// ========= UNDER Construction =========
-
 
 	const handleSortClickByName = () => {
 		// const strAscending = [...movies].sort((a, b) => {
@@ -217,9 +207,13 @@ const Browsing = (props) => {
 						<InputLabel id="demo-select-small">
 							Categories
 						</InputLabel>
-						<Select value={''} labelId="demo-select-small" label="Sort by">
+						<Select
+							value={""}
+							labelId="demo-select-small"
+							label="Sort by"
+						>
 							<MenuItem
-								value={"Horror" || ''}
+								value={"Horror" || ""}
 								onClick={handleSortClickByHorror}
 							>
 								Horror
@@ -232,27 +226,31 @@ const Browsing = (props) => {
 						size="small"
 					>
 						<InputLabel id="demo-select-small">Sort by</InputLabel>
-						<Select value={''} labelId="demo-select-small" label="Sort by">
+						<Select
+							value={""}
+							labelId="demo-select-small"
+							label="Sort by"
+						>
 							<MenuItem
-								value={"Name" || ''}
+								value={"Name" || ""}
 								onClick={handleSortClickByName}
 							>
 								Name
 							</MenuItem>
 							<MenuItem
-								value={"Rate" || ''}
+								value={"Rate" || ""}
 								onClick={handleSortClickByRate}
 							>
 								Rate
 							</MenuItem>
 							<MenuItem
-								value={"Year" || ''}
+								value={"Year" || ""}
 								onClick={handleSortClickByYear}
 							>
 								Year
 							</MenuItem>
 							<MenuItem
-								value={"Seed" || ''}
+								value={"Seed" || ""}
 								onClick={handleSortClickBySeed}
 							>
 								Seed
