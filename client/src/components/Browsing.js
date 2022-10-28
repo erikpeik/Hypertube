@@ -16,6 +16,11 @@ import { useNavigate } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import LoaderDots from "./LoaderDots";
 
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+
 const Browsing = (props) => {
 	const [page, setPage] = useState(1);
 	const [query, setQuery] = useState("");
@@ -137,27 +142,65 @@ const Browsing = (props) => {
 					style={{
 						direction: "column",
 						alignItems: "center",
-						justifyContent: "center",
+						justifyContent: "space-around",
 						display: "flex",
 						width: "100%",
-						maxWidth: "1030px",
+						maxWidth: "730px",
 						height: "100%",
 						margin: 10,
+						padding: 10,
 					}}
 				>
-					<Input
-						type="text"
-						placeholder="Search"
-						value={query}
-						onChange={handleQueryChange}
-					/>
-					<Button type="submit" onClick={submitMovieQuery}>
-						Search
-					</Button>
+					<Box>
+						<Input
+							type="text"
+							placeholder="Search"
+							value={query}
+							onChange={handleQueryChange}
+						/>
+						<Button type="submit" onClick={submitMovieQuery}>
+							Search
+						</Button>
+					</Box>
+					<FormControl
+						sx={{ width: 125, maxWidth: 130 }}
+						size="small"
+					>
+						<InputLabel id="demo-select-small">Age</InputLabel>
+						<Select labelId="demo-select-small" label="Sort by">
+							<MenuItem value="">
+								<em>None</em>
+							</MenuItem>
+							<MenuItem
+								value="Name"
+								onClick={handleSortClickByName}
+							>
+								Name
+							</MenuItem>
+							<MenuItem
+								value="Rate"
+								onClick={handleSortClickByRate}
+							>
+								Rate
+							</MenuItem>
+							<MenuItem
+								value="Year"
+								onClick={handleSortClickByYear}
+							>
+								Year
+							</MenuItem>
+							<MenuItem
+								value="Seed"
+								onClick={handleSortClickBySeed}
+							>
+								Seed
+							</MenuItem>
+						</Select>
+					</FormControl>
 				</Paper>
 			</Box>
 
-			<Button onClick={handleSortClickByName}>Sort by Name</Button>
+			{/* <Button onClick={handleSortClickByName}>Sort by Name</Button>
 			<Button id="rate" onClick={handleSortClickByRate}>
 				Sort by Rate
 			</Button>
@@ -166,7 +209,7 @@ const Browsing = (props) => {
 			</Button>
 			<Button id="seed" onClick={handleSortClickBySeed}>
 				Sort by Seed
-			</Button>
+			</Button> */}
 
 			<Box
 				container="true"
