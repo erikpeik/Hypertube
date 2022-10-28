@@ -218,6 +218,9 @@ const Browsing = (props) => {
 									<Typography>
 										IMDB rate: {movie.rating}
 									</Typography>
+									<Typography>
+										Seeds: {movie.torrents[0].seeds}
+									</Typography>
 								</CardContent>
 								<CardMedia
 									sx={{
