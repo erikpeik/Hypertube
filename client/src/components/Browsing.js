@@ -31,6 +31,8 @@ const Browsing = (props) => {
 	const [year, setYear] = useState([]);
 	const [seed, setSeed] = useState([]);
 
+	const [horror, setHorror] = useState([]);
+
 	const [submittedQuery, setSubmittedQuery] = useState("");
 	const { loading, error, movies } = useFetch(
 		submittedQuery,
@@ -39,7 +41,8 @@ const Browsing = (props) => {
 		name,
 		rate,
 		year,
-		seed
+		seed,
+		horror
 	);
 	const loader = useRef();
 	const navigate = useNavigate();
@@ -48,7 +51,34 @@ const Browsing = (props) => {
 		setQuery(event.target.value);
 	};
 
-	console.log(movies);
+	// console.log(movies);
+
+// ========= UNDER Construction =========
+
+	function checkCategory(category) {
+		return category === "Horror";
+	}
+	const handleSortClickByHorror = () => {
+		let val = movies.sort(movie => {
+			let test = movie.genres.filter(a => a === 'Horror')
+			console.log(test[0])
+			if (test[0] === 'Horror') {
+				return -1
+			} else return;
+			// return movie.genres.map(check => {
+			// 	let gas = check.splice('Horror')
+			// 	console.log(gas)
+			// 	if (check === 'Horror')
+			// 		return 1
+			// 	else
+			// 		return -1
+			// })
+		})
+		setHorror(val);
+	};
+
+	// ========= UNDER Construction =========
+
 
 	const handleSortClickByName = () => {
 		// const strAscending = [...movies].sort((a, b) => {
@@ -94,7 +124,8 @@ const Browsing = (props) => {
 		setRate(null);
 		setYear(null);
 		setSeed(null);
-	}, [name, rate, year, seed]);
+		setHorror(null);
+	}, [name, rate, year, seed, horror]);
 
 	const handleObserver = useCallback((entries) => {
 		const target = entries[0];
@@ -170,7 +201,7 @@ const Browsing = (props) => {
 							inputProps={{ maxLength: 40 }}
 						/>
 						<Button
-							sx={{marginLeft: 1, marginTop: .2}}
+							sx={{ marginLeft: 1, marginTop: 0.2 }}
 							variant="outlined"
 							type="submit"
 							onClick={submitMovieQuery}
@@ -178,32 +209,50 @@ const Browsing = (props) => {
 							Search
 						</Button>
 					</Box>
+
+					<FormControl
+						sx={{ width: 125, maxWidth: 130 }}
+						size="small"
+					>
+						<InputLabel id="demo-select-small">
+							Categories
+						</InputLabel>
+						<Select value={''} labelId="demo-select-small" label="Sort by">
+							<MenuItem
+								value={"Horror" || ''}
+								onClick={handleSortClickByHorror}
+							>
+								Horror
+							</MenuItem>
+						</Select>
+					</FormControl>
+
 					<FormControl
 						sx={{ width: 125, maxWidth: 130 }}
 						size="small"
 					>
 						<InputLabel id="demo-select-small">Sort by</InputLabel>
-						<Select labelId="demo-select-small" label="Sort by">
+						<Select value={''} labelId="demo-select-small" label="Sort by">
 							<MenuItem
-								value="Name"
+								value={"Name" || ''}
 								onClick={handleSortClickByName}
 							>
 								Name
 							</MenuItem>
 							<MenuItem
-								value="Rate"
+								value={"Rate" || ''}
 								onClick={handleSortClickByRate}
 							>
 								Rate
 							</MenuItem>
 							<MenuItem
-								value="Year"
+								value={"Year" || ''}
 								onClick={handleSortClickByYear}
 							>
 								Year
 							</MenuItem>
 							<MenuItem
-								value="Seed"
+								value={"Seed" || ''}
 								onClick={handleSortClickBySeed}
 							>
 								Seed
