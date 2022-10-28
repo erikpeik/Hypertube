@@ -1,0 +1,15 @@
+{
+	"landing": {
+		"1": "Get endless entertainment, right at your fingertips.",
+		"2": "Sign Up Now without any cost",
+		"3": "Stream movies online with no subscription required.",
+		"4": "With BitTorrent protocol, movies are downloaded securely and quickly.",
+		"5": "Newest movies and oldest classics, all in one place."
+	},
+	"login": {
+		"1": "Login",
+		"2": "Login and start chillin' now!",
+		"3": "Submit",
+        "4": "Forgot password?"
+	}
+}

@@ -10,7 +10,7 @@ import { Container } from "@mui/system";
 import { createTheme } from "@mui/material/styles";
 import Notification from "./Notification";
 
-const Login = () => {
+const Login = ({ t }) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
@@ -56,17 +56,17 @@ const Login = () => {
 	let redirect_url = "http://localhost:3001/api/oauth/42direct";
 
 	return (
-		<Container maxWidth="sm" sx={{ display: "grid", pt: 5, pb: 5}}>
+		<Container maxWidth="sm" sx={{ display: "grid", pt: 5, pb: 5 }}>
 			<Paper elevation={10} sx={{ padding: 3 }}>
 				<Typography
 					variant="h5"
 					align="center"
 					sx={{ fontWeight: 550 }}
 				>
-					Login
+					{t("login.1")}
 				</Typography>
 				<Typography align="center" xs={{ mb: 4 }}>
-					Login and start chillin' now!
+					{t("login.2")}
 				</Typography>
 				<form onSubmit={submitUser}>
 					<TextField
@@ -93,10 +93,19 @@ const Login = () => {
 						size="large"
 						sx={{ mt: 1 }}
 					>
-						Submit
+						{t("login.3")}
 					</Button>
 				</form>
-				<Container maxWidth="md" sx={{ display: "flex", justifyContent: "center", alignItems: "center", pt: 1, pb: 1}}>
+				<Container
+					maxWidth="md"
+					sx={{
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+						pt: 1,
+						pb: 1,
+					}}
+				>
 					<a
 						href={`https://github.com/login/oauth/authorize?scope=user:email&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`}
 					>
@@ -118,9 +127,9 @@ const Login = () => {
 					</a>
 					<br></br>
 				</Container>
-					<Button onClick={navigateToReset} sx={{ mt: 1}}>
-						Forgot password?
-					</Button>
+				<Button onClick={navigateToReset} sx={{ mt: 1 }}>
+					{t("login.4")}
+				</Button>
 				<Notification />
 			</Paper>
 		</Container>
