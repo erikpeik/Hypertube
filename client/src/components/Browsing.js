@@ -20,6 +20,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
 
 const Browsing = (props) => {
 	const [page, setPage] = useState(1);
@@ -152,13 +153,28 @@ const Browsing = (props) => {
 					}}
 				>
 					<Box>
-						<Input
+						{/* <Input
 							type="text"
 							placeholder="Search"
 							value={query}
 							onChange={handleQueryChange}
+							inputProps={{ maxLength: 40 }}
+						/> */}
+						<TextField
+							size="small"
+							type="text"
+							label="Search"
+							variant="outlined"
+							value={query}
+							onChange={handleQueryChange}
+							inputProps={{ maxLength: 40 }}
 						/>
-						<Button type="submit" onClick={submitMovieQuery}>
+						<Button
+							sx={{marginLeft: 1, marginTop: .2}}
+							variant="outlined"
+							type="submit"
+							onClick={submitMovieQuery}
+						>
 							Search
 						</Button>
 					</Box>
@@ -166,11 +182,8 @@ const Browsing = (props) => {
 						sx={{ width: 125, maxWidth: 130 }}
 						size="small"
 					>
-						<InputLabel id="demo-select-small">Age</InputLabel>
+						<InputLabel id="demo-select-small">Sort by</InputLabel>
 						<Select labelId="demo-select-small" label="Sort by">
-							<MenuItem value="">
-								<em>None</em>
-							</MenuItem>
 							<MenuItem
 								value="Name"
 								onClick={handleSortClickByName}
