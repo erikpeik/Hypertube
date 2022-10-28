@@ -1,14 +1,16 @@
 import "../css/VideoPlayer.css";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import ReactPlayer from "react-player";
 import screenfull from "screenfull";
 import Container from "@mui/material/Container";
 import ControlIcons from "./control/ControlIcons";
 import { useParams } from "react-router-dom";
+import streamingService from "../services/streamingService";
 
 const VideoPlayer = ({ imdb_id, status, movieTitle }) => {
 	const playerRef = useRef(null);
 	const playerDivRef = useRef(null);
+	const [subtitles, setSubtitles] = useState([])
 	const [playerState, setPlayerState] = useState({
 		playing: true,
 		mute: true,
@@ -17,6 +19,13 @@ const VideoPlayer = ({ imdb_id, status, movieTitle }) => {
 		played: 0,
 		seeking: false,
 	});
+
+	useEffect(() => {
+		streamingService.getSubtitles(imdb_id).then((response => {
+			console.log(response)
+			setSubtitles(response)
+		}))
+	}, []);
 
 	const { playing, mute, volume, playerbackRate, played } = playerState;
 
@@ -138,13 +147,8 @@ const VideoPlayer = ({ imdb_id, status, movieTitle }) => {
 						file: {
 							forceVideo: true,
 							forceAudio: true,
-							tracks: [{
-								kind: "subtitles",
-								src: require('./Borat.2006.SPANiSH.720p.WEB.h264-ENDURANCE_fin.vtt'),
-								srcLang: "fi",
-								label: "fi",
-								default: true,
-							}]
+							tracks: subtitles,
+							attributes: {crossOrigin: 'anonymous'}
 						}
 					}}
 				/>

@@ -54,13 +54,13 @@ const MoviePage = () => {
 	};
 
 	const navigateToMovie = (movie_id) => {
-		navigate(`/movie/${movie_id}`, {
-			state: recommendedMovies.filter(
-				(movie) => movie.imdb_code === movie_id
-			),
-		});
+		navigate(`/movie/${movie_id}`);
 		window.location.reload();
 	};
+
+	const downloadSubs = () => {
+		streamingService.downloadSubs(params.id)
+	}
 
 	return (
 		<>
@@ -78,6 +78,13 @@ const MoviePage = () => {
 				}}
 			>
 				Get Movie
+			</Button>
+			<Button
+				onClick={() => {
+					downloadSubs();
+				}}
+			>
+				Get Subtitles
 			</Button>
 			<h5 className="comment" onClick={() => setShow(!show)}>
 				Comments ▼{" "}
