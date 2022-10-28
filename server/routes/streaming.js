@@ -214,18 +214,6 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		const oldSubtitles = await pool.query(sql, [imdb_full_id])
 
 		if (oldSubtitles.rows.length === 0) {
-			// const token = await axios.post('https://api.opensubtitles.com/api/v1/login', {
-			// 	headers: {
-			// 		"Api-Key": OST_API_KEY,
-			// 		"Content-Type": 'application/json'
-			// 	},
-			// 	data: {
-			// 		"username": 'HypertubeHive',
-			// 		"password": 'Hive123!'
-			// 	}
-			// })
-			// console.log(token)
-
 			const { data } = await axios.get(`https://api.opensubtitles.com/api/v1/subtitles?imdb_id=${imdb_id}}`, {
 				headers: {
 					"Api-Key": OST_API_KEY,
