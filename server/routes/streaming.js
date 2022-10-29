@@ -47,10 +47,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			engine.on("ready", () => {
 				superFile = engine.files.reduce((a, b) => (a.length > b.length ? a : b));
 				engine.files.forEach(async (file) => {
-					if (
-						file.name.endsWith(".mp4") ||
-						file.name.endsWith(".srt")
-					) {
+					if (file.name.endsWith(".mp4")) {
 						files.push({
 							name: file.name,
 							path: file.path,
@@ -189,20 +186,28 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		});
 	});
 
-	const downloadFile = (imdb_id, language, download_url) => {
+	const downloadSubtitle = async (imdb_id, language, download_url) => {
 		if (!fs.existsSync(`./subtitles/${imdb_id}`)) {
 			fs.mkdirSync(`./subtitles/${imdb_id}`, { recursive: true });
 		}
 
-		axios.get(download_url)
+		let downloadSuccess = 1
+
+		await axios.get(download_url)
 			.then((response) => {
-				fs.writeFile(`./subtitles/${imdb_id}/${imdb_id}-${language}.vtt`, response.data, (err) => console.log(err))
+				fs.writeFile(`./subtitles/${imdb_id}/${imdb_id}-${language}.vtt`, response.data, (err) => {
+					if (err)
+						console.log(err)
+				})
 
 				sql = "INSERT INTO subtitles (imdb_id, language, path) VALUES ($1,$2,$3)"
 				pool.query(sql, [imdb_id, language, `/subtitles/${imdb_id}/${imdb_id}-${language}.vtt`])
 			}).catch(err => {
 				console.log(err)
+				downloadSuccess = -1
 			})
+
+		return (downloadSuccess)
 	}
 
 	app.get("/api/streaming/download_subs/:id", async (request, response) => {
@@ -237,27 +242,22 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 
 			console.log(finalSubs)
 
-			// finalSubs.forEach(async (sub) => {
-			// 	await axios.post(`https://api.opensubtitles.com/api/v1/download`, {
-			// 		headers: {
-			// 			"User-Agent": "curl",
-			// 			"Api-Key": OST_API_KEY,
-			// 			"Content-Type": 'application/json'
-			// 		},
-			// 		data: {
-			// 			file_id: sub.files[0].file_id,
-			// 			sub_format: 'webvtt'
-			// 		}
-			// 	}).then(downloadInfo => {
-			// 		let download_url = downloadInfo.data.link
-			// 		downloadFile(imdb_full_id, sub.language, download_url)
-			// 	}).catch(error => {
-			// 		console.log(error);
-			// 	});
-			// })
-
-			finalSubs.forEach(sub => {
-				downloadFile(imdb_full_id, sub.language, 'https://www.opensubtitles.com/download/C8032C1EC6A37D72EF182B7710D128213B29060B6F413CF7822780E1578F7748D9A587A82B99462FC34B4E9F371E4969FDED45A7A5F389EA093982C461824B8C55CA9C12457CE3E18AC629998F9099271C62DEA862FA3DF614024196E2C88D6AB9C4B7CA789A06590E36A0FA6D0A44C1B28E46A682E538540260E908E065DD5C758E73C86CA7DC9FCE29A7B44871D32B245C1BDCA0DAE5C02E8C9994D48BE1A436DD30F4B072F3A8F0F23461309FB18E6DE71CE129BCDC81816E92E6199DFBADCA05DC61033B87F5BF38AFEB0E27B987D27AE0148EE0A63A7FC8A35A3326E6E9647E41EA514765CBD0729400C39DCD1BC64E9D481AB058A1870F826B121382D00BB36D13A2D01861/subfile/Borat-aXXo.webvtt')
+			finalSubs.forEach(async (sub) => {
+				await axios.post(`https://api.opensubtitles.com/api/v1/download`, {
+					"file_id": sub.files[0].file_id,
+					"sub_format": 'webvtt'
+				}, {
+					headers: {
+						"Accept": "application/json",
+						"Api-Key": OST_API_KEY,
+						"Content-Type": 'application/json'
+					}
+				}).then(downloadInfo => {
+					let download_url = downloadInfo.data.link
+					downloadSubtitle(imdb_full_id, sub.language, download_url)
+				}).catch(error => {
+					console.log(error);
+				});
 			})
 
 			response.status(200).send("Download succesful")
