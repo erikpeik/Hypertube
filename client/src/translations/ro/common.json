@@ -41,7 +41,7 @@
 		"2": "Sigur, sigur???",
 		"3": "100% sigur?",
 		"4": "Contul a fost șters! Adios!",
-		"5": ""
+		"5": "Success!"
 	},
 	"profile_settings": {
 		"0": "Profil",
@@ -115,5 +115,12 @@
 		"20": "Triler",
 		"21": "Război",
 		"22": "Western"
+	},
+	"movie": {
+		"0": "Comentarii ▼",
+		"1": "Dacă v-a plăcut acest film, s-ar putea să vă placă și:",
+		"2": "Niciun comentariu. 😔",
+		"3": "Comentariu adăugat.",
+		"4": "Lăsați un comentariu"
 	}
 }

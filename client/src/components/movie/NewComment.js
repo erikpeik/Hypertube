@@ -18,7 +18,7 @@ const theme = createTheme({
 	},
 });
 
-const NewComment = ({ movieId, setRefresh }) => {
+const NewComment = ({ movieId, setRefresh, t }) => {
 	const [newComment, setNewComment] = useState("");
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -31,12 +31,12 @@ const NewComment = ({ movieId, setRefresh }) => {
 	}, [user, navigate]);
 
 	const handleSubmit = async (event) => {
-		event.preventDefault()
+		event.preventDefault();
 		commentService.addComment(newComment, movieId).then((result) => {
 			if (result === true) {
 				dispatch(changeSeverity("success"));
-				dispatch(changeNotification("Comment added."));
-				setRefresh(Math.random(1, 1000))
+				dispatch(changeNotification(`${t("movie.3")}`));
+				setRefresh(Math.random(1, 1000));
 			} else {
 				dispatch(changeSeverity("error"));
 				dispatch(changeNotification(result));
@@ -55,7 +55,7 @@ const NewComment = ({ movieId, setRefresh }) => {
 							}}
 							margin="normal"
 							name="comment"
-							label="Leave a comment"
+							label={t("movie.4")}
 							placeholder="comment"
 							autoComplete="comment"
 							required

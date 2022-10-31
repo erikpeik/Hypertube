@@ -115,5 +115,12 @@
 		"20": "Thriller",
 		"21": "War",
 		"22": "Western"
+	},
+	"movie": {
+		"0": "Comments ▼",
+		"1": "If you liked this, you might also like:",
+		"2": "No comments. 😔",
+		"3": "Comment added.",
+		"4": "Leave a comment"
 	}
 }

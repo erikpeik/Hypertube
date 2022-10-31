@@ -19,7 +19,7 @@ import streamingService from "../services/streamingService";
 import VideoPlayer from "./VideoPlayer";
 import Comments from "./movie/Comments";
 
-const MoviePage = () => {
+const MoviePage = ({ t }) => {
 	const [imdbData, setImdbData] = useState(null);
 	const [playerStatus, setPlayerStatus] = useState("pending");
 	const [show, setShow] = useState(false);
@@ -59,8 +59,8 @@ const MoviePage = () => {
 	};
 
 	const downloadSubs = () => {
-		streamingService.downloadSubs(params.id)
-	}
+		streamingService.downloadSubs(params.id);
+	};
 
 	return (
 		<>
@@ -87,9 +87,9 @@ const MoviePage = () => {
 				Get Subtitles
 			</Button>
 			<h5 className="comment" onClick={() => setShow(!show)}>
-				Comments ▼{" "}
+				{t("movie.0")}{" "}
 			</h5>
-			{show && <Comments movieId={params.id} />}
+			{show && <Comments movieId={params.id} t={t} />}
 			<Container maxWidth="md" sx={{ pt: 5, pb: 5 }}>
 				<Paper elevation={10} sx={{ padding: 3 }}>
 					{movieData.map((value, i) => (
@@ -124,7 +124,7 @@ const MoviePage = () => {
 					<Typography
 						sx={{ display: "flex", justifyContent: "center" }}
 					>
-						If you liked this, you might also like:
+						{t("movie.1")}
 					</Typography>
 					<Box
 						container="true"

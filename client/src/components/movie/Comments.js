@@ -6,9 +6,9 @@ import NewComment from "./NewComment";
 import commentService from "../../services/commentService";
 import { format } from "timeago.js";
 
-const Comments = ({ movieId }) => {
+const Comments = ({ movieId, t }) => {
 	const [comments, setComments] = useState({});
-	const [refresh, setRefresh] = useState(null)
+	const [refresh, setRefresh] = useState(null);
 
 	useEffect(() => {
 		commentService.getComments(movieId).then((response) => {
@@ -19,7 +19,7 @@ const Comments = ({ movieId }) => {
 	return (
 		<>
 			<Container maxWidth="md" sx={{ pt: 5, pb: 5 }}>
-				<NewComment movieId={movieId} setRefresh={setRefresh}/>
+				<NewComment movieId={movieId} setRefresh={setRefresh} t={t} />
 				<Paper style={{ padding: "20px 20px", marginTop: 10 }}>
 					{comments.length > 0 ? (
 						comments.sort((a, b) => b.id - a.id) &&
@@ -77,7 +77,7 @@ const Comments = ({ movieId }) => {
 								color: "gray",
 							}}
 						>
-							No comments. 😔
+							{t("movie.2")}
 						</p>
 					)}
 				</Paper>
