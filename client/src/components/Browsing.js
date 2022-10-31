@@ -6,23 +6,24 @@ import {
 	CardMedia,
 	Typography,
 	Button,
+	InputBase,
 	CardActionArea,
 	Paper,
 	Container,
 	Autocomplete,
-} from "@mui/material";
-import "../css/style.css";
-import { useNavigate } from "react-router-dom";
-import useFetch from "../hooks/useFetch";
-import LoaderDots from "./LoaderDots";
-
-import {
+	IconButton,
 	InputLabel,
 	MenuItem,
 	FormControl,
 	Select,
 	TextField,
+	Grid,
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import "../css/style.css";
+import { useNavigate } from "react-router-dom";
+import useFetch from "../hooks/useFetch";
+import LoaderDots from "./LoaderDots";
 
 const Browsing = ({ t }) => {
 	const [page, setPage] = useState(1);
@@ -112,106 +113,116 @@ const Browsing = ({ t }) => {
 
 	return (
 		<Container
-			sx={{ maxWidth: 1080, display: "flex", flexDirection: "column" }}
+			sx={{
+				maxWidth: 1080,
+				display: "flex",
+				flexDirection: "column",
+				alignItems: 'center',
+			}}
 		>
-			<Box
+			<Paper
 				sx={{
-					display: "flex",
-					justifyContent: "center",
-					alignItems: "center",
 					flexDirection: "column",
-					mt: 1,
+					alignItems: "center",
+					justifyContent: "space-around",
+					display: "flex",
+					width: "100%",
+					maxWidth: 1030,
+					height: "100%",
+					margin: 1,
+					padding: 1,
 				}}
 			>
-				<Paper
-					sx={{
-						direction: "column",
-						alignItems: "center",
-						justifyContent: "space-around",
-						display: "flex",
-						width: "100%",
-						maxWidth: 1030,
-						height: "100%",
-						margin: 1,
-						padding: 1,
-					}}
-				>
-					<Box>
-						<TextField
-							size="small"
-							type="text"
-							label={t("browsing.1")}
-							variant="outlined"
-							value={query}
-							onChange={handleQueryChange}
-							inputProps={{ maxLength: 40 }}
-						/>
-						<Button
-							sx={{ marginLeft: 1, marginTop: 0.2 }}
-							variant="outlined"
-							type="submit"
-							onClick={submitMovieQuery}
-						>
-							{t("browsing.1")}
-						</Button>
-					</Box>
-
-					<Autocomplete
-						value={genre}
-						onChange={(event, value) => {
-							setGenre(value);
-						}}
-						id="genre-select"
-						disablePortal
-						sx={{ width: "50vw", maxWidth: 200 }}
-						getOptionLabel={(option) => option.label}
-						isOptionEqualToValue={(option, value) =>
-							option.value === value.value
-						}
-						options={genres}
-						autoHighlight
-						renderInput={(params) => (
-							<TextField {...params} label={t("browsing.6")} />
-						)}
-					/>
-
-					<Autocomplete
-						value={sort_by}
-						onChange={(event, value) => {
-							setSortBy(value);
-						}}
-						id="sort-select"
-						disablePortal
-						sx={{ width: "50vw", maxWidth: 200 }}
-						getOptionLabel={(option) => option.label}
-						isOptionEqualToValue={(option, value) =>
-							option.value === value.value
-						}
-						options={sortList}
-						autoHighlight
-						renderInput={(params) => (
-							<TextField {...params} label="Sort by" />
-						)}
-					/>
-
-					<FormControl>
-						<InputLabel id="asc-desc">Order by</InputLabel>
-						<Select
-							labelId="asc-desc"
-							id="asc-desc-select"
-							value={order_by}
-							sx={{ width: "50vw", maxWidth: 200 }}
-							label="Order by"
-							onChange={(event) => {
-								setOrderBy(event.target.value);
+				<Grid container spacing={2} display='flex'>
+					<Grid item xs={12} sm={3}>
+						<Paper
+							elevation={0}
+							sx={{
+								p: '2px 4px',
+								display: 'flex',
+								alignItems: 'center',
+								width: '100%',
+								height: '56px',
+								border: '1px solid #C4C4C4',
 							}}
 						>
-							<MenuItem value={"asc"}>Ascending</MenuItem>
-							<MenuItem value={"desc"}>Descending</MenuItem>
-						</Select>
-					</FormControl>
-				</Paper>
-			</Box>
+							<InputBase
+								value={query}
+								onChange={handleQueryChange}
+								sx={{ ml: 1, flex: 1 }}
+								placeholder={t("browsing.1")}
+								inputProps={{ 'aria-label': 'search movies' }}
+							/>
+							<IconButton
+								type="button"
+								sx={{ p: '10px' }}
+								aria-label="search"
+								onClick={submitMovieQuery}
+							>
+								<SearchIcon />
+							</IconButton>
+						</Paper>
+					</Grid>
+					<Grid item xs={12} sm={3} >
+						<Autocomplete
+							value={genre}
+							onChange={(event, value) => {
+								setGenre(value);
+							}}
+							id="genre-select"
+							disablePortal
+							sx={{ width: "100%" }}
+							getOptionLabel={(option) => option.label}
+							isOptionEqualToValue={(option, value) =>
+								option.value === value.value
+							}
+							options={genres}
+							autoHighlight
+							renderInput={(params) => (
+								<TextField {...params} label={t("browsing.6")} />
+							)}
+						/>
+					</Grid>
+					<Grid item xs={12} sm={3}>
+						<Autocomplete
+							value={sort_by}
+							onChange={(event, value) => {
+								setSortBy(value);
+							}}
+							id="sort-select"
+							disablePortal
+							sx={{ width: "100%" }}
+							getOptionLabel={(option) => option.label}
+							isOptionEqualToValue={(option, value) =>
+								option.value === value.value
+							}
+							options={sortList}
+							autoHighlight
+							renderInput={(params) => (
+								<TextField {...params} label="Sort by" />
+							)}
+						/>
+					</Grid>
+					<Grid item xs={12} sm={3}>
+						<FormControl sx={{ width: '100%' }}>
+							<InputLabel id="asc-desc">Order by</InputLabel>
+							<Select
+								labelId="asc-desc"
+								id="asc-desc-select"
+								value={order_by}
+								sx={{ width: "100%" }}
+								label="Order by"
+								onChange={(event) => {
+									setOrderBy(event.target.value);
+								}}
+							>
+								<MenuItem value={"asc"}>Ascending</MenuItem>
+								<MenuItem value={"desc"}>Descending</MenuItem>
+							</Select>
+						</FormControl>
+					</Grid>
+				</Grid>
+			</Paper>
 
 			<Box
 				container="true"
