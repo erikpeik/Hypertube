@@ -28,7 +28,7 @@ const theme = createTheme({
 	},
 });
 
-export const SetNewPassword = () => {
+export const SetNewPassword = ({ t }) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const params = useParams();
@@ -46,11 +46,7 @@ export const SetNewPassword = () => {
 		signUpService.setNewPassword(passwords).then((result) => {
 			if (result === true) {
 				dispatch(changeSeverity("success"));
-				dispatch(
-					changeNotification(
-						"Password successfully changed! Please log in."
-					)
-				);
+				dispatch(changeNotification(`${t("reset.1")}`));
 				navigate("/login");
 			} else {
 				dispatch(changeSeverity("error"));
@@ -68,19 +64,17 @@ export const SetNewPassword = () => {
 						align="center"
 						sx={{ fontWeight: 550 }}
 					>
-						Set new password
+						{t("reset.2")}
 					</Typography>
-					<Typography align="center">
-						Enter a new secure password for your account.
-					</Typography>
+					<Typography align="center">{t("reset.3")}</Typography>
 					<form onSubmit={sendNewPassword}>
 						<TextField
 							type="password"
 							fullWidth
 							margin="dense"
 							name="password"
-							label="New Password"
-							placeholder="New password"
+							label={t("reset.4")}
+							placeholder={t("reset.4")}
 							required
 						></TextField>
 						<TextField
@@ -88,8 +82,8 @@ export const SetNewPassword = () => {
 							fullWidth
 							margin="dense"
 							name="confirm_password"
-							label="Confirm new password"
-							placeholder="Confirm new password"
+							label={t("reset.5")}
+							placeholder={t("reset.5")}
 							required
 						></TextField>
 						<Button
@@ -99,7 +93,7 @@ export const SetNewPassword = () => {
 							size="large"
 							sx={{ mt: 1 }}
 						>
-							Submit
+							{t("reset.6")}
 						</Button>
 					</form>
 					<Notification />
@@ -109,7 +103,7 @@ export const SetNewPassword = () => {
 	);
 };
 
-const ResetPasswordForm = () => {
+const ResetPasswordForm = ({ t }) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
@@ -121,8 +115,7 @@ const ResetPasswordForm = () => {
 		};
 
 		signUpService.resetPassword(resetInfo).then((result) => {
-			const message = `If an account with these details was found, a reset email was sent.
-							Please check your inbox to reset your password.`;
+			const message = `${t("reset.10")}`;
 
 			if (result === true) {
 				dispatch(setNotification(message, 10));
@@ -142,20 +135,17 @@ const ResetPasswordForm = () => {
 					align="center"
 					sx={{ frontWeight: 550 }}
 				>
-					Reset Password
+					{t("reset.7")}
 				</Typography>
-				<Typography align="center">
-					Please enter either your username or e-mail address to reset
-					your password.
-				</Typography>
+				<Typography align="center">{t("reset.8")}</Typography>
 				<form onSubmit={sendPasswordMail}>
 					<TextField
 						fullWidth
 						margin="normal"
 						name="reset"
 						size="30"
-						placeholder="Username / Email address"
-						label="Username / Email address"
+						placeholder={t("reset.9")}
+						label={t("reset.9")}
 						autoComplete="email"
 						required
 					/>
@@ -166,7 +156,7 @@ const ResetPasswordForm = () => {
 						size="large"
 						sx={{ mt: 1 }}
 					>
-						Reset password
+						{t("reset.7")}
 					</Button>
 				</form>
 				<Notification />

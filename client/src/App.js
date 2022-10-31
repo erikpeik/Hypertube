@@ -49,7 +49,7 @@ const App = () => {
 					<button onClick={() => i18n.changeLanguage("en")}>
 						en
 					</button>
-					<NavBar />
+					<NavBar t={t} />
 					<Routes>
 						<Route path="/" element={<Frontpage t={t} />} />
 						<Route path="/login" element={<Login t={t} />} />
@@ -59,23 +59,29 @@ const App = () => {
 						<Route path="/movie/:id" element={<MoviePage />} />
 						<Route
 							path="/confirm/:user/:code"
-							element={<ConfirmMail />}
+							element={<ConfirmMail t={t} />}
 						/>
 						<Route
 							path="/login/resetpassword"
-							element={<ResetPassword />}
+							element={<ResetPassword t={t} />}
 						/>
 						<Route
 							path="/resetpassword/:user/:code"
-							element={<SetNewPassword />}
+							element={<SetNewPassword t={t} />}
 						/>
 						<Route
 							path="/changepassword"
-							element={<ChangePassword />}
+							element={<ChangePassword t={t} />}
 						/>
-						<Route path="/settings" element={<ProfileSettings t={t} />} />
-						<Route path="/logout" element={<Logout />} />
-						<Route path="/deleteuser" element={<DeleteUser />} />
+						<Route
+							path="/settings"
+							element={<ProfileSettings t={t} />}
+						/>
+						<Route path="/logout" element={<Logout t={t} />} />
+						<Route
+							path="/deleteuser"
+							element={<DeleteUser t={t} />}
+						/>
 						<Route path="/videoplayer" element={<VideoPlayer />} />
 						<Route path="*" element={<PathNotExists />} />
 					</Routes>

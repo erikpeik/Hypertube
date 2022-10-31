@@ -1,28 +1,28 @@
-import { useParams, useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import signUpService from '../../services/signUpService'
-import { changeNotification } from '../../reducers/notificationReducer'
-import { changeSeverity } from '../../reducers/severityReducer'
+import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import signUpService from "../../services/signUpService";
+import { changeNotification } from "../../reducers/notificationReducer";
+import { changeSeverity } from "../../reducers/severityReducer";
 
-const ConfirmMail = () => {
-	const dispatch = useDispatch()
-	const navigate = useNavigate()
+const ConfirmMail = ({ t }) => {
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	const userToVerify = {
 		username: useParams().user,
-		code: useParams().code
-	}
+		code: useParams().code,
+	};
 
 	signUpService.verifyUser(userToVerify).then((result) => {
 		if (result === true) {
-			dispatch(changeSeverity('success'))
-			dispatch(changeNotification("User verified successfully! Please log in."))
+			dispatch(changeSeverity("success"));
+			dispatch(changeNotification(`${t("confirm.1")}`));
 		} else {
-			dispatch(changeSeverity('error'))
-			dispatch(changeNotification("User verifying failed."))
+			dispatch(changeSeverity("error"));
+			dispatch(changeNotification(`${t("confirm.2")}`));
 		}
-		navigate('/login')
-	})
-}
+		navigate("/login");
+	});
+};
 
-export default ConfirmMail
+export default ConfirmMail;

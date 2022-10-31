@@ -39,7 +39,9 @@
 	"del": {
 		"1": "Sigur doriți să vă ștergeți complet contul?",
 		"2": "Sigur, sigur???",
-		"3": "100% sigur?"
+		"3": "100% sigur?",
+		"4": "Contul a fost șters! Adios!",
+		"5": ""
 	},
 	"profile_settings": {
 		"0": "Profil",
@@ -49,7 +51,30 @@
 		"4": "Nume",
 		"5": "Prenume",
 		"6": "E-mail",
-		"7": "Salvează setările"
+		"7": "Salvează setările",
+		"8": "Noua parolă setată!",
+		"9": "Schimbă parola",
+		"10": "Parola veche",
+		"11": "Parola nouă",
+		"12": "Confirmă parola nouă",
+		"13": "Submite",
+		"14": "Introduce parola veche, iar apoi pe cea nouă."
+	},
+	"reset": {
+		"1": "Noua parolă setată!",
+		"2": "Alegeți o parolă nouă",
+		"3": "Introduceți o parolă nouă",
+		"4": "Parola nouă",
+		"5": "Confirmă parola nouă",
+		"6": "Submite",
+		"7": "Resetați parola",
+		"8": "Petru a reseta parola vă rugăm să introduceți adresa de e-mail sau numele de utilizator.",
+		"9": "Nume utilizator / Adresa e-mail",
+		"10": "Dacă informațiile introduse au fost găsite în baza de date, un e-mail a fost trimis la adresa dumneavoastră de e-mail."
+	},
+	"confirm": {
+		"1": "Utilizatorul a fost verificat cu success!",
+		"2": "Verificarea utilizatorului a eșuat."
 	},
 	"nav": {
 		"1": "Autentificare",

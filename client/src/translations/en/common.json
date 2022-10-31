@@ -39,7 +39,9 @@
 	"del": {
 		"1": "Are you sure you want to completely delete your account?",
 		"2": "Are you really, REALLY sure?",
-		"3": "Are you 100% sure?"
+		"3": "Are you 100% sure?",
+		"4": "Your account has been deleted! Bye bye!",
+		"5": "Logged out. Thank you for using Hypertube!"
 	},
 	"profile_settings": {
 		"0": "Profile",
@@ -49,7 +51,30 @@
 		"4": "First name",
 		"5": "Last Name",
 		"6": "E-mail",
-		"7": "Save settings"
+		"7": "Save settings",
+		"8": "New password created successfully!",
+		"9": "Change password",
+		"10": "Old Password",
+		"11": "New Password",
+		"12": "Confirm new password",
+		"13": "Submit",
+		"14": "Please confirm your old password to make a new one."
+	},
+	"reset": {
+		"1": "Password successfully changed! Please log in.",
+		"2": "Set new password",
+		"3": "Enter a new secure password for your account.",
+		"4": "New Password",
+		"5": "Confirm new password",
+		"6": "Submit",
+		"7": "Reset password",
+		"8": "Please enter either your username or e-mail address to reset your password.",
+		"9": "Username / Email address",
+		"10": "If an account with these details was found, a reset email was sent. Please check your inbox to reset your password."
+	},
+	"confirm": {
+		"1": "User verified successfully! Please log in.",
+		"2": "User verifying failed."
 	},
 	"nav": {
 		"1": "Login",
