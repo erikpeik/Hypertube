@@ -20,7 +20,7 @@ const DeleteUser = ({t}) => {
 				dispatch(changeNotification(result));
 			}
 		});
-	}, [dispatch, navigate]);
+	}, [dispatch, navigate, t]);
 };
 
 export default DeleteUser;

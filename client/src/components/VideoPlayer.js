@@ -25,7 +25,7 @@ const VideoPlayer = ({ imdb_id, status, movieTitle }) => {
 			console.log(response)
 			setSubtitles(response)
 		}))
-	}, []);
+	}, [imdb_id]);
 
 	const { playing, mute, volume, playerbackRate, played } = playerState;
 

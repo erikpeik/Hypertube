@@ -21,7 +21,7 @@ const Logout = ({ t }) => {
 			dispatch(changeNotification(`${t("del.5")}`));
 		// socket.emit("logOut", { socketID: socket.id })
 		navigate("/login");
-	}, [dispatch, navigate, notification]);
+	}, [dispatch, navigate, notification, t]);
 };
 
 export default Logout;

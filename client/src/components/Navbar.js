@@ -21,24 +21,27 @@ const navbar_theme = createTheme({
 	}
 })
 
-const NavBar = ( ) => {
+const NavBar = ({ t }) => {
 	const [anchorElNav, setAnchorElNav] = useState(null)
 
 	const user = useSelector(state => state.user)
 
 	let pages = {}
 
+	let translate1 = `${t("nav.1")}`
+	let translate2 = `${t("nav.2")}`
+	let translate3 = `${t("nav.3")}`
+	let translate4 = `${t("nav.4")}`
+	let translate5 = `${t("nav.5")}`
+	console.log(translate1)
+
 	if (user === '') {
-		pages = {
-			'Login': '/login',
-			'Signup': '/signup',
-		}
+		pages[translate1] = '/login'
+		pages[translate2] = '/signup'
 	} else {
-		pages = {
-			'Profile': '/profile',
-			'Browsing': '/browsing',
-			'Log Out': '/logout'
-		}
+		pages[translate3] = '/profile'
+		pages[translate4] = '/browsing'
+		pages[translate5] = '/logout'
 	}
 
 	const handleOpenNavMenu = (event) => {
