@@ -5,24 +5,18 @@ import {
 	CardContent,
 	CardMedia,
 	Typography,
-	InputBase,
 	CardActionArea,
 	Paper,
 	Container,
-	Autocomplete,
-	IconButton,
-	InputLabel,
-	MenuItem,
-	FormControl,
-	Select,
-	TextField,
 	Grid,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import '../css/style.css';
 import { useNavigate } from 'react-router-dom';
 import useFetch from '../hooks/useFetch';
 import LoaderDots from './LoaderDots';
+import QuerySearch from './browsing/QuerySearch';
+import AutoBrowsing from './browsing/AutoBrowsing';
+import OrderBy from './browsing/OrderBy';
 
 const Browsing = ({ t }) => {
 	const [page, setPage] = useState(1);
@@ -134,102 +128,37 @@ const Browsing = ({ t }) => {
 			>
 				<Grid container spacing={2} display="flex">
 					<Grid item xs={12} sm={3}>
-						<Paper
-							elevation={0}
-							sx={{
-								p: '2px 4px',
-								display: 'flex',
-								alignItems: 'center',
-								width: '100%',
-								height: '56px',
-								border: '1px solid #C4C4C4',
-								'&:hover': {
-									border: '1px solid #000000',
-								},
-							}}
-						>
-							<InputBase
-								value={query}
-								onChange={handleQueryChange}
-								sx={{ ml: 1, flex: 1 }}
-								placeholder={t('browsing.1')}
-								inputProps={{ 'aria-label': 'search movies' }}
-								onKeyPress={(event) => {
-									if (event.key === 'Enter') {
-										submitMovieQuery(event);
-									}
-								}}
-							/>
-							<IconButton
-								type="button"
-								sx={{ p: '10px' }}
-								aria-label="search"
-								onClick={submitMovieQuery}
-							>
-								<SearchIcon />
-							</IconButton>
-						</Paper>
+						<QuerySearch
+							t={t}
+							query={query}
+							handleQueryChange={handleQueryChange}
+							submitMovieQuery={submitMovieQuery}
+						/>
 					</Grid>
 					<Grid item xs={12} sm={3}>
-						<Autocomplete
+						<AutoBrowsing
 							value={genre}
-							onChange={(event, value) => {
-								setGenre(value);
-							}}
-							id="genre-select"
-							disablePortal
-							sx={{ width: '100%' }}
-							getOptionLabel={(option) => option.label}
-							isOptionEqualToValue={(option, value) =>
-								option.value === value.value
-							}
+							setValue={setGenre}
+							id="genre-list"
 							options={genres}
-							autoHighlight
-							renderInput={(params) => (
-								<TextField
-									{...params}
-									label={t('browsing.6')}
-								/>
-							)}
+							label={t('browsing.6')}
 						/>
 					</Grid>
 					<Grid item xs={12} sm={3}>
-						<Autocomplete
+						<AutoBrowsing
 							value={sort_by}
-							onChange={(event, value) => {
-								setSortBy(value);
-							}}
+							setValue={setSortBy}
 							id="sort-select"
-							disablePortal
-							sx={{ width: '100%' }}
-							getOptionLabel={(option) => option.label}
-							isOptionEqualToValue={(option, value) =>
-								option.value === value.value
-							}
 							options={sortList}
-							autoHighlight
-							renderInput={(params) => (
-								<TextField {...params} label="Sort by" />
-							)}
+							label={t('browsing.7')}
 						/>
 					</Grid>
 					<Grid item xs={12} sm={3}>
-						<FormControl sx={{ width: '100%' }}>
-							<InputLabel id="asc-desc">Order by</InputLabel>
-							<Select
-								labelId="asc-desc"
-								id="asc-desc-select"
-								value={order_by}
-								sx={{ width: '100%' }}
-								label="Order by"
-								onChange={(event) => {
-									setOrderBy(event.target.value);
-								}}
-							>
-								<MenuItem value={'asc'}>Ascending</MenuItem>
-								<MenuItem value={'desc'}>Descending</MenuItem>
-							</Select>
-						</FormControl>
+						<OrderBy
+							t={t}
+							value={order_by}
+							setValue={setOrderBy}
+						/>
 					</Grid>
 				</Grid>
 			</Paper>
