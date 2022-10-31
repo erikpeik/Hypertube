@@ -1,11 +1,10 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
 	Box,
 	Card,
 	CardContent,
 	CardMedia,
 	Typography,
-	Button,
 	InputBase,
 	CardActionArea,
 	Paper,
@@ -18,21 +17,21 @@ import {
 	Select,
 	TextField,
 	Grid,
-} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import "../css/style.css";
-import { useNavigate } from "react-router-dom";
-import useFetch from "../hooks/useFetch";
-import LoaderDots from "./LoaderDots";
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import '../css/style.css';
+import { useNavigate } from 'react-router-dom';
+import useFetch from '../hooks/useFetch';
+import LoaderDots from './LoaderDots';
 
 const Browsing = ({ t }) => {
 	const [page, setPage] = useState(1);
-	const [query, setQuery] = useState("");
+	const [query, setQuery] = useState('');
 	const [genre, setGenre] = useState(null);
 	const [sort_by, setSortBy] = useState(null);
 	const [order_by, setOrderBy] = useState('desc');
 
-	const [submittedQuery, setSubmittedQuery] = useState("");
+	const [submittedQuery, setSubmittedQuery] = useState('');
 	const { loading, error, movies } = useFetch(
 		submittedQuery,
 		page,
@@ -58,7 +57,7 @@ const Browsing = ({ t }) => {
 	useEffect(() => {
 		const options = {
 			root: null,
-			rootMargin: "20px",
+			rootMargin: '20px',
 			threshold: 0,
 		};
 		const observer = new IntersectionObserver(handleObserver, options);
@@ -68,7 +67,7 @@ const Browsing = ({ t }) => {
 	const submitMovieQuery = (event) => {
 		event.preventDefault();
 		const value = query.trim();
-		console.log("value", value);
+		console.log('value', value);
 		setSubmittedQuery(value);
 	};
 
@@ -79,28 +78,28 @@ const Browsing = ({ t }) => {
 	};
 
 	const genres = [
-		{ label: t("categories.1"), value: "Action" },
-		{ label: t("categories.2"), value: "Adventure" },
-		{ label: t("categories.3"), value: "Animation" },
-		{ label: t("categories.4"), value: "Biography" },
-		{ label: t("categories.5"), value: "Comedy" },
-		{ label: t("categories.6"), value: "Crime" },
-		{ label: t("categories.7"), value: "Documentary" },
-		{ label: t("categories.8"), value: "Drama" },
-		{ label: t("categories.9"), value: "Family" },
-		{ label: t("categories.10"), value: "Fantasy" },
-		{ label: t("categories.11"), value: "Film-Noir" },
-		{ label: t("categories.12"), value: "History" },
-		{ label: t("categories.13"), value: "Horror" },
-		{ label: t("categories.14"), value: "Music" },
-		{ label: t("categories.15"), value: "Musical" },
-		{ label: t("categories.16"), value: "Mystery" },
-		{ label: t("categories.17"), value: "Romance" },
-		{ label: t("categories.18"), value: "Sci-Fi" },
-		{ label: t("categories.19"), value: "Sport" },
-		{ label: t("categories.20"), value: "Thriller" },
-		{ label: t("categories.21"), value: "War" },
-		{ label: t("categories.22"), value: "Western" },
+		{ label: t('categories.1'), value: 'Action' },
+		{ label: t('categories.2'), value: 'Adventure' },
+		{ label: t('categories.3'), value: 'Animation' },
+		{ label: t('categories.4'), value: 'Biography' },
+		{ label: t('categories.5'), value: 'Comedy' },
+		{ label: t('categories.6'), value: 'Crime' },
+		{ label: t('categories.7'), value: 'Documentary' },
+		{ label: t('categories.8'), value: 'Drama' },
+		{ label: t('categories.9'), value: 'Family' },
+		{ label: t('categories.10'), value: 'Fantasy' },
+		{ label: t('categories.11'), value: 'Film-Noir' },
+		{ label: t('categories.12'), value: 'History' },
+		{ label: t('categories.13'), value: 'Horror' },
+		{ label: t('categories.14'), value: 'Music' },
+		{ label: t('categories.15'), value: 'Musical' },
+		{ label: t('categories.16'), value: 'Mystery' },
+		{ label: t('categories.17'), value: 'Romance' },
+		{ label: t('categories.18'), value: 'Sci-Fi' },
+		{ label: t('categories.19'), value: 'Sport' },
+		{ label: t('categories.20'), value: 'Thriller' },
+		{ label: t('categories.21'), value: 'War' },
+		{ label: t('categories.22'), value: 'Western' },
 	];
 
 	const sortList = [
@@ -108,32 +107,32 @@ const Browsing = ({ t }) => {
 		{ label: 'Rating', value: 'rating' },
 		{ label: 'Year', value: 'year' },
 		{ label: 'Seeds', value: 'seeds' },
-		{ label: 'Date added', value: 'date_added' }
-	]
+		{ label: 'Date added', value: 'date_added' },
+	];
 
 	return (
 		<Container
 			sx={{
 				maxWidth: 1080,
-				display: "flex",
-				flexDirection: "column",
+				display: 'flex',
+				flexDirection: 'column',
 				alignItems: 'center',
 			}}
 		>
 			<Paper
 				sx={{
-					flexDirection: "column",
-					alignItems: "center",
-					justifyContent: "space-around",
-					display: "flex",
-					width: "100%",
+					flexDirection: 'column',
+					alignItems: 'center',
+					justifyContent: 'space-around',
+					display: 'flex',
+					width: '100%',
 					maxWidth: 1030,
-					height: "100%",
+					height: '100%',
 					margin: 1,
 					padding: 1,
 				}}
 			>
-				<Grid container spacing={2} display='flex'>
+				<Grid container spacing={2} display="flex">
 					<Grid item xs={12} sm={3}>
 						<Paper
 							elevation={0}
@@ -146,15 +145,20 @@ const Browsing = ({ t }) => {
 								border: '1px solid #C4C4C4',
 								'&:hover': {
 									border: '1px solid #000000',
-								}
+								},
 							}}
 						>
 							<InputBase
 								value={query}
 								onChange={handleQueryChange}
 								sx={{ ml: 1, flex: 1 }}
-								placeholder={t("browsing.1")}
+								placeholder={t('browsing.1')}
 								inputProps={{ 'aria-label': 'search movies' }}
+								onKeyPress={(event) => {
+									if (event.key === 'Enter') {
+										submitMovieQuery(event);
+									}
+								}}
 							/>
 							<IconButton
 								type="button"
@@ -166,7 +170,7 @@ const Browsing = ({ t }) => {
 							</IconButton>
 						</Paper>
 					</Grid>
-					<Grid item xs={12} sm={3} >
+					<Grid item xs={12} sm={3}>
 						<Autocomplete
 							value={genre}
 							onChange={(event, value) => {
@@ -174,7 +178,7 @@ const Browsing = ({ t }) => {
 							}}
 							id="genre-select"
 							disablePortal
-							sx={{ width: "100%" }}
+							sx={{ width: '100%' }}
 							getOptionLabel={(option) => option.label}
 							isOptionEqualToValue={(option, value) =>
 								option.value === value.value
@@ -182,7 +186,10 @@ const Browsing = ({ t }) => {
 							options={genres}
 							autoHighlight
 							renderInput={(params) => (
-								<TextField {...params} label={t("browsing.6")} />
+								<TextField
+									{...params}
+									label={t('browsing.6')}
+								/>
 							)}
 						/>
 					</Grid>
@@ -194,7 +201,7 @@ const Browsing = ({ t }) => {
 							}}
 							id="sort-select"
 							disablePortal
-							sx={{ width: "100%" }}
+							sx={{ width: '100%' }}
 							getOptionLabel={(option) => option.label}
 							isOptionEqualToValue={(option, value) =>
 								option.value === value.value
@@ -213,14 +220,14 @@ const Browsing = ({ t }) => {
 								labelId="asc-desc"
 								id="asc-desc-select"
 								value={order_by}
-								sx={{ width: "100%" }}
+								sx={{ width: '100%' }}
 								label="Order by"
 								onChange={(event) => {
 									setOrderBy(event.target.value);
 								}}
 							>
-								<MenuItem value={"asc"}>Ascending</MenuItem>
-								<MenuItem value={"desc"}>Descending</MenuItem>
+								<MenuItem value={'asc'}>Ascending</MenuItem>
+								<MenuItem value={'desc'}>Descending</MenuItem>
 							</Select>
 						</FormControl>
 					</Grid>
@@ -231,13 +238,13 @@ const Browsing = ({ t }) => {
 				container="true"
 				spacing={3}
 				style={{
-					direction: "column",
-					alignItems: "center",
-					justifyContent: "center",
-					display: "flex",
-					flexWrap: "wrap",
-					width: "100%",
-					height: "100%",
+					direction: 'column',
+					alignItems: 'center',
+					justifyContent: 'center',
+					display: 'flex',
+					flexWrap: 'wrap',
+					width: '100%',
+					height: '100%',
 				}}
 			>
 				{movies.map((movie, value) => (
@@ -257,7 +264,7 @@ const Browsing = ({ t }) => {
 							<CardActionArea>
 								<CardContent
 									style={{
-										textOverflow: "ellipsis",
+										textOverflow: 'ellipsis',
 									}}
 									className="newsletter"
 								>
@@ -265,11 +272,11 @@ const Browsing = ({ t }) => {
 										gutterBottom
 										variant="h7"
 										style={{
-											whiteSpace: "pre-line",
-											overflowWrap: "break-word",
-											wordWrap: "break-word",
-											hyphens: "auto",
-											overflow: "hidden",
+											whiteSpace: 'pre-line',
+											overflowWrap: 'break-word',
+											wordWrap: 'break-word',
+											hyphens: 'auto',
+											overflow: 'hidden',
 										}}
 									>
 										{movie.title_long}
@@ -292,7 +299,7 @@ const Browsing = ({ t }) => {
 									alt={movie.title_long}
 									onError={(e) => {
 										e.target.onerror = null;
-										e.target.src = require("../images/no_image.png");
+										e.target.src = require('../images/no_image.png');
 									}}
 								/>
 							</CardActionArea>
