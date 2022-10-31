@@ -7,6 +7,7 @@ import { I18nextProvider } from "react-i18next";
 import i18next from "i18next";
 import common_ro from "./translations/ro/common.json";
 import common_en from "./translations/en/common.json";
+import common_fi from "./translations/fi/common.json";
 
 i18next.init({
 	interpolation: { escapeValue: false },
@@ -17,6 +18,9 @@ i18next.init({
 		},
 		ro: {
 			common: common_ro,
+		},
+		fi: {
+			common: common_fi,
 		},
 	},
 });

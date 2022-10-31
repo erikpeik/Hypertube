@@ -1,0 +1,86 @@
+{
+	"landing": {
+		"1": "Saa loputon viihde, aivan sormenpäissäsi.",
+		"2": "Kirjaudu nyt ilman kustannusta",
+		"3": "Striimaa elokuvia linjoilla ilman tilausvaatimusta.",
+		"4": "BitTorrent-protokollalla elokuvien lataus turvallisesti ja nopeasti.",
+		"5": "Uusimmat elokuvat ja vanhimmat klassikot, kaikki samassa paketissa."
+	},
+	"login": {
+		"1": "Kirjaudu",
+		"2": "Kirjaudu ja aloita chillaus nyt!",
+		"3": "Käyttäjänimi tai sähköpostiosoite",
+		"4": "Salasana",
+		"5": "Lähetä",
+		"6": "Menit sitten unohtamaan salasanasi?"
+	},
+	"register": {
+		"1": "Rekisteröidy",
+		"2": "Luo uusi tili!",
+		"3": "Käyttäjänimi",
+		"4": "Etunimi",
+		"5": "Sukunimi",
+		"6": "Sähköpostiosoite",
+		"7": "Salasana",
+		"8": "Vahvista salasana",
+		"9": "Lähetä"
+	},
+	"profile": {
+		"0": "Suurin sallittu kuvatiedoston koko on 5 megatavua.",
+		"1": "Etunimi",
+		"2": "Sukunimi",
+		"3": "Sähköpostiosoite",
+		"4": "Muokkaa profiilin asetuksia",
+		"5": "Valitse profiilikuva",
+		"6": "Vaihda salasana",
+		"7": "Poista käyttäjä",
+		"8": "Profiilikuva asetettu!"
+	},
+	"del": {
+		"1": "Are you sure you want to completely delete your account?",
+		"2": "Oletko aivan, AIVAN varma?",
+		"3": "Oletko 100% varma?",
+		"4": "Tilisi on poistettu! Terve sitten!",
+		"5": "Sinut on kirjattu ulos. Kiitos kun käytit Hypertuubia!"
+	},
+	"profile_settings": {
+		"0": "Profiili",
+		"1": "Profiilin asetukset päivitetty",
+		"2": "Tässä voit muokata profiilisi asetuksia",
+		"3": "Käyttäjänimi",
+		"4": "Etunimi",
+		"5": "Sukunimi",
+		"6": "Sähköpostiosoite",
+		"7": "Tallenna setukset",
+		"8": "Salasana vaihdettu onnistuneesti!",
+		"9": "Vaihda salasana",
+		"10": "Vanha salasana",
+		"11": "Uusi salasana",
+		"12": "Vahvista uusi salasana",
+		"13": "Lähetä",
+		"14": "Vahvista vanha salasanasi että voit luoda uuden."
+	},
+	"reset": {
+		"1": "Salasana vaihdettu onnistuneesti! Kirjaudu sisään.",
+		"2": "Aseta uusi salasana",
+		"3": "Aseta tiliisi uusi turvallinen salasana.",
+		"4": "Uusi salasana",
+		"5": "Vahvista uusi salasana",
+		"6": "Lähetä",
+		"7": "Resetoi salasana",
+		"8": "Anna käyttäjänimesi tai sähkäpostiosoitteesi salasanan nollaamiseksi.",
+		"9": "Käyttäjänimi / Sähköpostiosoite",
+		"10": "Jos näillä tiedoilla löytyi käyttäjätili, lähetimme sinulle sähköpostia. Tarkista postilaatikkosi salasanan nollaamiseksi."
+	},
+	"confirm": {
+		"1": "Käyttäjä vahvistettu onnistuneesti! Kirjaudu sisään.",
+		"2": "Käyttäjän vahvistus epäonnistui."
+	},
+	"nav": {
+		"1": "Kirjaudu",
+		"2": "Rekisteröidy",
+		"3": "Profiili",
+		"4": "Elokuvien vilkuilu",
+		"5": "Uloskirjaudu"
+	}
+}
