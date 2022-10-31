@@ -28,19 +28,16 @@ const Browsing = ({ t }) => {
 	const [page, setPage] = useState(1);
 	const [query, setQuery] = useState("");
 	const [genre, setGenre] = useState(null);
-
-	const [name, setName] = useState([]);
-	const [rate, setRate] = useState([]);
-	const [year, setYear] = useState([]);
-	const [seed, setSeed] = useState([]);
-
-	const [horror, setHorror] = useState([]);
+	const [sort_by, setSortBy] = useState(null);
+	const [order_by, setOrderBy] = useState('desc');
 
 	const [submittedQuery, setSubmittedQuery] = useState("");
 	const { loading, error, movies } = useFetch(
 		submittedQuery,
 		page,
 		genre,
+		sort_by,
+		order_by,
 		setPage
 	);
 	const loader = useRef();
@@ -49,70 +46,6 @@ const Browsing = ({ t }) => {
 	const handleQueryChange = (event) => {
 		setQuery(event.target.value);
 	};
-
-	// ========= UNDER Construction =========
-
-	const handleSortClickByHorror = () => {
-		let val = movies.sort((movie) => {
-			let test = movie.genres.filter((genre) => genre === "Horror");
-			console.log(test);
-			if (test[0] === "Horror") {
-				return -1;
-			} else {
-				return test.splice(0, test[0]);
-			}
-		});
-		setHorror(val);
-	};
-
-	// ========= UNDER Construction =========
-
-	const handleSortClickByName = () => {
-		// const strAscending = [...movies].sort((a, b) => {
-		//   return a.title > b.title ? 1 : -1;
-		// });
-		// console.log(strAscending)
-		let val = movies.sort(function (a, b) {
-			let dateA = a.title.toLowerCase();
-			let dateB = b.title.toLowerCase();
-			if (dateA < dateB) {
-				return -1;
-			} else if (dateA > dateB) {
-				return 1;
-			}
-			return 0;
-		});
-		setName(val);
-	};
-
-	const handleSortClickByRate = () => {
-		let val = movies.sort(function (a, b) {
-			return b.rating - a.rating;
-		});
-		setRate(val);
-	};
-
-	const handleSortClickByYear = () => {
-		let val = movies.sort(function (a, b) {
-			return b.year - a.year;
-		});
-		setYear(val);
-	};
-
-	const handleSortClickBySeed = () => {
-		let val = movies.sort(function (a, b) {
-			return b.torrents[0].seeds - a.torrents[0].seeds;
-		});
-		setSeed(val);
-	};
-
-	useEffect(() => {
-		setName(null);
-		setRate(null);
-		setYear(null);
-		setSeed(null);
-		setHorror(null);
-	}, [name, rate, year, seed, horror]);
 
 	const handleObserver = useCallback((entries) => {
 		const target = entries[0];
@@ -169,6 +102,14 @@ const Browsing = ({ t }) => {
 		{ label: t("categories.22"), value: "Western" },
 	];
 
+	const sortList = [
+		{ label: 'Title', value: 'title' },
+		{ label: 'Rating', value: 'rating' },
+		{ label: 'Year', value: 'year' },
+		{ label: 'Seeds', value: 'seeds' },
+		{ label: 'Date added', value: 'date_added' }
+	]
+
 	return (
 		<Container
 			sx={{ maxWidth: 1080, display: "flex", flexDirection: "column" }}
@@ -183,26 +124,19 @@ const Browsing = ({ t }) => {
 				}}
 			>
 				<Paper
-					style={{
+					sx={{
 						direction: "column",
 						alignItems: "center",
 						justifyContent: "space-around",
 						display: "flex",
 						width: "100%",
-						maxWidth: "730px",
+						maxWidth: 1030,
 						height: "100%",
-						margin: 10,
-						padding: 10,
+						margin: 1,
+						padding: 1,
 					}}
 				>
 					<Box>
-						{/* <Input
-							type="text"
-							placeholder="Search"
-							value={query}
-							onChange={handleQueryChange}
-							inputProps={{ maxLength: 40 }}
-						/> */}
 						<TextField
 							size="small"
 							type="text"
@@ -232,7 +166,7 @@ const Browsing = ({ t }) => {
 						sx={{ width: "50vw", maxWidth: 200 }}
 						getOptionLabel={(option) => option.label}
 						isOptionEqualToValue={(option, value) =>
-							option.label === value.label
+							option.value === value.value
 						}
 						options={genres}
 						autoHighlight
@@ -241,57 +175,43 @@ const Browsing = ({ t }) => {
 						)}
 					/>
 
-					<FormControl
-						sx={{ width: 125, maxWidth: 130 }}
-						size="small"
-					>
-						<InputLabel id="demo-select-small">
-							{t("browsing.7")}
-						</InputLabel>
+					<Autocomplete
+						value={sort_by}
+						onChange={(event, value) => {
+							setSortBy(value);
+						}}
+						id="sort-select"
+						disablePortal
+						sx={{ width: "50vw", maxWidth: 200 }}
+						getOptionLabel={(option) => option.label}
+						isOptionEqualToValue={(option, value) =>
+							option.value === value.value
+						}
+						options={sortList}
+						autoHighlight
+						renderInput={(params) => (
+							<TextField {...params} label="Sort by" />
+						)}
+					/>
+
+					<FormControl>
+						<InputLabel id="asc-desc">Order by</InputLabel>
 						<Select
-							value={""}
-							labelId="demo-select-small"
-							label="Sort by"
+							labelId="asc-desc"
+							id="asc-desc-select"
+							value={order_by}
+							sx={{ width: "50vw", maxWidth: 200 }}
+							label="Order by"
+							onChange={(event) => {
+								setOrderBy(event.target.value);
+							}}
 						>
-							<MenuItem
-								value={`${t("browsing.2")}` || ""}
-								onClick={handleSortClickByName}
-							>
-								{t("browsing.2")}
-							</MenuItem>
-							<MenuItem
-								value={`${t("browsing.3")}` || ""}
-								onClick={handleSortClickByRate}
-							>
-								{t("browsing.3")}
-							</MenuItem>
-							<MenuItem
-								value={`${t("browsing.4")}` || ""}
-								onClick={handleSortClickByYear}
-							>
-								{t("browsing.4")}
-							</MenuItem>
-							<MenuItem
-								value={`${t("browsing.5")}` || ""}
-								onClick={handleSortClickBySeed}
-							>
-								{t("browsing.5")}
-							</MenuItem>
+							<MenuItem value={"asc"}>Ascending</MenuItem>
+							<MenuItem value={"desc"}>Descending</MenuItem>
 						</Select>
 					</FormControl>
 				</Paper>
 			</Box>
-
-			{/* <Button onClick={handleSortClickByName}>Sort by Name</Button>
-			<Button id="rate" onClick={handleSortClickByRate}>
-				Sort by Rate
-			</Button>
-			<Button id="date" onClick={handleSortClickByYear}>
-				Sort by Release Year
-			</Button>
-			<Button id="seed" onClick={handleSortClickBySeed}>
-				Sort by Seed
-			</Button> */}
 
 			<Box
 				container="true"

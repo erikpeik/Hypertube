@@ -39,7 +39,6 @@ const NavBar = ({ t }) => {
 	let translate3 = `${t("nav.3")}`;
 	let translate4 = `${t("nav.4")}`;
 	let translate5 = `${t("nav.5")}`;
-	console.log(translate1);
 
 	if (user === "") {
 		pages[translate1] = "/login";

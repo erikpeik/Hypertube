@@ -3,12 +3,14 @@ import axios from "axios";
 
 const baseUrl = 'http://localhost:3001/api/browsing/movie_query'
 
-const useFetch = (query, page, genre, setPage) => {
+const useFetch = (query, page, genre, sort_by, order_by, setPage) => {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
 	const [movies, setMovies] = useState([]);
 	const [currentQuery, setCurrentQuery] = useState('');
 	const [currentGenre, setCurrentGenre] = useState(null);
+	const [currentSortBy, setCurrentSortBy] = useState(null);
+	const [currentOrderBy, setCurrentOrderBy] = useState(null);
 
 	if (query !== currentQuery) {
 		setCurrentQuery(query);
@@ -22,12 +24,30 @@ const useFetch = (query, page, genre, setPage) => {
 		setPage(1);
 	}
 
+	if (sort_by !== currentSortBy) {
+		setCurrentSortBy(sort_by);
+		setMovies([]);
+		setPage(1);
+	}
+
+	if (order_by !== currentOrderBy) {
+		setCurrentOrderBy(order_by);
+		setMovies([]);
+		setPage(1);
+	}
+
 	const sendQuery = useCallback(async () => {
 		try {
 			setLoading(true)
 			setError(false)
-			const genre_value = genre?.value
-			const res = await axios.post(`${baseUrl}`, { query, genre: genre_value, page })
+			const values = {
+				query,
+				genre: genre?.value,
+				sort_by: sort_by?.value,
+				order_by,
+				page
+			}
+			const res = await axios.post(`${baseUrl}`, values)
 			const newMovie = res.data || []
 			if (page > 1) {
 				newMovie.splice(0, 2)
@@ -37,7 +57,7 @@ const useFetch = (query, page, genre, setPage) => {
 		} catch (err) {
 			setError(err)
 		}
-	}, [query, genre, page]);
+	}, [query, genre, page, sort_by, order_by]);
 
 	useEffect(() => {
 		sendQuery();

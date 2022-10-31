@@ -24,9 +24,13 @@ module.exports = function (app, axios) {
 	});
 
 	app.post(`${baseUrl}/movie_query`, async (req, res) => {
-		let { query, genre, page } = req.body;
+		let { query, genre, sort_by, order_by, page } = req.body;
+		console.log(req.body);
 		const limit = page === 1 ? 20 : 22;
-		const api_search = `${TORRENT_API}?query_term=${query}&genre=${genre || '' }&page=${page}&limit=${limit}`
+		if (sort_by === undefined) {
+			sort_by = 'rating'
+		}
+		const api_search = `${TORRENT_API}?query_term=${query}&genre=${genre || '' }&sort_by=${sort_by}&order_by=${order_by || ''}&page=${page}&limit=${limit}`
 		console.log(api_search)
 		axios
 			.get(api_search)
