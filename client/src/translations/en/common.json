@@ -90,7 +90,8 @@
 		"4": "Year",
 		"5": "Seed",
 		"6": "Categories",
-		"7": "Sort by"
+		"7": "Sort by",
+		"8": "IMDb rating"
 	},
 	"categories": {
 		"1": "Action",

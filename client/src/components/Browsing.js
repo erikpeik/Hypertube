@@ -24,6 +24,7 @@ const Browsing = ({ t }) => {
 	const [genre, setGenre] = useState(null);
 	const [sort_by, setSortBy] = useState(null);
 	const [order_by, setOrderBy] = useState('desc');
+	const [imdb_rating, setImdbRating] = useState(null);
 
 	const [submittedQuery, setSubmittedQuery] = useState('');
 	const { loading, error, movies } = useFetch(
@@ -32,6 +33,7 @@ const Browsing = ({ t }) => {
 		genre,
 		sort_by,
 		order_by,
+		imdb_rating,
 		setPage
 	);
 	const loader = useRef();
@@ -104,6 +106,19 @@ const Browsing = ({ t }) => {
 		{ label: 'Date added', value: 'date_added' },
 	];
 
+	const imdbRatingList = [
+		{ label: 'All', value: null },
+		{ label: '9+', value: 9 },
+		{ label: '8+', value: 8 },
+		{ label: '7+', value: 7 },
+		{ label: '6+', value: 6 },
+		{ label: '5+', value: 5 },
+		{ label: '4+', value: 4 },
+		{ label: '3+', value: 3 },
+		{ label: '2+', value: 2 },
+		{ label: '1+', value: 1 },
+	];
+
 	return (
 		<Container
 			sx={{
@@ -154,10 +169,15 @@ const Browsing = ({ t }) => {
 						/>
 					</Grid>
 					<Grid item xs={12} sm={3}>
-						<OrderBy
-							t={t}
-							value={order_by}
-							setValue={setOrderBy}
+						<OrderBy t={t} value={order_by} setValue={setOrderBy} />
+					</Grid>
+					<Grid item xs={12} sm={3}>
+						<AutoBrowsing
+							value={imdb_rating}
+							setValue={setImdbRating}
+							id="imdb-rating"
+							options={imdbRatingList}
+							label={t('browsing.8')}
 						/>
 					</Grid>
 				</Grid>

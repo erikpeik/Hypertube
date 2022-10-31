@@ -1,5 +1,5 @@
 module.exports = function (app, axios) {
-	const baseUrl = "/api/browsing";
+	const baseUrl = '/api/browsing';
 	const { TORRENT_API, OMDB_API_KEY } = process.env;
 
 	app.get(`${baseUrl}/movies`, (req, res) => {
@@ -10,7 +10,7 @@ module.exports = function (app, axios) {
 			})
 			.catch((error) => {
 				console.log(error);
-				res.status(500).send({ error: "Something went wrong" });
+				res.status(500).send({ error: 'Something went wrong' });
 			});
 	});
 
@@ -24,14 +24,18 @@ module.exports = function (app, axios) {
 	});
 
 	app.post(`${baseUrl}/movie_query`, async (req, res) => {
-		let { query, genre, sort_by, order_by, page } = req.body;
+		let { query, genre, sort_by, order_by, imdb_rating, page } = req.body;
 		console.log(req.body);
 		const limit = page === 1 ? 20 : 22;
 		if (sort_by === undefined) {
-			sort_by = 'rating'
+			sort_by = 'rating';
 		}
-		const api_search = `${TORRENT_API}?query_term=${query}&genre=${genre || '' }&sort_by=${sort_by}&order_by=${order_by || ''}&page=${page}&limit=${limit}`
-		console.log(api_search)
+		const api_search = `${TORRENT_API}?query_term=${query}&genre=${
+			genre || ''
+		}&sort_by=${sort_by}&order_by=${
+			order_by || ''
+		}&minimum_rating=${imdb_rating || ''}&page=${page}&limit=${limit}`;
+		console.log(api_search);
 		axios
 			.get(api_search)
 			.then(async (response) => {
@@ -43,7 +47,7 @@ module.exports = function (app, axios) {
 								.get(movie.medium_cover_image)
 								.catch((error) => {
 									movie.medium_cover_image =
-										"../images/no_image.png";
+										'../images/no_image.png';
 								});
 						})
 					);
@@ -52,7 +56,7 @@ module.exports = function (app, axios) {
 			})
 			.catch((error) => {
 				console.log(error);
-				res.status(500).send({ error: "Something went wrong" });
+				res.status(500).send({ error: 'Something went wrong' });
 			});
 	});
 
@@ -71,7 +75,7 @@ module.exports = function (app, axios) {
 			})
 			.catch((error) => {
 				console.log(error);
-				res.status(500).send({ error: "Something went wrong" });
+				res.status(500).send({ error: 'Something went wrong' });
 			});
 	});
 
@@ -79,9 +83,9 @@ module.exports = function (app, axios) {
 		const url = req.body.url;
 		try {
 			await axios.get(url);
-			res.status(200).send({ status: "true" });
+			res.status(200).send({ status: 'true' });
 		} catch (error) {
-			res.status(400).send({ status: "failed" });
+			res.status(400).send({ status: 'failed' });
 		}
 	});
 };

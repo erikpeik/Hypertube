@@ -1,9 +1,17 @@
-import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
+import { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
 
-const baseUrl = 'http://localhost:3001/api/browsing/movie_query'
+const baseUrl = 'http://localhost:3001/api/browsing/movie_query';
 
-const useFetch = (query, page, genre, sort_by, order_by, setPage) => {
+const useFetch = (
+	query,
+	page,
+	genre,
+	sort_by,
+	order_by,
+	imdb_rating,
+	setPage
+) => {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
 	const [movies, setMovies] = useState([]);
@@ -11,6 +19,7 @@ const useFetch = (query, page, genre, sort_by, order_by, setPage) => {
 	const [currentGenre, setCurrentGenre] = useState(null);
 	const [currentSortBy, setCurrentSortBy] = useState(null);
 	const [currentOrderBy, setCurrentOrderBy] = useState(null);
+	const [currentImdbRating, setCurrentImdbRating] = useState(null);
 
 	if (query !== currentQuery) {
 		setCurrentQuery(query);
@@ -36,34 +45,41 @@ const useFetch = (query, page, genre, sort_by, order_by, setPage) => {
 		setPage(1);
 	}
 
+	if (imdb_rating !== currentImdbRating) {
+		setCurrentImdbRating(imdb_rating);
+		setMovies([]);
+		setPage(1);
+	}
+
 	const sendQuery = useCallback(async () => {
 		try {
-			setLoading(true)
-			setError(false)
+			setLoading(true);
+			setError(false);
 			const values = {
 				query,
 				genre: genre?.value,
 				sort_by: sort_by?.value,
 				order_by,
-				page
-			}
-			const res = await axios.post(`${baseUrl}`, values)
-			const newMovie = res.data || []
+				page,
+				imdb_rating: imdb_rating?.value
+			};
+			const res = await axios.post(`${baseUrl}`, values);
+			const newMovie = res.data || [];
 			if (page > 1) {
-				newMovie.splice(0, 2)
+				newMovie.splice(0, 2);
 			}
-			setMovies((prev) => [...prev, ...newMovie])
-			setLoading(false)
+			setMovies((prev) => [...prev, ...newMovie]);
+			setLoading(false);
 		} catch (err) {
-			setError(err)
+			setError(err);
 		}
 	}, [query, genre, page, sort_by, order_by]);
 
 	useEffect(() => {
 		sendQuery();
-	}, [query, page, genre, sendQuery,]);
+	}, [query, page, genre, sendQuery]);
 
 	return { loading, error, movies };
-}
+};
 
 export default useFetch;
