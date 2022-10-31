@@ -41,6 +41,16 @@
 		"2": "Sigur, sigur???",
 		"3": "100% sigur?"
 	},
+	"profile_settings": {
+		"0": "Profil",
+		"1": "Setările profilului modificate",
+		"2": "Aici poți modifica setările de profil.",
+		"3": "Numele de utilizator",
+		"4": "Nume",
+		"5": "Prenume",
+		"6": "E-mail",
+		"7": "Salvează setările"
+	},
 	"nav": {
 		"1": "Autentificare",
 		"2": "Înscrie-te",

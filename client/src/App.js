@@ -73,7 +73,7 @@ const App = () => {
 							path="/changepassword"
 							element={<ChangePassword />}
 						/>
-						<Route path="/settings" element={<ProfileSettings />} />
+						<Route path="/settings" element={<ProfileSettings t={t} />} />
 						<Route path="/logout" element={<Logout />} />
 						<Route path="/deleteuser" element={<DeleteUser />} />
 						<Route path="/videoplayer" element={<VideoPlayer />} />

@@ -41,6 +41,16 @@
 		"2": "Are you really, REALLY sure?",
 		"3": "Are you 100% sure?"
 	},
+	"profile_settings": {
+		"0": "Profile",
+		"1": "Profile Settings Updated",
+		"2": "Here you can edit your profile settings",
+		"3": "Username",
+		"4": "First name",
+		"5": "Last Name",
+		"6": "E-mail",
+		"7": "Save settings"
+	},
 	"nav": {
 		"1": "Login",
 		"2": "Signup",
