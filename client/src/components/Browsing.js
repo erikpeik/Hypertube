@@ -5,26 +5,23 @@ import {
 	CardContent,
 	CardMedia,
 	Typography,
-	Input,
 	Button,
 	CardActionArea,
 	Paper,
 	Container,
+	Autocomplete,
 } from "@mui/material";
 import "../css/style.css";
 import { useNavigate } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import LoaderDots from "./LoaderDots";
 
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import TextField from "@mui/material/TextField";
+import { InputLabel, MenuItem, FormControl, Select, TextField } from "@mui/material";
 
 const Browsing = (props) => {
 	const [page, setPage] = useState(1);
 	const [query, setQuery] = useState("");
+	const [genre, setGenre] = useState(null);
 
 	const [name, setName] = useState([]);
 	const [rate, setRate] = useState([]);
@@ -37,12 +34,8 @@ const Browsing = (props) => {
 	const { loading, error, movies } = useFetch(
 		submittedQuery,
 		page,
+		genre,
 		setPage,
-		name,
-		rate,
-		year,
-		seed,
-		horror
 	);
 	const loader = useRef();
 	const navigate = useNavigate();
@@ -50,8 +43,6 @@ const Browsing = (props) => {
 	const handleQueryChange = (event) => {
 		setQuery(event.target.value);
 	};
-
-	// console.log(movies);
 
 	// ========= UNDER Construction =========
 
@@ -147,6 +138,31 @@ const Browsing = (props) => {
 		});
 	};
 
+	const genres = [
+		{ label: "Action" },
+		{ label: "Adventure" },
+		{ label: "Animation" },
+		{ label: "Biography" },
+		{ label: "Comedy" },
+		{ label: "Crime" },
+		{ label: "Documentary" },
+		{ label: "Drama" },
+		{ label: "Family" },
+		{ label: "Fantasy" },
+		{ label: "Film-Noir" },
+		{ label: "History" },
+		{ label: "Horror" },
+		{ label: "Music" },
+		{ label: "Musical" },
+		{ label: "Mystery" },
+		{ label: "Romance" },
+		{ label: "Sci-Fi" },
+		{ label: "Sport" },
+		{ label: "Thriller" },
+		{ label: "War" },
+		{ label: "Western" },
+	]
+
 	return (
 		<Container
 			sx={{ maxWidth: 1080, display: "flex", flexDirection: "column" }}
@@ -200,26 +216,25 @@ const Browsing = (props) => {
 						</Button>
 					</Box>
 
-					<FormControl
-						sx={{ width: 125, maxWidth: 130 }}
-						size="small"
-					>
-						<InputLabel id="demo-select-small">
-							Categories
-						</InputLabel>
-						<Select
-							value={""}
-							labelId="demo-select-small"
-							label="Sort by"
-						>
-							<MenuItem
-								value={"Horror" || ""}
-								onClick={handleSortClickByHorror}
-							>
-								Horror
-							</MenuItem>
-						</Select>
-					</FormControl>
+					<Autocomplete
+						value={genre}
+						onChange={(event, value) => {
+							setGenre(value);
+						}}
+						id='genre-select'
+						disablePortal
+						sx={{ width: '50vw', maxWidth: 200 }}
+						getOptionLabel={(option) => option.label}
+						isOptionEqualToValue={(option, value) => option.label === value.label}
+						options={genres}
+						autoHighlight
+						renderInput={(params) => (
+							<TextField
+								{...params}
+								label="Categories"
+							/>
+						)}
+					/>
 
 					<FormControl
 						sx={{ width: 125, maxWidth: 130 }}

@@ -24,7 +24,7 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 
 	const signUpUser = async (userData, response) => {
 		let password = helperFunctions.makeToken(10);
-		sql = `INSERT INTO users (username, firstname, lastname, email, password, verified) VALUES ($1,$2,$3,$4,$5,'YES') RETURNING *`;
+		const sql = `INSERT INTO users (username, firstname, lastname, email, password, verified) VALUES ($1,$2,$3,$4,$5,'YES') RETURNING *`;
 		var rows1 = await pool.query(sql, [
 			userData.username,
 			userData.firstname,

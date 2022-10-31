@@ -3,14 +3,21 @@ import axios from "axios";
 
 const baseUrl = 'http://localhost:3001/api/browsing/movie_query'
 
-const useFetch = (query, page, setPage) => {
+const useFetch = (query, page, genre, setPage) => {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
 	const [movies, setMovies] = useState([]);
 	const [currentQuery, setCurrentQuery] = useState('');
+	const [currentGenre, setCurrentGenre] = useState(null);
 
 	if (query !== currentQuery) {
 		setCurrentQuery(query);
+		setMovies([]);
+		setPage(1);
+	}
+
+	if (genre !== currentGenre) {
+		setCurrentGenre(genre);
 		setMovies([]);
 		setPage(1);
 	}
@@ -19,7 +26,8 @@ const useFetch = (query, page, setPage) => {
 		try {
 			setLoading(true)
 			setError(false)
-			const res = await axios.post(`${baseUrl}`, { query, page })
+			const genre_label = genre?.label
+			const res = await axios.post(`${baseUrl}`, { query, genre: genre_label, page })
 			const newMovie = res.data || []
 			if (page > 1) {
 				newMovie.splice(0, 2)
@@ -29,11 +37,11 @@ const useFetch = (query, page, setPage) => {
 		} catch (err) {
 			setError(err)
 		}
-	}, [query, page]);
+	}, [query, genre, page]);
 
 	useEffect(() => {
-		sendQuery(query);
-	}, [query, page, sendQuery]);
+		sendQuery();
+	}, [query, page, genre, sendQuery,]);
 
 	return { loading, error, movies };
 }
