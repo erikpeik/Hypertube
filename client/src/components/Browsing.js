@@ -144,6 +144,9 @@ const Browsing = ({ t }) => {
 								width: '100%',
 								height: '56px',
 								border: '1px solid #C4C4C4',
+								'&:hover': {
+									border: '1px solid #000000',
+								}
 							}}
 						>
 							<InputBase
