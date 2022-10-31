@@ -16,9 +16,15 @@ import { useNavigate } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import LoaderDots from "./LoaderDots";
 
-import { InputLabel, MenuItem, FormControl, Select, TextField } from "@mui/material";
+import {
+	InputLabel,
+	MenuItem,
+	FormControl,
+	Select,
+	TextField,
+} from "@mui/material";
 
-const Browsing = (props) => {
+const Browsing = ({ t }) => {
 	const [page, setPage] = useState(1);
 	const [query, setQuery] = useState("");
 	const [genre, setGenre] = useState(null);
@@ -35,7 +41,7 @@ const Browsing = (props) => {
 		submittedQuery,
 		page,
 		genre,
-		setPage,
+		setPage
 	);
 	const loader = useRef();
 	const navigate = useNavigate();
@@ -50,7 +56,7 @@ const Browsing = (props) => {
 		let val = movies.sort((movie) => {
 			let test = movie.genres.filter((genre) => genre === "Horror");
 			console.log(test);
-			if (test[0] === 'Horror') {
+			if (test[0] === "Horror") {
 				return -1;
 			} else {
 				return test.splice(0, test[0]);
@@ -139,29 +145,29 @@ const Browsing = (props) => {
 	};
 
 	const genres = [
-		{ label: "Action", value: "Action" },
-		{ label: "Adventure", value: "Adventure" },
-		{ label: "Animation", value: "Animation" },
-		{ label: "Biography", value: "Biography" },
-		{ label: "Comedy", value: "Comedy" },
-		{ label: "Crime", value: "Crime" },
-		{ label: "Documentary", value: "Documentary" },
-		{ label: "Drama", value: "Drama" },
-		{ label: "Family", value: "Family" },
-		{ label: "Fantasy", value: "Fantasy" },
-		{ label: "Film-Noir", value: "Film-Noir" },
-		{ label: "History", value: "History" },
-		{ label: "Horror", value: "Horror" },
-		{ label: "Music", value: "Music" },
-		{ label: "Musical", value: "Musical" },
-		{ label: "Mystery", value: "Mystery" },
-		{ label: "Romance", value: "Romance" },
-		{ label: "Sci-Fi", value: "Sci-Fi" },
-		{ label: "Sport", value: "Sport" },
-		{ label: "Thriller", value: "Thriller" },
-		{ label: "War", value: "War" },
-		{ label: "Western", value: "Western" },
-	]
+		{ label: t("categories.1") },
+		{ label: t("categories.2") },
+		{ label: t("categories.3") },
+		{ label: t("categories.4") },
+		{ label: t("categories.5") },
+		{ label: t("categories.6") },
+		{ label: t("categories.7") },
+		{ label: t("categories.8") },
+		{ label: t("categories.9") },
+		{ label: t("categories.10") },
+		{ label: t("categories.11") },
+		{ label: t("categories.12") },
+		{ label: t("categories.13") },
+		{ label: t("categories.14") },
+		{ label: t("categories.15") },
+		{ label: t("categories.16") },
+		{ label: t("categories.17") },
+		{ label: t("categories.18") },
+		{ label: t("categories.19") },
+		{ label: t("categories.20") },
+		{ label: t("categories.21") },
+		{ label: t("categories.22") },
+	];
 
 	return (
 		<Container
@@ -200,7 +206,7 @@ const Browsing = (props) => {
 						<TextField
 							size="small"
 							type="text"
-							label="Search"
+							label={t("browsing.1")}
 							variant="outlined"
 							value={query}
 							onChange={handleQueryChange}
@@ -212,7 +218,7 @@ const Browsing = (props) => {
 							type="submit"
 							onClick={submitMovieQuery}
 						>
-							Search
+							{t("browsing.1")}
 						</Button>
 					</Box>
 
@@ -221,18 +227,17 @@ const Browsing = (props) => {
 						onChange={(event, value) => {
 							setGenre(value);
 						}}
-						id='genre-select'
+						id="genre-select"
 						disablePortal
-						sx={{ width: '50vw', maxWidth: 200 }}
+						sx={{ width: "50vw", maxWidth: 200 }}
 						getOptionLabel={(option) => option.label}
-						isOptionEqualToValue={(option, value) => option.label === value.label}
+						isOptionEqualToValue={(option, value) =>
+							option.label === value.label
+						}
 						options={genres}
 						autoHighlight
 						renderInput={(params) => (
-							<TextField
-								{...params}
-								label="Categories"
-							/>
+							<TextField {...params} label={t("browsing.6")} />
 						)}
 					/>
 
@@ -240,35 +245,37 @@ const Browsing = (props) => {
 						sx={{ width: 125, maxWidth: 130 }}
 						size="small"
 					>
-						<InputLabel id="demo-select-small">Sort by</InputLabel>
+						<InputLabel id="demo-select-small">
+							{t("browsing.7")}
+						</InputLabel>
 						<Select
 							value={""}
 							labelId="demo-select-small"
 							label="Sort by"
 						>
 							<MenuItem
-								value={"Name" || ""}
+								value={`${t("browsing.2")}` || ""}
 								onClick={handleSortClickByName}
 							>
-								Name
+								{t("browsing.2")}
 							</MenuItem>
 							<MenuItem
-								value={"Rate" || ""}
+								value={`${t("browsing.3")}` || ""}
 								onClick={handleSortClickByRate}
 							>
-								Rate
+								{t("browsing.3")}
 							</MenuItem>
 							<MenuItem
-								value={"Year" || ""}
+								value={`${t("browsing.4")}` || ""}
 								onClick={handleSortClickByYear}
 							>
-								Year
+								{t("browsing.4")}
 							</MenuItem>
 							<MenuItem
-								value={"Seed" || ""}
+								value={`${t("browsing.5")}` || ""}
 								onClick={handleSortClickBySeed}
 							>
-								Seed
+								{t("browsing.5")}
 							</MenuItem>
 						</Select>
 					</FormControl>

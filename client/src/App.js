@@ -58,8 +58,11 @@ const App = () => {
 						<Route path="/login" element={<Login t={t} />} />
 						<Route path="/signup" element={<Signup t={t} />} />
 						<Route path="/profile" element={<Profile t={t} />} />
-						<Route path="/browsing" element={<Browsing />} />
-						<Route path="/movie/:id" element={<MoviePage />} />
+						<Route path="/browsing" element={<Browsing t={t} />} />
+						<Route
+							path="/movie/:id"
+							element={<MoviePage t={t} />}
+						/>
 						<Route
 							path="/confirm/:user/:code"
 							element={<ConfirmMail t={t} />}

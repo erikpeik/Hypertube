@@ -82,5 +82,38 @@
 		"3": "Profil",
 		"4": "Filme",
 		"5": "Deconectați-vă"
+	},
+	"browsing": {
+		"1": "Caută",
+		"2": "Nume",
+		"3": "Rating",
+		"4": "An",
+		"5": "Seed",
+		"6": "Categorii",
+		"7": "Sortează"
+	},
+	"categories": {
+		"1": "Acțiune",
+		"2": "Aventură",
+		"3": "Animație",
+		"4": "Biografie",
+		"5": "Comedie",
+		"6": "Crimă",
+		"7": "Documentar",
+		"8": "Dramă",
+		"9": "Familie",
+		"10": "Fantazie",
+		"11": "Film-Noir",
+		"12": "Istorie",
+		"13": "Groază",
+		"14": "Muzică",
+		"15": "Muzical",
+		"16": "Mister",
+		"17": "Romanță",
+		"18": "Sci-Fi",
+		"19": "Sport",
+		"20": "Triler",
+		"21": "Război",
+		"22": "Western"
 	}
 }
