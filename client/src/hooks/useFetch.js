@@ -26,8 +26,8 @@ const useFetch = (query, page, genre, setPage) => {
 		try {
 			setLoading(true)
 			setError(false)
-			const genre_label = genre?.label
-			const res = await axios.post(`${baseUrl}`, { query, genre: genre_label, page })
+			const genre_value = genre?.value
+			const res = await axios.post(`${baseUrl}`, { query, genre: genre_value, page })
 			const newMovie = res.data || []
 			if (page > 1) {
 				newMovie.splice(0, 2)
