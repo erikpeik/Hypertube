@@ -55,7 +55,7 @@ module.exports = (app, pool, bcrypt, upload, fs, path) => {
 			response.send(true);
 		} catch (error) {
 			console.log(error);
-			response.send("User settings update failed for some reason");
+			response.send("User settings update failed for some reason ¯\\_(ツ)_/¯");
 		}
 	});
 
