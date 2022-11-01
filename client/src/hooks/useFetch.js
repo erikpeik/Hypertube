@@ -73,7 +73,7 @@ const useFetch = (
 		} catch (err) {
 			setError(err);
 		}
-	}, [query, genre, page, sort_by, order_by]);
+	}, [query, genre, page, imdb_rating, sort_by, order_by]);
 
 	useEffect(() => {
 		sendQuery();
