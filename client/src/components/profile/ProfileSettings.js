@@ -36,6 +36,7 @@ const ProfileSettings = ({ t }) => {
 				firstname: profileData.firstname,
 				lastname: profileData.lastname,
 				email: profileData.email,
+				language: profileData.language,
 			});
 			setLoading(false);
 		}
