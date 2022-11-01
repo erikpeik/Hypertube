@@ -92,7 +92,9 @@
 		"6": "Kategória",
 		"7": "Rendezés",
 		"8": "IMDb értékelés",
-		"9": "Hozzáadva (Èv)"
+		"9": "Hozzáadva (Èv)",
+		"10": "Növekvő",
+		"11": "Csökkenő"
 	},
 	"categories": {
 		"1": "Akció",
