@@ -113,13 +113,15 @@ const ProfileSettings = ({ t }) => {
 					{t('profile_settings.2')}
 				</Typography>
 				<form onSubmit={submitSettings}>
-					<Box sx={{ alignItems: 'center' }}>
-
+					<Box sx={{ textAlign: 'center' }}>
+						<Typography>
+							Change your language
+						</Typography>
 						<Select
 							labelId="asc-desc"
 							id="asc-desc-select"
 							value={settings.language || ''}
-							sx={{ width: '50%' }}
+							sx={{ width: '50%', marginLeft: '25%', marginRight: '25%' }}
 							onChange={handleLanguage}
 						>
 							<MenuItem value={'English'}>🇬🇧 English</MenuItem>
