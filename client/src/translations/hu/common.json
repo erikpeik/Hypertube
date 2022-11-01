@@ -1,0 +1,127 @@
+{
+	"landing": {
+		"1": "Végtelen szórakozás csak egy karnyújtásnyira tőled.",
+		"2": "Regisztrálj fel most ingyen",
+		"3": "Sztreamelj online filmeket előfizetés nélkül.",
+		"4": "Bittorent protokollal a filmek letöltése védett és gyors.",
+		"5": "A klasszikustól a legújabb filmekig, mind egy helyen."
+	},
+	"login": {
+		"1": "Jelentkezz be",
+		"2": "Jelentkezz be és chillelj azonnal!",
+		"3": "Felhasználónév vagy e-mail cím",
+		"4": "Jelszó",
+		"5": "Bejelentkezés",
+		"6": "Elfelejtetted a jelszavad?"
+	},
+	"register": {
+		"1": "Regisztrálj fel",
+		"2": "Hozd létre fiókodat!",
+		"3": "Felhasználónév",
+		"4": "Keresztnév",
+		"5": "Vezetéknév",
+		"6": "E-mail",
+		"7": "Jelszó",
+		"8": "Jelszó megerősítése",
+		"9": "Létrehoz"
+	},
+	"profile": {
+		"0": "Maximum képméret 5megabájt.",
+		"1": "Keresztnév",
+		"2": "Vezetéknév",
+		"3": "E-mail",
+		"4": "Profil szerkesztése",
+		"5": "Profilkép feltöltése",
+		"6": "Új jelszó",
+		"7": "Fiók törlése",
+		"8": "Profilkép feltöltve!"
+	},
+	"del": {
+		"1": "Biztosan ki akarod törölni a fiókodat?",
+		"2": "Tutira biztos vagy benne?",
+		"3": "100%-an biztos vagy benne?",
+		"4": "A fiókodat töröltük! Viszlát!",
+		"5": "Kijelentkeztél. Köszönjük, hogy Hypertube-ot választottad!"
+	},
+	"profile_settings": {
+		"0": "Profil",
+		"1": "Profil beállítások frissítve",
+		"2": "Itt tudod módosítani a beállításokat",
+		"3": "Felhasználónév",
+		"4": "Keresztnév",
+		"5": "Vezetéknév",
+		"6": "E-mail",
+		"7": "Beállítások mentése",
+		"8": "Új jelszó sikeresen frissítve!",
+		"9": "Jelszó megváltoztatása",
+		"10": "Régi jelszó",
+		"11": "Új jelszó",
+		"12": "Jelszó megerősítése",
+		"13": "Mentés",
+		"14": "Erősítsd meg a jelszavadat, hogy létrehozzd az újat."
+	},
+	"reset": {
+		"1": "Jelszó sikeresen megváltoztatva! Lépj be.",
+		"2": "Új jelszó létrehozása",
+		"3": "Add meg az új biztonságos jelszavadat.",
+		"4": "Új jelszó",
+		"5": "Jelszó megerősítése",
+		"6": "Mentés",
+		"7": "Jelszó törlése",
+		"8": "Add meg felhasználónevedet vagy e-mail címedet a jelszó törléséhez.",
+		"9": "Felhasználónév / Email cím",
+		"10": "Ha a rendszer ezekkel az adatokkal rendelkező fiókot talál, visszaállított e-mailt küld neked. Ellenőrizd a beérkezett üzeneteket a jelszó törléséhez."
+	},
+	"confirm": {
+		"1": "A felhasználó sikeresen megerősítve! Jelentkezz be.",
+		"2": "A felhasználó megerősítése sikertelen."
+	},
+	"nav": {
+		"1": "Jelentkezz be",
+		"2": "Regisztrálj",
+		"3": "Profil",
+		"4": "Filmek",
+		"5": "Kijelentkeztél"
+	},
+	"browsing": {
+		"1": "Keresés",
+		"2": "Név",
+		"3": "Értékelés",
+		"4": "Év",
+		"5": "Seed",
+		"6": "Kategória",
+		"7": "Rendezés",
+		"8": "IMDb értékelés"
+	},
+	"categories": {
+		"1": "Akció",
+		"2": "Kaland",
+		"3": "Animáció",
+		"4": "Életrajz",
+		"5": "Komédia",
+		"6": "Krimi",
+		"7": "Dokumentum",
+		"8": "Dráma",
+		"9": "Család",
+		"10": "Fantázia",
+		"11": "Film-Noir",
+		"12": "Történelem",
+		"13": "Horror",
+		"14": "Zene",
+		"15": "Musical",
+		"16": "Misztérikus",
+		"17": "Románc",
+		"18": "Sci-Fi",
+		"19": "Sport",
+		"20": "Thriller",
+		"21": "Háború",
+		"22": "Western"
+	},
+	"movie": {
+		"0": "Hozzászólások ▼",
+		"1": "Ha ez tetszet, valószínűleg ezek is tetszeni fognak:",
+		"2": "Nincs hozzászólás. 😔",
+		"3": "Hozzászólás hozzáadva.",
+		"4": "Szólj hozzá"
+	}
+}

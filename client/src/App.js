@@ -52,6 +52,9 @@ const App = () => {
 					<button onClick={() => i18n.changeLanguage("fi")}>
 						fi
 					</button>
+					<button onClick={() => i18n.changeLanguage("hu")}>
+						hu
+					</button>
 					<NavBar t={t} />
 					<Routes>
 						<Route path="/" element={<Frontpage t={t} />} />

@@ -8,6 +8,7 @@ import i18next from "i18next";
 import common_ro from "./translations/ro/common.json";
 import common_en from "./translations/en/common.json";
 import common_fi from "./translations/fi/common.json";
+import common_hu from "./translations/hu/common.json";
 
 i18next.init({
 	interpolation: { escapeValue: false },
@@ -21,6 +22,9 @@ i18next.init({
 		},
 		fi: {
 			common: common_fi,
+		},
+		hu: {
+			common: common_hu,
 		},
 	},
 });
