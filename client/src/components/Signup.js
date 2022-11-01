@@ -44,20 +44,21 @@ const Signup = ({ t }) => {
 			confirmPassword: event.target.confirm_password.value,
 		};
 
-		signUpService.createUser(signedUpUser).then((result) => {
-			if (result === true) {
-				dispatch(changeSeverity("success"));
-				dispatch(
-					changeNotification(
-						"User created successfully! Please check your inbox for confirmation e-mail."
-					)
-				);
-				navigate("/login");
-			} else {
-				dispatch(changeSeverity("error"));
-				dispatch(changeNotification(result));
-			}
-		});
+		signUpService.createUser(signedUpUser)
+			.then((result) => {
+				if (result === true) {
+					dispatch(changeSeverity("success"));
+					dispatch(
+						changeNotification(
+							"User created successfully! Please check your inbox for confirmation e-mail."
+						)
+					);
+					navigate("/login");
+				} else {
+					dispatch(changeSeverity("error"));
+					dispatch(changeNotification(result));
+				}
+			}).catch(err => console.log("Signup request failed"))
 	};
 
 	return (
