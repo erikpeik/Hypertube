@@ -99,11 +99,11 @@ const Browsing = ({ t }) => {
 	];
 
 	const sortList = [
-		{ label: 'Title', value: 'title' },
-		{ label: 'Rating', value: 'rating' },
-		{ label: 'Year', value: 'year' },
-		{ label: 'Seeds', value: 'seeds' },
-		{ label: 'Date added', value: 'date_added' },
+		{ label: t('browsing.2'), value: 'title' },
+		{ label: t('browsing.3'), value: 'rating' },
+		{ label: t('browsing.4'), value: 'year' },
+		{ label: t('browsing.5'), value: 'seeds' },
+		{ label: t('browsing.9'), value: 'date_added' },
 	];
 
 	const imdbRatingList = [

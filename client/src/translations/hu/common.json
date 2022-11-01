@@ -81,7 +81,7 @@
 		"2": "Regisztrálj",
 		"3": "Profil",
 		"4": "Filmek",
-		"5": "Kijelentkeztél"
+		"5": "Kijelentkezés"
 	},
 	"browsing": {
 		"1": "Keresés",
@@ -91,7 +91,8 @@
 		"5": "Seed",
 		"6": "Kategória",
 		"7": "Rendezés",
-		"8": "IMDb értékelés"
+		"8": "IMDb értékelés",
+		"9": "Hozzáadva (Èv)"
 	},
 	"categories": {
 		"1": "Akció",
