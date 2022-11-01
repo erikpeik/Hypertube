@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import signUpService from './services/signUpService';
@@ -32,20 +32,26 @@ const App = () => {
 	const dispatch = useDispatch();
 	const [t, i18n] = useTranslation('common');
 	const profileData = useSelector((state) => state.profile);
+	const [value, setValue] = useState('');
+
 
 	useEffect(() => {
 		console.log(profileData?.language)
 		if (profileData?.language === 'English') {
 			i18n.changeLanguage('en');
+			setValue('English')
 		}
 		if (profileData?.language === 'Romanian') {
 			i18n.changeLanguage('ro');
+			setValue('Romanian')
 		}
 		if (profileData?.language === 'Finnish') {
 			i18n.changeLanguage('fi');
+			setValue('Finnish')
 		}
 		if (profileData?.language === 'Hungarian') {
 			i18n.changeLanguage('hu');
+			setValue('Hungarian')
 		}
 	}, [i18n, profileData]);
 
@@ -61,16 +67,16 @@ const App = () => {
 			<Suspense fallback="loading">
 				<Router>
 					<RedirectPage />
-					<Button onClick={() => i18n.changeLanguage('ro')}>
+					<Button value={value} variant={value === 'Romanian' ? "contained" : "text"} onClick={() => i18n.changeLanguage('ro')}>
 						🇷🇴
 					</Button>
-					<Button onClick={() => i18n.changeLanguage('en')}>
+					<Button value={value} variant={value === 'English' ? "contained" : "text"} onClick={() => i18n.changeLanguage('en')}>
 						🇬🇧
 					</Button>
-					<Button onClick={() => i18n.changeLanguage('fi')}>
+					<Button value={value} variant={value === 'Finnish' ? "contained" : "text"} onClick={() => i18n.changeLanguage('fi')}>
 						🇫🇮
 					</Button>
-					<Button onClick={() => i18n.changeLanguage('hu')}>
+					<Button value={value} variant={value === 'Hungarian' ? "contained" : "text"} onClick={() => i18n.changeLanguage('hu')}>
 						🇭🇺
 					</Button>
 					<NavBar t={t} />
