@@ -94,6 +94,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 
 	app.get("/api/moviestream/:id", async (request, response) => {
 		const id = request.params.id;
+		let notLoaded = false;
 
 		let sql = `SELECT * FROM downloads WHERE imdb_id = $1 AND file_type = 'mp4'`;
 		const { rows } = await pool.query(sql, [id]);
@@ -107,17 +108,22 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		if (range) {
 			console.log("Requested Movie Range: ", range)
 			const CHUNK_SIZE = 10 ** 6;
-			const start = Number(range.replace(/\D/g, ""))
+			let start = Number(range.replace(/\D/g, ""))
+			if (start > fileSize - 1) {
+				notLoaded = true;
+				start = 0;
+			}
 			const end = Math.min(start + CHUNK_SIZE, fileSize - 1);
 			const contentLength = (end - start) + 1
 			const head = {
-				"Content-Range": `bytes ${start}-${end}/${fileSize}`,
+				"Content-Range": `bytes ${start}-${end}/${rows[0]?.file_size || fileSize}`,
 				"Accept-Ranges": "bytes",
 				"Content-Length": contentLength,
 				"Content-Type": "video/mp4",
-				"Cache-Control": "no-cache",
-				"Connection": "upgrade, keep-alive"
+				// "Cache-Control": "no-cache",
+				// "Connection": "upgrade, keep-alive"
 			};
+			// notLoaded ? response.writeHead(416, head) : response.writeHead(206, head);
 			response.writeHead(206, head);
 			const videoStream = fs.createReadStream(moviefile, { start: start, end: end })
 			// ffmpeg(videoStream)

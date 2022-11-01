@@ -1,192 +1,118 @@
-import "../css/VideoPlayer.css";
-import { useState, useRef, useEffect } from "react";
-import ReactPlayer from "react-player";
-import screenfull from "screenfull";
-import Container from "@mui/material/Container";
-import ControlIcons from "./control/ControlIcons";
-import { useParams } from "react-router-dom";
-import streamingService from "../services/streamingService";
+import '../css/VideoPlayer.css';
+import { useState, useRef, useEffect } from 'react';
+import ReactPlayer from 'react-player/lazy';
+import { Container, LinearProgress, Typography } from '@mui/material';
+import streamingService from '../services/streamingService';
+import video_banner from '../images/video_banner.png';
+import { PlayCircleFilledWhiteOutlined } from '@mui/icons-material';
 
-const VideoPlayer = ({ imdb_id, status, movieTitle }) => {
+const VideoPlayer = ({ imdb_id }) => {
 	const playerRef = useRef(null);
-	const playerDivRef = useRef(null);
-	const [subtitles, setSubtitles] = useState([])
-	const [playerState, setPlayerState] = useState({
-		playing: true,
-		mute: true,
-		volume: 0.5,
-		playerbackrate: 1.0,
-		played: 0,
-		seeking: false,
-	});
+	const buffering = useRef(false);
+	const [statusPlayer, setStatusPlayer] = useState('');
+	const [error, setError] = useState(false);
+	const [subtitles, setSubtitles] = useState([]);
 
 	useEffect(() => {
-		streamingService.getSubtitles(imdb_id).then((response => {
-			console.log(response)
-			setSubtitles(response)
-		}))
+		streamingService.getSubtitles(imdb_id).then((response) => {
+			console.log(response);
+			setSubtitles(response);
+		});
 	}, [imdb_id]);
 
-	const { playing, mute, volume, playerbackRate, played } = playerState;
-
-	const handlePlayAndPause = () => {
-		setPlayerState({
-			...playerState,
-			playing: !playerState.playing,
-		});
+	const onPlay = () => {
+		setStatusPlayer('playing');
+		// here set the movie as watched
 	};
 
-	const handleRewind = () => {
-		playerRef.current.seekTo(
-			playerRef.current.getCurrentTime() - 10,
-			`seconds`
-		);
+	const onBuffer = () => {
+		setStatusPlayer('buffering');
+		buffering.current = true;
 	};
 
-	const handleFastForward = () => {
-		playerRef.current.seekTo(
-			playerRef.current.getCurrentTime() + 30,
-			`seconds`
-		);
-	};
-
-	const handlePlayerProgress = (state) => {
-		if (!playerState.seeking) {
-			setPlayerState({ ...playerState, ...state });
+	const onProgress = ({ playedSeconds, loadedSeconds }) => {
+		if (playedSeconds > loadedSeconds && !error) {
+			setStatusPlayer('movie not loaded yet');
+			playerRef.current.showPreview();
 		}
 	};
 
-	const handlePlayerSeek = (newValue) => {
-		setPlayerState({
-			...playerState,
-			played: parseFloat(newValue.target.value / 100),
-		});
-		playerRef.current.seekTo(parseFloat(newValue.target.value / 100));
-	};
-
-	const handlePlayerMouseSeekUp = (newValue) => {
-		setPlayerState({ ...playerState, seeking: false });
-		playerRef.current.seekTo(newValue.target.value / 100);
-	};
-
-	const format = (seconds) => {
-		if (isNaN(seconds)) {
-			return "00:00";
-		}
-
-		const date = new Date(seconds * 1000);
-		const hh = date.getUTCHours();
-		const mm = date.getUTCMinutes();
-		const ss = date.getUTCSeconds().toString().padStart(2, "0");
-
-		if (hh) {
-			return `${hh}:${mm.toString().padStart(2, "0")}:${ss}`;
-		} else {
-			return `${mm}:${ss}`;
+	const onError = (error) => {
+		if (error?.target?.error) {
+			const error_code = error.target.error.code;
+			if (
+				// error_code === 3 || // failed to send audio packet for decoding
+				error_code === 4 ||
+				error_code === 1
+			) {
+				setStatusPlayer('source file error');
+				console.log(error.target.error);
+				setError(true);
+				playerRef.current.showPreview();
+			}
 		}
 	};
 
-	const currentPlayerTime = playerRef.current
-		? playerRef.current.getCurrentTime()
-		: "00:00";
-	const movieDuration = playerRef.current
-		? playerRef.current.getDuration()
-		: "00:00";
-	const playedTime = format(currentPlayerTime);
-	const fullMovieTime = format(movieDuration);
-
-	const handleMuting = () => {
-		setPlayerState({ ...playerState, muted: !playerState.muted });
-	};
-	const handleVolumeChange = (e, newValue) => {
-		setPlayerState({
-			...playerState,
-			volume: parseFloat(newValue / 100),
-			mute: newValue === 0 ? true : false,
-		});
+	const onPause = () => {
+		setStatusPlayer('paused');
 	};
 
-	const handleVolumeSeek = (e, newValue) => {
-		setPlayerState({
-			...playerState,
-			volume: parseFloat(newValue / 100),
-			mute: newValue === 0 ? true : false,
-		});
-	};
-	const handlePlayerRate = (rate) => {
-		setPlayerState({ ...playerState, playerbackRate: rate });
+	const onReady = () => {
+		buffering.current = false;
 	};
 
-	const handleFullScreenMode = () => {
-		screenfull.toggle(playerDivRef.current);
+	const onBufferEnd = () => {
+		setStatusPlayer('movie playing');
+		buffering.current = false;
 	};
 
-	let stream_url
-	if (status === 'pending')
-		stream_url = `https://www.youtube.com/watch?v=MPY_EuvimH0`
-	if (status === 'ready')
-		stream_url = `http://localhost:3001/api/moviestream/${imdb_id}`
+	const onClickPreview = () => {
+		setStatusPlayer('buffering');
+		buffering.current = true;
+	};
+
+	useEffect(() => {
+		return () => {
+			if (buffering.current === true) window.location.reload();
+		};
+	}, []);
+
+	let stream_url = `http://localhost:3001/api/moviestream/${imdb_id}`;
 
 	return (
 		<>
 			<Container maxWidth="md">
-				{/* <video id="videoPlayer" controls muted="muted">
-					<source src={stream_url} type="video/mp4" />
-				</video> */}
 				<ReactPlayer
-					width={"100%"}
-					height="100%"
-					url={stream_url}
 					ref={playerRef}
-					playing={playing}
-					muted={mute}
-					controls={true}
-					onProgress={handlePlayerProgress}
-					playbackRate={playerbackRate}
+					playing={true}
+					controls={buffering.current === false}
+					pip={false}
+					url={stream_url}
+					onPlay={onPlay}
+					width="100%"
+					light={video_banner}
+					playIcon={
+						<PlayCircleFilledWhiteOutlined fontSize="large" />
+					}
+					onBuffer={onBuffer}
+					onProgress={onProgress}
+					onError={onError}
+					onPause={onPause}
+					onReady={onReady}
+					onBufferEnd={onBufferEnd}
+					onClickPreview={onClickPreview}
 					config={{
 						file: {
-							forceVideo: true,
-							forceAudio: true,
 							tracks: subtitles,
-							attributes: {crossOrigin: 'anonymous'}
-						}
+							attributes: { crossOrigin: 'true' },
+						},
 					}}
 				/>
+				<Typography variant="body2" color="initial">
+					{statusPlayer}
+				</Typography>
+				{buffering.current === true && <LinearProgress />}
 			</Container>
-			{/* <Container maxWidth="md">
-				<div className="playerDiv" ref={playerDivRef}>
-					<ReactPlayer
-						width={"100%"}
-						height="100%"
-						url={stream_url}
-						ref={playerRef}
-						playing={playing}
-						muted={mute}
-						onProgress={handlePlayerProgress}
-						playbackRate={playerbackRate}
-					/>
-					<ControlIcons
-						movieTitle={movieTitle}
-						playandpause={handlePlayAndPause}
-						playing={playing}
-						rewind={handleRewind}
-						fastForward={handleFastForward}
-						played={played}
-						onSeek={handlePlayerSeek}
-						onSeekMouseUp={handlePlayerMouseSeekUp}
-						playedTime={playedTime}
-						fullMovieTime={fullMovieTime}
-						muting={handleMuting}
-						muted={mute}
-						volume={volume}
-						volumeChange={handleVolumeChange}
-						volumeSeek={handleVolumeSeek}
-						playerbackRate={playerbackRate}
-						playRate={handlePlayerRate}
-						fullScreenMode={handleFullScreenMode}
-					/>
-				</div>
-			</Container> */}
 		</>
 	);
 };
