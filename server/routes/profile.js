@@ -1,7 +1,7 @@
 module.exports = (app, pool, bcrypt, upload, fs, path) => {
 	app.post("/api/profile/editsettings", async (request, response) => {
 		const cookie = request.cookies.refreshToken;
-		const { username, firstname, lastname, email } = request.body;
+		const { username, firstname, lastname, email, language } = request.body;
 
 		if (!cookie) return response.send("User not signed in!");
 		const check = `SELECT * FROM users WHERE token = $1`;
@@ -42,13 +42,14 @@ module.exports = (app, pool, bcrypt, upload, fs, path) => {
 		)
 			return response.send("Please enter a valid e-mail address.");
 		try {
-			let sql = `UPDATE users SET username = $1, firstname = $2, lastname = $3, email = $4
-						WHERE id = $5`;
+			let sql = `UPDATE users SET username = $1, firstname = $2, lastname = $3, email = $4, language = $5
+						WHERE id = $6`;
 			await pool.query(sql, [
 				username,
 				firstname,
 				lastname,
 				email,
+				language,
 				user.rows[0]["id"],
 			]);
 			response.send(true);

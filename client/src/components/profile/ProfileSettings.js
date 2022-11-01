@@ -1,23 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
 	changeNotification,
 	resetNotification,
-} from "../../reducers/notificationReducer";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+} from '../../reducers/notificationReducer';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
 	Typography,
 	Button,
 	Paper,
 	TextField,
 	createTheme,
-} from "@mui/material";
-import { Container } from "@mui/system";
+	Box,
+} from '@mui/material';
+import { Container } from '@mui/system';
 // import { IconUserCircle } from '@tabler/icons'
-import Notification from "../Notification";
-import { changeSeverity } from "../../reducers/severityReducer";
-import profileService from "../../services/profileService";
-import Loader from "../Loader";
+import Notification from '../Notification';
+import { changeSeverity } from '../../reducers/severityReducer';
+import profileService from '../../services/profileService';
+import Loader from '../Loader';
+import { MenuItem, Select } from '@mui/material';
 
 const ProfileSettings = ({ t }) => {
 	const [isLoading, setLoading] = useState(true);
@@ -46,10 +48,10 @@ const ProfileSettings = ({ t }) => {
 	const theme = createTheme({
 		palette: {
 			primary: {
-				main: "#000000",
+				main: '#000000',
 			},
 			secondary: {
-				main: "#F5F5F5",
+				main: '#F5F5F5',
 			},
 		},
 	});
@@ -59,11 +61,11 @@ const ProfileSettings = ({ t }) => {
 
 		profileService.editUserSettings(settings).then((result) => {
 			if (result === true) {
-				dispatch(changeSeverity("success"));
-				dispatch(changeNotification(`${t("profile_settings.1")}`));
-				navigate("/profile");
+				dispatch(changeSeverity('success'));
+				dispatch(changeNotification(`${t('profile_settings.1')}`));
+				navigate('/profile');
 			} else {
-				dispatch(changeSeverity("error"));
+				dispatch(changeSeverity('error'));
 				dispatch(changeNotification(result));
 			}
 		});
@@ -92,6 +94,10 @@ const ProfileSettings = ({ t }) => {
 		changeSettings({ ...settings, email: event.target.value });
 	};
 
+	const handleLanguage = (event) => {
+		changeSettings({ ...settings, language: event.target.value });
+	};
+
 	return (
 		<Container maxWidth="md" sx={{ pt: 5, pb: 5 }}>
 			<Paper elevation={10} sx={{ padding: 3 }}>
@@ -101,38 +107,53 @@ const ProfileSettings = ({ t }) => {
 					align="center"
 					sx={{ fontWeight: 550 }}
 				>
-					{t("profile_settings.0")}
+					{t('profile_settings.0')}
 				</Typography>
 				<Typography align="center" xs={{ mb: 4 }}>
-					{t("profile_settings.2")}
+					{t('profile_settings.2')}
 				</Typography>
 				<form onSubmit={submitSettings}>
+					<Box sx={{ alignItems: 'center' }}>
+
+						<Select
+							labelId="asc-desc"
+							id="asc-desc-select"
+							value={settings.language || ''}
+							sx={{ width: '50%' }}
+							onChange={handleLanguage}
+						>
+							<MenuItem value={'English'}>🇬🇧 English</MenuItem>
+							<MenuItem value={'Finnish'}>🇫🇮 Finnish</MenuItem>
+							<MenuItem value={'Romanian'}>🇷🇴 Romanian</MenuItem>
+							<MenuItem value={'Hungarian'}>🇭🇺 Hungarian</MenuItem>
+						</Select>
+					</Box>
 					<TextField
 						fullWidth
 						margin="normal"
 						name="username"
-						label={t("profile_settings.3")}
-						placeholder={t("profile_settings.3")}
+						label={t('profile_settings.3')}
+						placeholder={t('profile_settings.3')}
 						value={settings.username}
 						onChange={handleUsername}
 						required
 					></TextField>
 					<TextField
-						sx={{ width: "49%", mr: "1%" }}
+						sx={{ width: '49%', mr: '1%' }}
 						margin="dense"
 						name="firstname"
-						label={t("profile_settings.4")}
-						placeholder={t("profile_settings.4")}
+						label={t('profile_settings.4')}
+						placeholder={t('profile_settings.4')}
 						value={settings.firstname}
 						onChange={handleFirstname}
 						required
 					></TextField>
 					<TextField
-						sx={{ width: "49%", ml: "1%" }}
+						sx={{ width: '49%', ml: '1%' }}
 						margin="dense"
 						name="lastname"
-						label={t("profile_settings.5")}
-						placeholder={t("profile_settings.5")}
+						label={t('profile_settings.5')}
+						placeholder={t('profile_settings.5')}
 						value={settings.lastname}
 						onChange={handleLastname}
 						required
@@ -144,7 +165,7 @@ const ProfileSettings = ({ t }) => {
 						name="email"
 						label="E-mail"
 						autoComplete="email"
-						placeholder={t("profile_settings.6")}
+						placeholder={t('profile_settings.6')}
 						value={settings.email}
 						onChange={handleEmail}
 						required
@@ -156,7 +177,7 @@ const ProfileSettings = ({ t }) => {
 						size="large"
 						sx={{ mt: 1 }}
 					>
-						{t("profile_settings.7")}
+						{t('profile_settings.7')}
 					</Button>
 				</form>
 				<Notification />
