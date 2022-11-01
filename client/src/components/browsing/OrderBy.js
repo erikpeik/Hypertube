@@ -3,13 +3,13 @@ import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 const OrderBy = ({ t, value, setValue }) => {
 	return (
 		<FormControl sx={{ width: '100%' }}>
-			<InputLabel id="asc-desc">Order by</InputLabel>
+			<InputLabel id="asc-desc">{t("browsing.12")}</InputLabel>
 			<Select
 				labelId="asc-desc"
 				id="asc-desc-select"
 				value={value}
 				sx={{ width: '100%' }}
-				label="Order by"
+				label="Order-by"
 				onChange={(event) => {
 					setValue(event.target.value);
 				}}

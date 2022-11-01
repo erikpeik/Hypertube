@@ -94,7 +94,8 @@
 		"8": "IMDB rating",
 		"9": "Upload date",
 		"10": "Ascending",
-		"11": "Descending"
+		"11": "Descending",
+		"12": "Order by"
 	},
 	"categories": {
 		"1": "Action",
