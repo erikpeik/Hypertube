@@ -73,14 +73,8 @@ module.exports = function (app, pool, bcrypt, transporter, helperFunctions) {
 				const hash = await bcrypt.hash(password, 10);
 				try {
 					var sql =
-						'INSERT INTO users (username, firstname, lastname, email, password) VALUES ($1,$2,$3,$4,$5) RETURNING *';
-					var { rows } = await pool.query(sql, [
-						username,
-						firstname,
-						lastname,
-						email,
-						hash,
-					]);
+						"INSERT INTO users (username, firstname, lastname, email, password) VALUES ($1,$2,$3,$4,$5)";
+					await pool.query(sql, [username, firstname, lastname, email, hash]);
 					return;
 				} catch (error) {
 					console.log('ERROR :', error);
@@ -146,6 +140,9 @@ module.exports = function (app, pool, bcrypt, transporter, helperFunctions) {
 
 	app.post('/api/signup/verifyuser', (request, response) => {
 		const { username, code } = request.body;
+
+		if (!username || !code)
+			return response.send("Required verify data missing")
 
 		const checkCode = async () => {
 			var sql = `SELECT * FROM email_verify
