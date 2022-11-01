@@ -26,6 +26,7 @@ import MoviePage from "./components/MoviePage";
 import Frontpage from "./components/Frontpage";
 import Footer from "./components/Footer";
 import { useTranslation } from "react-i18next";
+import Button from '@mui/material/Button';
 
 const App = () => {
 	const dispatch = useDispatch();
@@ -43,18 +44,18 @@ const App = () => {
 			<Suspense fallback="loading">
 				<Router>
 					<RedirectPage />
-					<button onClick={() => i18n.changeLanguage("ro")}>
-						ro
-					</button>
-					<button onClick={() => i18n.changeLanguage("en")}>
-						en
-					</button>
-					<button onClick={() => i18n.changeLanguage("fi")}>
-						fi
-					</button>
-					<button onClick={() => i18n.changeLanguage("hu")}>
-						hu
-					</button>
+					<Button onClick={() => i18n.changeLanguage("ro")}>
+						🇷🇴
+					</Button>
+					<Button onClick={() => i18n.changeLanguage("en")}>
+						🇬🇧
+					</Button>
+					<Button onClick={() => i18n.changeLanguage("fi")}>
+						🇫🇮
+					</Button>
+					<Button onClick={() => i18n.changeLanguage("hu")}>
+						🇭🇺
+					</Button>
 					<NavBar t={t} />
 					<Routes>
 						<Route path="/" element={<Frontpage t={t} />} />
