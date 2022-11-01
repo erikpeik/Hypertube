@@ -55,8 +55,7 @@ module.exports = function (app, axios) {
 				res.send(movies);
 			})
 			.catch((error) => {
-				console.log(error);
-				res.status(500).send({ error: 'Something went wrong' });
+				res.status(406).send({ error: 'Something went wrong' });
 			});
 	});
 

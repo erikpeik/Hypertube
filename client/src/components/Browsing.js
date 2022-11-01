@@ -142,7 +142,7 @@ const Browsing = ({ t }) => {
 				}}
 			>
 				<Grid container spacing={2} display="flex">
-					<Grid item xs={12} sm={3}>
+					<Grid item xs={12} sm={6}>
 						<QuerySearch
 							t={t}
 							query={query}
@@ -150,7 +150,7 @@ const Browsing = ({ t }) => {
 							submitMovieQuery={submitMovieQuery}
 						/>
 					</Grid>
-					<Grid item xs={12} sm={3}>
+					<Grid item xs={12} sm={6}>
 						<AutoBrowsing
 							value={genre}
 							setValue={setGenre}
@@ -159,7 +159,7 @@ const Browsing = ({ t }) => {
 							label={t('browsing.6')}
 						/>
 					</Grid>
-					<Grid item xs={12} sm={3}>
+					<Grid item xs={12} sm={4}>
 						<AutoBrowsing
 							value={sort_by}
 							setValue={setSortBy}
@@ -168,10 +168,10 @@ const Browsing = ({ t }) => {
 							label={t('browsing.7')}
 						/>
 					</Grid>
-					<Grid item xs={12} sm={3}>
+					<Grid item xs={12} sm={4}>
 						<OrderBy t={t} value={order_by} setValue={setOrderBy} />
 					</Grid>
-					<Grid item xs={12} sm={3}>
+					<Grid item xs={12} sm={4}>
 						<AutoBrowsing
 							value={imdb_rating}
 							setValue={setImdbRating}
