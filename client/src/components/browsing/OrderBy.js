@@ -14,8 +14,8 @@ const OrderBy = ({ t, value, setValue }) => {
 					setValue(event.target.value);
 				}}
 			>
-				<MenuItem value={'asc'}>Ascending</MenuItem>
-				<MenuItem value={'desc'}>Descending</MenuItem>
+				<MenuItem value={'asc'}>{t("browsing.10")}</MenuItem>
+				<MenuItem value={'desc'}>{t("browsing.11")}</MenuItem>
 			</Select>
 		</FormControl>
 	);

@@ -90,7 +90,11 @@
 		"4": "An",
 		"5": "Seed",
 		"6": "Categorii",
-		"7": "Sortează"
+		"7": "Sortează",
+		"8": "Rating IMDB",
+		"9": "Dată apariție",
+		"10": "Ordine crescătoare",
+		"11": "Ordine descrescătoare"
 	},
 	"categories": {
 		"1": "Acțiune",
