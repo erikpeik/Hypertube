@@ -2,6 +2,9 @@ module.exports = function (app, pool, bcrypt, jwt) {
 	app.post("/api/login", async (request, response) => {
 		const { username, password } = request.body;
 
+		if (!username || !password)
+			return response.send("Required login data missing")
+
 		var sql = `SELECT * FROM users
 					WHERE username = $1 OR email = $1`;
 		const { rows } = await pool.query(sql, [username]);
@@ -10,7 +13,7 @@ module.exports = function (app, pool, bcrypt, jwt) {
 		} else if (rows[0]["verified"] === "NO") {
 			response.send(
 				"User account not yeat activated! Please check your inbox for confirmation email."
-			);
+			)
 		} else {
 			const compareResult = await bcrypt.compare(
 				password,
@@ -49,18 +52,21 @@ module.exports = function (app, pool, bcrypt, jwt) {
 
 	app.get("/api/login", async (request, response) => {
 		const cookie = request.cookies.refreshToken;
-		if (cookie) {
-			const sql = "SELECT * FROM users WHERE token = $1";
-			const { rows } = await pool.query(sql, [cookie]);
-			if (rows.length) {
-				response.send({ name: rows[0]["username"], id: rows[0]["id"] });
-			} else response.send("");
+		if (!cookie)
+			return response.send("Cookie missing");
+
+		const sql = "SELECT * FROM users WHERE token = $1";
+		const { rows } = await pool.query(sql, [cookie]);
+		if (rows.length) {
+			response.send({ name: rows[0]["username"], id: rows[0]["id"] });
 		} else response.send("");
 	});
 
 	app.post("/api/logout", async (request, response) => {
 		const refreshToken = request.cookies.refreshToken;
-		if (!refreshToken) return response.sendStatus(204);
+		if (!refreshToken)
+			return response.send("Cookie missing");
+
 		var sql = `SELECT * FROM users WHERE token = $1`;
 		const { rows } = await pool.query(sql, [refreshToken]);
 		if (rows.length !== 0) {

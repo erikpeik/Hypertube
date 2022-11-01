@@ -43,9 +43,9 @@ const connectToDatabase = () => {
 		if (err) {
 			console.log("Error acquiring client", err.stack);
 			console.log("Retrying in 5 seconds...");
-			// setTimeout(connectToDatabase, 5000);
+			setTimeout(connectToDatabase, 5000);
 		} else {
-			// console.log("Connected to database");
+			console.log("Connected to database");
 		}
 	});
 };
