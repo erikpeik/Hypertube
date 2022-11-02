@@ -167,8 +167,8 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		let torrentInfo = movieInfo.torrents;
 		let film_title = movieInfo.title_long;
 
-		if (torrentInfo.length > 1)
-			torrentInfo.sort((a, b) => (a.seeds > b.seeds ? -1 : 1));
+		// if (torrentInfo.length > 1)
+		// 	torrentInfo.sort((a, b) => (a.seeds > b.seeds ? -1 : 1));
 
 		let magnet_link = getMagnetLink(torrentInfo[0], film_title);
 
