@@ -1,12 +1,14 @@
 module.exports = function (app, pool, bcrypt, transporter, helperFunctions) {
 	checkSignUpData = (body) => {
+		console.log(body.language)
 		if (
 			!body.username ||
 			!body.firstname ||
 			!body.lastname ||
 			!body.email ||
 			!body.password ||
-			!body.confirmPassword
+			!body.confirmPassword ||
+			!body.language
 		)
 			return 'Required profile data missing';
 		if (body.username.length < 4 || body.username.length > 25)

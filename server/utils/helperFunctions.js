@@ -12,25 +12,29 @@ function makeToken(length) {
 }
 
 const translate = async (text, pool) => {
+	const API_KEY = process.env.GOOGLE_API_KEY;
+	const cookie = request.cookies.refreshToken;
+
 	let fromLang = 'en';
 	let toLang;
-
-	const sql = `SELECT * FROM  users SET verified = 'YES' WHERE username = $1`;
-			pool.query(sql, [username]);
-	const API_KEY = process.env.GOOGLE_API_KEY;
+	if (cookie) {
+		let sql = 'SELECT * FROM users WHERE token = $1';
+		let { rows } = await pool.query(sql, [cookie]);
+		toLang = rows[0]['language'];
+	} else toLang = 'en';
 
 	let url = `https://translation.googleapis.com/language/translate/v2?key=${API_KEY}`;
 	url += '&q=' + encodeURI(text);
 	url += `&source=${fromLang}`;
 	url += `&target=${toLang}`;
-	const rows = await fetch(url, {
+	const res = await fetch(url, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
 			Accept: 'application/json',
 		},
 	});
-	const result = await rows.json();
+	const result = await res.json();
 	return result.data['translations'][0].translatedText;
 };
 

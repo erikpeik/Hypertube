@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
 	firstname VARCHAR(255) NOT NULL,
 	lastname VARCHAR(255) NOT NULL,
 	email VARCHAR(255) NOT NULL,
-	language VARCHAR(255) DEFAULT 'English',
+	language VARCHAR(255) DEFAULT 'en',
 	password VARCHAR(255) NOT NULL,
 	verified enum_yesno DEFAULT 'NO',
 	token VARCHAR(1000)

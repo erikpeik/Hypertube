@@ -28,19 +28,19 @@ import Frontpage from './components/Frontpage';
 import Footer from './components/Footer';
 import { useTranslation } from 'react-i18next';
 import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
 import profileService from './services/profileService';
 import { changeSeverity } from './reducers/severityReducer';
 import {
 	changeNotification,
 	resetNotification,
 } from './reducers/notificationReducer';
+import { setLanguage } from './reducers/languageReducer';
 
 const App = () => {
 	const dispatch = useDispatch();
 	const [t, i18n] = useTranslation('common');
 	const profileData = useSelector((state) => state.profile);
-	const [value, setValue] = useState('');
+	const language = useSelector((state) => state.language);
 
 	const [settings, changeSettings] = useState({});
 
@@ -60,11 +60,11 @@ const App = () => {
 	// i18n.changeLanguage('ro')
 	const handleLanguage = (event) => {
 		const lang = event.target.value;
-		setValue(lang);
-		if (lang === 'English') i18n.changeLanguage('en');
-		if (lang === 'Romanian') i18n.changeLanguage('ro');
-		if (lang === 'Finnish') i18n.changeLanguage('fi');
-		if (lang === 'Hungarian') i18n.changeLanguage('hu');
+		dispatch(setLanguage(lang));
+		if (lang === 'en') i18n.changeLanguage('en');
+		if (lang === 'ro') i18n.changeLanguage('ro');
+		if (lang === 'fi') i18n.changeLanguage('fi');
+		if (lang === 'hu') i18n.changeLanguage('hu');
 		profileService
 			.editUserSettings({ ...settings, language: event.target.value })
 			.then((result) => {
@@ -81,23 +81,23 @@ const App = () => {
 	};
 
 	useEffect(() => {
-		if (profileData?.language === 'English') {
+		if (profileData?.language === 'en') {
 			i18n.changeLanguage('en');
-			setValue('English');
+			dispatch(setLanguage('en'));
 		}
-		if (profileData?.language === 'Romanian') {
+		if (profileData?.language === 'ro') {
 			i18n.changeLanguage('ro');
-			setValue('Romanian');
+			dispatch(setLanguage('ro'));
 		}
-		if (profileData?.language === 'Finnish') {
+		if (profileData?.language === 'fi') {
 			i18n.changeLanguage('fi');
-			setValue('Finnish');
+			dispatch(setLanguage('fi'));
 		}
-		if (profileData?.language === 'Hungarian') {
+		if (profileData?.language === 'hu') {
 			i18n.changeLanguage('hu');
-			setValue('Hungarian');
+			dispatch(setLanguage('hu'));
 		}
-	}, [i18n, profileData]);
+	}, [i18n, profileData, dispatch]);
 
 	useEffect(() => {
 		dispatch(getProfileData());
@@ -113,29 +113,29 @@ const App = () => {
 					<RedirectPage />
 
 					<Button
-						value={'Romanian'}
-						variant={value === 'Romanian' ? 'contained' : 'text'}
+						value={'ro'}
+						variant={language === 'ro' ? 'contained' : 'text'}
 						onClick={handleLanguage}
 					>
 						🇷🇴
 					</Button>
 					<Button
-						value={'English'}
-						variant={value === 'English' ? 'contained' : 'text'}
+						value={'en'}
+						variant={language === 'en' ? 'contained' : 'text'}
 						onClick={handleLanguage}
 					>
 						🇬🇧
 					</Button>
 					<Button
-						value={'Finnish'}
-						variant={value === 'Finnish' ? 'contained' : 'text'}
+						value={'fi'}
+						variant={language === 'fi' ? 'contained' : 'text'}
 						onClick={handleLanguage}
 					>
 						🇫🇮
 					</Button>
 					<Button
-						value={'Hungarian'}
-						variant={value === 'Hungarian' ? 'contained' : 'text'}
+						value={'hu'}
+						variant={language === 'hu' ? 'contained' : 'text'}
 						onClick={handleLanguage}
 					>
 						🇭🇺
