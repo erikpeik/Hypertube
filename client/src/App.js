@@ -27,6 +27,14 @@ import Frontpage from './components/Frontpage';
 import Footer from './components/Footer';
 import { useTranslation } from 'react-i18next';
 import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import profileService from './services/profileService';
+import { changeSeverity } from './reducers/severityReducer';
+import {
+	changeNotification,
+	resetNotification,
+} from './reducers/notificationReducer';
+
 
 const App = () => {
 	const dispatch = useDispatch();
@@ -34,9 +42,40 @@ const App = () => {
 	const profileData = useSelector((state) => state.profile);
 	const [value, setValue] = useState('');
 
+	const [settings, changeSettings] = useState({});
+
 
 	useEffect(() => {
-		console.log(profileData?.language)
+		dispatch(resetNotification());
+		if (profileData) {
+			changeSettings({
+				username: profileData.username,
+				firstname: profileData.firstname,
+				lastname: profileData.lastname,
+				email: profileData.email,
+				language: profileData.language,
+			});
+		}
+	}, [dispatch, profileData]);
+
+	// i18n.changeLanguage('ro')
+	const handleLanguage = (event) => {
+		console.log(event.target.value)
+		setValue(event.target.value);
+		profileService.editUserSettings({ ...settings, language: event.target.value }).then((result) => {
+			if (result === true) {
+				dispatch(getProfileData())
+				dispatch(changeSeverity('success'));
+				dispatch(changeNotification(`${t('profile_settings.1')}`));
+			} else {
+				dispatch(changeSeverity('error'));
+				dispatch(changeNotification(result));
+			}
+		});
+		changeSettings({ ...settings, language: event.target.value });
+	};
+
+	useEffect(() => {
 		if (profileData?.language === 'English') {
 			i18n.changeLanguage('en');
 			setValue('English')
@@ -67,18 +106,20 @@ const App = () => {
 			<Suspense fallback="loading">
 				<Router>
 					<RedirectPage />
-					<Button value={value} variant={value === 'Romanian' ? "contained" : "text"} onClick={() => i18n.changeLanguage('ro')}>
-						🇷🇴
-					</Button>
-					<Button value={value} variant={value === 'English' ? "contained" : "text"} onClick={() => i18n.changeLanguage('en')}>
-						🇬🇧
-					</Button>
-					<Button value={value} variant={value === 'Finnish' ? "contained" : "text"} onClick={() => i18n.changeLanguage('fi')}>
-						🇫🇮
-					</Button>
-					<Button value={value} variant={value === 'Hungarian' ? "contained" : "text"} onClick={() => i18n.changeLanguage('hu')}>
-						🇭🇺
-					</Button>
+
+							<Button value={'Romanian'} variant={value === 'Romanian' ? "contained" : "text"} onClick={handleLanguage}>
+								🇷🇴
+							</Button>
+							<Button value={'English'} variant={value === 'English' ? "contained" : "text"} onClick={handleLanguage}>
+								🇬🇧
+							</Button>
+							<Button value={'Finnish'} variant={value === 'Finnish' ? "contained" : "text"} onClick={handleLanguage}>
+								🇫🇮
+							</Button>
+							<Button value={'Hungarian'} variant={value === 'Hungarian' ? "contained" : "text"} onClick={handleLanguage}>
+								🇭🇺
+							</Button>
+
 					<NavBar t={t} />
 					<Routes>
 						<Route path="/" element={<Frontpage t={t} />} />
