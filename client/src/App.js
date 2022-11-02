@@ -9,6 +9,7 @@ import Login from './components/Login';
 import Logout from './components/Logout';
 import Signup from './components/Signup';
 import Profile from './components/Profile';
+import UserProfile from './components/UserProfile';
 import ProfileSettings from './components/profile/ProfileSettings';
 import NavBar from './components/Navbar';
 import PathNotExists from './components/PathNotExists';
@@ -126,6 +127,7 @@ const App = () => {
 						<Route path="/login" element={<Login t={t} />} />
 						<Route path="/signup" element={<Signup t={t} />} />
 						<Route path="/profile" element={<Profile t={t} />} />
+						<Route path="/profile/:id" element={<UserProfile t={t} />} />
 						<Route path="/browsing" element={<Browsing t={t} />} />
 						<Route
 							path="/movie/:id"

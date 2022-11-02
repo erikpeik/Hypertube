@@ -5,8 +5,13 @@ import { Container } from "@mui/system";
 import NewComment from "./NewComment";
 import commentService from "../../services/commentService";
 import { format } from "timeago.js";
+import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 const Comments = ({ movieId, t }) => {
+	const profileData = useSelector((state) => state.profile);
+	const dispatch = useDispatch();
+
 	const [comments, setComments] = useState({});
 	const [refresh, setRefresh] = useState(null);
 
@@ -15,6 +20,9 @@ const Comments = ({ movieId, t }) => {
 			setComments(response || "");
 		});
 	}, [movieId, refresh]);
+
+	console.log(comments)
+	console.log(profileData)
 
 	return (
 		<>
@@ -32,10 +40,12 @@ const Comments = ({ movieId, t }) => {
 									key={c.id}
 								>
 									<Grid item>
-										<Avatar
-											alt="Remy Sharp"
-											src={c.user_pic}
-										/>
+										<Link to={'/profile/' + c?.id}>
+											<Avatar
+												alt="Remy Sharp"
+												src={c.user_pic}
+											/>
+										</Link>
 									</Grid>
 									<Grid
 										justifyContent="left"
