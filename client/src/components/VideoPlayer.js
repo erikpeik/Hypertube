@@ -18,27 +18,10 @@ const VideoPlayer = ({ imdb_id, status }) => {
 			console.log(response);
 			setSubtitles(response);
 		});
-	}, [imdb_id, statusPlayer]);
-
-	const downloadSubs = () => {
-		streamingService.downloadSubs(imdb_id);
-	};
-
-	const getTorrent = () => {
-		downloadSubs();
-		streamingService.getTorrent(imdb_id).then((response) => {
-			console.log(response);
-			// if (response === "Ready to play") {
-			// 	setPlayerStatus("ready");
-			// }
-		});
-	};
+	}, [imdb_id]);
 
 	const onPlay = () => {
-		// downloadSubs();
-		// getTorrent();
 		setStatusPlayer('playing');
-		console.log('onPlay')
 		// here set the movie as watched
 	};
 
