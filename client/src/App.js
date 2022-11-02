@@ -35,7 +35,6 @@ import {
 	resetNotification,
 } from './reducers/notificationReducer';
 
-
 const App = () => {
 	const dispatch = useDispatch();
 	const [t, i18n] = useTranslation('common');
@@ -43,7 +42,6 @@ const App = () => {
 	const [value, setValue] = useState('');
 
 	const [settings, changeSettings] = useState({});
-
 
 	useEffect(() => {
 		dispatch(resetNotification());
@@ -60,37 +58,43 @@ const App = () => {
 
 	// i18n.changeLanguage('ro')
 	const handleLanguage = (event) => {
-		console.log(event.target.value)
-		setValue(event.target.value);
-		profileService.editUserSettings({ ...settings, language: event.target.value }).then((result) => {
-			if (result === true) {
-				dispatch(getProfileData())
-				dispatch(changeSeverity('success'));
-				dispatch(changeNotification(`${t('profile_settings.1')}`));
-			} else {
-				dispatch(changeSeverity('error'));
-				dispatch(changeNotification(result));
-			}
-		});
+		const lang = event.target.value;
+		setValue(lang);
+		if (lang === 'English') i18n.changeLanguage('en');
+		if (lang === 'Romanian') i18n.changeLanguage('ro');
+		if (lang === 'Finnish') i18n.changeLanguage('fi');
+		if (lang === 'Hungarian') i18n.changeLanguage('hu');
+		profileService
+			.editUserSettings({ ...settings, language: event.target.value })
+			.then((result) => {
+				if (result === true) {
+					dispatch(getProfileData());
+					dispatch(changeSeverity('success'));
+					dispatch(changeNotification(`${t('profile_settings.1')}`));
+				} else {
+					dispatch(changeSeverity('error'));
+					dispatch(changeNotification(result));
+				}
+			});
 		changeSettings({ ...settings, language: event.target.value });
 	};
 
 	useEffect(() => {
 		if (profileData?.language === 'English') {
 			i18n.changeLanguage('en');
-			setValue('English')
+			setValue('English');
 		}
 		if (profileData?.language === 'Romanian') {
 			i18n.changeLanguage('ro');
-			setValue('Romanian')
+			setValue('Romanian');
 		}
 		if (profileData?.language === 'Finnish') {
 			i18n.changeLanguage('fi');
-			setValue('Finnish')
+			setValue('Finnish');
 		}
 		if (profileData?.language === 'Hungarian') {
 			i18n.changeLanguage('hu');
-			setValue('Hungarian')
+			setValue('Hungarian');
 		}
 	}, [i18n, profileData]);
 
@@ -107,18 +111,34 @@ const App = () => {
 				<Router>
 					<RedirectPage />
 
-							<Button value={'Romanian'} variant={value === 'Romanian' ? "contained" : "text"} onClick={handleLanguage}>
-								🇷🇴
-							</Button>
-							<Button value={'English'} variant={value === 'English' ? "contained" : "text"} onClick={handleLanguage}>
-								🇬🇧
-							</Button>
-							<Button value={'Finnish'} variant={value === 'Finnish' ? "contained" : "text"} onClick={handleLanguage}>
-								🇫🇮
-							</Button>
-							<Button value={'Hungarian'} variant={value === 'Hungarian' ? "contained" : "text"} onClick={handleLanguage}>
-								🇭🇺
-							</Button>
+					<Button
+						value={'Romanian'}
+						variant={value === 'Romanian' ? 'contained' : 'text'}
+						onClick={handleLanguage}
+					>
+						🇷🇴
+					</Button>
+					<Button
+						value={'English'}
+						variant={value === 'English' ? 'contained' : 'text'}
+						onClick={handleLanguage}
+					>
+						🇬🇧
+					</Button>
+					<Button
+						value={'Finnish'}
+						variant={value === 'Finnish' ? 'contained' : 'text'}
+						onClick={handleLanguage}
+					>
+						🇫🇮
+					</Button>
+					<Button
+						value={'Hungarian'}
+						variant={value === 'Hungarian' ? 'contained' : 'text'}
+						onClick={handleLanguage}
+					>
+						🇭🇺
+					</Button>
 
 					<NavBar t={t} />
 					<Routes>

@@ -1,44 +1,44 @@
 module.exports = function (app, pool, bcrypt, jwt) {
-	app.post("/api/login", async (request, response) => {
+	app.post('/api/login', async (request, response) => {
 		const { username, password } = request.body;
 
 		if (!username || !password)
-			return response.send("Required login data missing")
+			return response.send('Required login data missing');
 
 		var sql = `SELECT * FROM users
 					WHERE username = $1 OR email = $1`;
 		const { rows } = await pool.query(sql, [username]);
 		if (rows.length === 0) {
-			response.send("User not found!");
-		} else if (rows[0]["verified"] === "NO") {
+			response.send('User not found!');
+		} else if (rows[0]['verified'] === 'NO') {
 			response.send(
-				"User account not yeat activated! Please check your inbox for confirmation email."
-			)
+				'User account not yeat activated! Please check your inbox for confirmation email.'
+			);
 		} else {
 			const compareResult = await bcrypt.compare(
 				password,
-				rows[0]["password"]
+				rows[0]['password']
 			);
 			if (compareResult) {
-				const userId = rows[0]["id"];
-				const name = rows[0]["username"];
-				const email = rows[0]["email"];
+				const userId = rows[0]['id'];
+				const name = rows[0]['username'];
+				const email = rows[0]['email'];
 
 				const accessToken = jwt.sign(
 					{ userId, name, email },
 					process.env.ACCESS_TOKEN_SECRET,
 					{
-						expiresIn: "20s",
+						expiresIn: '20s',
 					}
 				);
 				const refreshToken = jwt.sign(
 					{ userId, name, email },
 					process.env.REFRESH_TOKEN_SECRET,
 					{
-						expiresIn: "1d",
+						expiresIn: '1d',
 					}
 				);
-				response.cookie("refreshToken", refreshToken, {
+				response.cookie('refreshToken', refreshToken, {
 					httpOnly: false,
 					maxAge: 24 * 60 * 60 * 1000,
 				});
@@ -46,35 +46,33 @@ module.exports = function (app, pool, bcrypt, jwt) {
 				await pool.query(sql1, [refreshToken, userId]);
 
 				response.json({ accessToken, username: name, userid: userId });
-			} else response.send("Wrong password!");
+			} else response.send('Wrong password!');
 		}
 	});
 
-	app.get("/api/login", async (request, response) => {
+	app.get('/api/login', async (request, response) => {
 		const cookie = request.cookies.refreshToken;
-		if (!cookie)
-			return response.send("Cookie missing");
+		if (!cookie) return response.send('');
 
-		const sql = "SELECT * FROM users WHERE token = $1";
+		const sql = 'SELECT * FROM users WHERE token = $1';
 		const { rows } = await pool.query(sql, [cookie]);
 		if (rows.length) {
-			response.send({ name: rows[0]["username"], id: rows[0]["id"] });
-		} else response.send("");
+			response.send({ name: rows[0]['username'], id: rows[0]['id'] });
+		} else response.send('');
 	});
 
-	app.post("/api/logout", async (request, response) => {
+	app.post('/api/logout', async (request, response) => {
 		const refreshToken = request.cookies.refreshToken;
-		if (!refreshToken)
-			return response.send("Cookie missing");
+		if (!refreshToken) return response.send('');
 
 		var sql = `SELECT * FROM users WHERE token = $1`;
 		const { rows } = await pool.query(sql, [refreshToken]);
 		if (rows.length !== 0) {
-			const userId = rows[0]["id"];
+			const userId = rows[0]['id'];
 			const sql1 = `UPDATE users SET token = $1 WHERE id = $2`;
 			await pool.query(sql1, [0, userId]);
 		}
-		response.clearCookie("refreshToken");
-		response.status(200).json({ msg: "Logged out" });
+		response.clearCookie('refreshToken');
+		response.status(200).json({ msg: 'Logged out' });
 	});
 };
