@@ -1,6 +1,6 @@
 module.exports = function (app, pool, bcrypt, transporter, helperFunctions) {
 	checkSignUpData = (body) => {
-		console.log(body.language)
+		let res;
 		if (
 			!body.username ||
 			!body.firstname ||
@@ -11,39 +11,85 @@ module.exports = function (app, pool, bcrypt, transporter, helperFunctions) {
 			!body.language
 		)
 			return 'Required profile data missing';
-		if (body.username.length < 4 || body.username.length > 25)
-			return 'Username has to be between 4 and 25 characters.';
-		if (!body.username.match(/^[a-z0-9]+$/i))
-			return 'Username should only include characters (a-z or A-Z) and numbers (0-9).';
-		if (body.firstname.length > 50 || body.lastname.length > 50)
-			return "Come on, your name can't seriously be that long. Maximum for first name and last name is 50 characters.";
+		if (body.username.length < 4 || body.username.length > 25) {
+			res = helperFunctions.translate(
+				'Username has to be between 4 and 25 characters.',
+				pool,
+				body.language
+			);
+			return res;
+		}
+		if (!body.username.match(/^[a-z0-9]+$/i)) {
+			res = helperFunctions.translate(
+				'Username should only include characters (a-z or A-Z) and numbers (0-9).',
+				pool,
+				body.language
+			);
+			return res;
+		}
+		if (body.firstname.length > 50 || body.lastname.length > 50) {
+			res = helperFunctions.translate(
+				"Come on, your name can't seriously be that long. Maximum for first name and last name is 50 characters.",
+				pool,
+				body.language
+			);
+			return res;
+		}
 		if (
 			!body.firstname.match(/^[a-zåäö-]+$/i) ||
 			!body.lastname.match(/^[a-zåäö-]+$/i)
-		)
-			return 'First name and last name can only include characters a-z, å, ä, ö and dash (-).';
+		) {
+			res = helperFunctions.translate(
+				'First name and last name can only include characters a-z, å, ä, ö and dash (-).',
+				pool,
+				body.language
+			);
+			return res;
+		}
 		if (
 			body.email.length > 254 ||
 			!body.email.match(
 				/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 			)
-		)
-			return 'Please enter a valid e-mail address.';
+		) {
+			res = helperFunctions.translate(
+				'Please enter a valid e-mail address.',
+				pool,
+				body.language
+			);
+			return res;
+		}
 		if (
 			!body.password.match(
 				/(?=^.{8,30}$)(?=.*\d)(?=.*[!.@#$%^&*]+)(?=.*[A-Z])(?=.*[a-z]).*$/
 			)
 		) {
-			return 'PLEASE ENTER A PASSWORD WITH: a length between 8 and 30 characters, at least one lowercase character (a-z), at least one uppercase character (A-Z), at least one numeric character (0-9) and at least one special character (!.@#$%^&*)';
+			res = helperFunctions.translate(
+				'PLEASE ENTER A PASSWORD WITH: a length between 8 and 30 characters, at least one lowercase character, at least one uppercase character, at least one numeric character and at least one special character',
+				pool,
+				body.language
+			);
+			return res;
 		}
-		if (body.password !== body.confirmPassword)
-			return 'The entered passwords are not the same!';
+		if (body.password !== body.confirmPassword) {
+			res = helperFunctions.translate(
+				'The entered passwords are not the same!',
+				pool,
+				body.language
+			);
+			return res;
+		}
 
 		const checkUsername = async () => {
 			var sql = 'SELECT * FROM users WHERE username = $1';
 			const { rows } = await pool.query(sql, [body.username]);
 			if (rows.length) {
-				throw 'Username already exists!';
+				res = helperFunctions.translate(
+					'Username already exists!',
+					pool,
+					body.language
+				);
+				throw res;
 			} else return;
 		};
 
@@ -51,7 +97,12 @@ module.exports = function (app, pool, bcrypt, transporter, helperFunctions) {
 			var sql = 'SELECT * FROM users WHERE email = $1';
 			const { rows } = await pool.query(sql, [body.email]);
 			if (rows.length) {
-				throw 'User with this e-mail already exists!';
+				res = helperFunctions.translate(
+					'User with this e-mail already exists!',
+					pool,
+					body.language
+				);
+				throw res;
 			} else return;
 		};
 

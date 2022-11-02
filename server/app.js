@@ -82,7 +82,7 @@ require('./routes/resetpassword.js')(
 	transporter,
 	helperFunctions
 );
-require('./routes/profile.js')(app, pool, bcrypt, upload, fs, path);
+require('./routes/profile.js')(app, pool, bcrypt, upload, fs, path, helperFunctions);
 require('./routes/browsing.js')(app, axios);
 require('./routes/oauth.js')(app, pool, axios, helperFunctions, jwt);
 require('./routes/streaming.js')(app, fs, path, axios, pool, ffmpeg);

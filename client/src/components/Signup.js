@@ -49,7 +49,6 @@ const Signup = ({ t }) => {
 		signUpService
 			.createUser(signedUpUser)
 			.then((result) => {
-				console.log('result', result);
 				if (result === true) {
 					dispatch(changeSeverity('success'));
 					dispatch(

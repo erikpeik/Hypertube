@@ -1,4 +1,4 @@
-module.exports = (app, pool, bcrypt, upload, fs, path) => {
+module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 	app.post('/api/profile/editsettings', async (request, response) => {
 		const cookie = request.cookies.refreshToken;
 		const { username, firstname, lastname, email, language } = request.body;
@@ -13,34 +13,62 @@ module.exports = (app, pool, bcrypt, upload, fs, path) => {
 			email,
 			user.rows[0]['id'],
 		]);
-		if (rows.length !== 0)
-			return response.send('Username or email is already in use!');
-		if (username.length < 4 || username.length > 25)
-			return response.send(
-				'Username has to be between 4 and 25 characters.'
+		if (rows.length !== 0) {
+			res = await helperFunctions.translate(
+				'Username or email is already in use!',
+				pool,
+				language
 			);
-		if (!username.match(/^[a-z0-9]+$/i))
-			return response.send(
-				'Username should only include characters (a-z or A-Z) and numbers (0-9).'
+			return response.send(res);
+		}
+		if (username.length < 4 || username.length > 25) {
+			res = await helperFunctions.translate(
+				'Username has to be between 4 and 25 characters.',
+				pool,
+				language
 			);
-		if (firstname.length > 50 || lastname.length > 50)
-			return response.send(
-				'Maximum length for firstname and lastname is 50 characters.'
+			return response.send(res);
+		}
+		if (!username.match(/^[a-z0-9]+$/i)) {
+			res = await helperFunctions.translate(
+				'Username should only include characters (a-z or A-Z) and numbers (0-9).',
+				pool,
+				language
 			);
+			return response.send(res);
+		}
+		if (firstname.length > 50 || lastname.length > 50) {
+			res = await helperFunctions.translate(
+				'Maximum length for firstname and lastname is 50 characters.',
+				pool,
+				language
+			);
+			return response.send(res);
+		}
 		if (
 			!firstname.match(/^[a-zåäö-]+$/i) ||
 			!lastname.match(/^[a-zåäö-]+$/i)
-		)
-			return response.send(
-				'First name and last name can only include characters a-z, å, ä, ö and dash (-).'
+		) {
+			res = await helperFunctions.translate(
+				'First name and last name can only include characters a-z, å, ä, ö and dash (-).',
+				pool,
+				language
 			);
+			return response.send(res);
+		}
 		if (
 			email.length > 254 ||
 			!email.match(
 				/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 			)
-		)
-			return response.send('Please enter a valid e-mail address.');
+		) {
+			res = await helperFunctions.translate(
+				'Please enter a valid e-mail address.',
+				pool,
+				language
+			);
+			return response.send(res);
+		}
 		try {
 			let sql = `UPDATE users SET username = $1, firstname = $2, lastname = $3, email = $4, language = $5
 						WHERE id = $6`;
@@ -55,26 +83,38 @@ module.exports = (app, pool, bcrypt, upload, fs, path) => {
 			response.send(true);
 		} catch (error) {
 			console.log(error);
-			response.send(
-				'User settings update failed for some reason ¯\\_(ツ)_/¯'
+			res = await helperFunctions.translate(
+				'User settings update failed for some reason ¯\\_(ツ)_/¯',
+				pool,
+				language
 			);
+			return response.send(res);
 		}
 	});
 
 	app.post('/api/profile/changepassword', async (request, response) => {
 		const cookie = request.cookies.refreshToken;
-		const { oldPassword, newPassword, confirmPassword } = request.body;
+		const { oldPassword, newPassword, confirmPassword, language } =
+			request.body;
 
 		if (newPassword !== confirmPassword) {
-			return response.send('The entered new passwords are not the same!');
+			res = await helperFunctions.translate(
+				'The entered new passwords are not the same!',
+				pool,
+				language
+			);
+			return response.send(res);
 		} else if (
 			!newPassword.match(
 				/(?=^.{8,30}$)(?=.*\d)(?=.*[!.@#$%^&*]+)(?=.*[A-Z])(?=.*[a-z]).*$/
 			)
 		) {
-			return response.send(
-				'PLEASE ENTER A NEW PASSWORD WITH: a length between 8 and 30 characters, at least one lowercase character (a-z), at least one uppercase character (A-Z), at least one numeric character (0-9) and at least one special character (!.@#$%^&*)'
+			res = await helperFunctions.translate(
+				'PLEASE ENTER A NEW PASSWORD WITH: a length between 8 and 30 characters, at least one lowercase character (a-z), at least one uppercase character (A-Z), at least one numeric character (0-9) and at least one special character',
+				pool,
+				language
 			);
+			return response.send(res);
 		}
 
 		if (cookie) {
@@ -82,7 +122,12 @@ module.exports = (app, pool, bcrypt, upload, fs, path) => {
 			const { rows } = await pool.query(sql, [cookie]);
 
 			if (!(await bcrypt.compare(oldPassword, rows[0]['password']))) {
-				return response.send('The old password is not correct!');
+				res = await helperFunctions.translate(
+					'The old password is not correct!',
+					pool,
+					language
+				);
+				return response.send(res);
 			} else {
 				const hash = await bcrypt.hash(newPassword, 10);
 				try {
@@ -91,14 +136,20 @@ module.exports = (app, pool, bcrypt, upload, fs, path) => {
 					return response.send(true);
 				} catch (error) {
 					console.log('ERROR :', error);
-					return response.send('Password creation failed');
+					res = await helperFunctions.translate(
+						'Password creation failed',
+						pool,
+						language
+					);
+					return response.send(res);
 				}
 			}
 		}
 	});
 
 	app.get('/api/profile/:id', async (request, response) => {
-		let = sql = 'SELECT * FROM users \
+		let = sql =
+			'SELECT * FROM users \
 						JOIN user_pictures up on users.id = up.user_id \
 						where user_id = $1';
 		const { rows } = await pool.query(sql, [request.params.id]);
