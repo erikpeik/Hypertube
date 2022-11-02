@@ -125,10 +125,10 @@ const ProfileSettings = ({ t }) => {
 							sx={{ width: '50%', marginLeft: '25%', marginRight: '25%' }}
 							onChange={handleLanguage}
 						>
-							<MenuItem value={'English'}>🇬🇧 English</MenuItem>
-							<MenuItem value={'Finnish'}>🇫🇮 Finnish</MenuItem>
-							<MenuItem value={'Romanian'}>🇷🇴 Romanian</MenuItem>
-							<MenuItem value={'Hungarian'}>🇭🇺 Hungarian</MenuItem>
+							<MenuItem value={'en'}>🇬🇧 English</MenuItem>
+							<MenuItem value={'fi'}>🇫🇮 Finnish</MenuItem>
+							<MenuItem value={'ro'}>🇷🇴 Romanian</MenuItem>
+							<MenuItem value={'hu'}>🇭🇺 Hungarian</MenuItem>
 						</Select>
 					</Box>
 					<TextField

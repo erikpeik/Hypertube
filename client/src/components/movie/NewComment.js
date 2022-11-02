@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { changeNotification } from "../../reducers/notificationReducer";
@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import { Button, Paper, TextField } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import commentService from "../../services/commentService";
+import { current } from "@reduxjs/toolkit";
 const theme = createTheme({
 	palette: {
 		primary: {
@@ -19,6 +20,8 @@ const theme = createTheme({
 });
 
 const NewComment = ({ movieId, setRefresh, t }) => {
+
+	const myRef = useRef('');
 	const [newComment, setNewComment] = useState("");
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -34,6 +37,7 @@ const NewComment = ({ movieId, setRefresh, t }) => {
 		event.preventDefault();
 		commentService.addComment(newComment, movieId).then((result) => {
 			if (result === true) {
+				setNewComment(null)
 				dispatch(changeSeverity("success"));
 				dispatch(changeNotification(`${t("movie.3")}`));
 				setRefresh(Math.random(1, 1000));
@@ -42,7 +46,7 @@ const NewComment = ({ movieId, setRefresh, t }) => {
 				dispatch(changeNotification(result));
 			}
 		});
-	};
+		myRef.current.value = '';	};
 	return (
 		<>
 			<Box>
@@ -53,6 +57,8 @@ const NewComment = ({ movieId, setRefresh, t }) => {
 							onChange={(e) => {
 								setNewComment(e.target.value);
 							}}
+							inputRef={myRef}
+							autoFocus={true}
 							margin="normal"
 							name="comment"
 							label={t("movie.4")}
