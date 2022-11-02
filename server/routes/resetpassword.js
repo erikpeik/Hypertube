@@ -2,6 +2,9 @@ module.exports = function (app, pool, bcrypt, transporter, helperFunctions) {
 	app.post('/api/resetpassword', (request, response) => {
 		const { resetvalue } = request.body;
 
+		if (!resetvalue)
+			return response.send("Reset value missing")
+
 		const findUserAccount = async () => {
 			var sql = 'SELECT * FROM users WHERE username = $1 OR email = $1';
 			const { rows } = await pool.query(sql, [resetvalue]);

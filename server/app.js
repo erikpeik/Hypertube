@@ -75,13 +75,7 @@ const upload = multer({ storage: storage });
 const helperFunctions = require("./utils/helperFunctions.js");
 require("./routes/signup.js")(app, pool, bcrypt, transporter, helperFunctions);
 require("./routes/login_logout.js")(app, pool, bcrypt, jwt);
-require("./routes/resetpassword.js")(
-	app,
-	pool,
-	bcrypt,
-	transporter,
-	helperFunctions
-);
+require("./routes/resetpassword.js")(app, pool, bcrypt, transporter,helperFunctions);
 require("./routes/profile.js")(app, pool, bcrypt, upload, fs, path);
 require("./routes/browsing.js")(app, axios);
 require("./routes/oauth.js")(app, pool, axios, helperFunctions, jwt);
