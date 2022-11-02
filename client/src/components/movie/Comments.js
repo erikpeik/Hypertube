@@ -50,7 +50,7 @@ const Comments = ({ movieId, t }) => {
 										</Grid>
 									) : (
 										<Grid item>
-											<Link to={'/profile/' + c?.id}>
+											<Link to={'/profile/' + c?.user_id}>
 												<Avatar
 													alt="Remy Sharp"
 													src={c.user_pic}
