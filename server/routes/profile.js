@@ -1,11 +1,13 @@
 module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 	app.post('/api/profile/editsettings', async (request, response) => {
 		const cookie = request.cookies.refreshToken;
-		const { username, firstname, lastname, email, language } = request.body;
 
 		if (!cookie) return response.send('User not signed in!');
 		const check = `SELECT * FROM users WHERE token = $1`;
 		const user = await pool.query(check, [cookie]);
+		if (user.rows.length === 0) return response.send("User not signed in!");
+
+		const { username, firstname, lastname, email, language } = request.body;
 		var sql =
 			'SELECT * FROM users WHERE (username = $1 OR email = $2) AND id != $3';
 		const { rows } = await pool.query(sql, [

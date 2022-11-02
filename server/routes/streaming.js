@@ -1,7 +1,5 @@
 module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 
-	let superFile = ""
-
 	const getMagnetLink = (torrentInfo, film_title) => {
 		let hash = torrentInfo.hash;
 		let torrent_url = torrentInfo.url;
@@ -92,7 +90,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			})
 		})
 
-	app.get("/api/moviestream/:id", async (request, response) => {
+	const startFileStream = async (request, response) => {
 		const id = request.params.id;
 		let notLoaded = false;
 
@@ -139,56 +137,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			const videoStream = fs.createReadStream(moviefile)
 			videoStream.pipe(response)
 		}
-	})
-
-	app.post("/api/streaming/torrent/:id", async (request, response) => {
-		const imdb_id = request.params.id;
-
-		let sql = `SELECT * FROM downloads WHERE imdb_id = $1 AND file_type = 'mp4'`;
-		const { rows } = await pool.query(sql, [imdb_id]);
-
-		let responseSent = false;
-
-		if (rows.length > 0 && rows[0]["completed"] === "YES")
-			return response.status(200).send(`Ready to play`);
-		else if (
-			rows.length > 0 &&
-			fs.existsSync(rows[0]["path"]) &&
-			fs.statSync(rows[0]["path"]).size > 50000000
-		) {
-			response.status(200).send(`Ready to play`);
-			responseSent = true;
-		}
-
-		const movieInfo = await axios.get(
-			`${process.env.TORRENT_API}?query_term=${imdb_id}`
-		).then(response => response.data.data.movies[0]);
-
-		let torrentInfo = movieInfo.torrents;
-		let film_title = movieInfo.title_long;
-
-		// if (torrentInfo.length > 1)
-		// 	torrentInfo.sort((a, b) => (a.seeds > b.seeds ? -1 : 1));
-
-		let magnet_link = getMagnetLink(torrentInfo[0], film_title);
-
-		let torrent_files = await downloadTorrent(magnet_link, imdb_id);
-		console.log("Torrent files: ", torrent_files);
-
-		while (fs.existsSync(`movies/${torrent_files[0].path}`) === false)
-			await new Promise(r => setTimeout(r, 1000));
-
-		fs.watch(`movies/${torrent_files[0].path}`, (curr, prev) => {
-			fs.stat(`movies/${torrent_files[0].path}`, (err, stats) => {
-				if (stats.size > 50000000 && responseSent === false) {
-					console.log(stats.size);
-					// if (stats.size > torrent_files[0].size / 10 && responseSent === false) {
-					response.status(200).send(`Ready to play`);
-					responseSent = true;
-				}
-			});
-		});
-	});
+	}
 
 	const downloadSubtitle = async (imdb_id, language, download_url) => {
 		if (!fs.existsSync(`./subtitles/${imdb_id}`)) {
@@ -214,9 +163,9 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		return (downloadSuccess)
 	}
 
-	app.get("/api/streaming/download_subs/:id", async (request, response) => {
-		const imdb_full_id = request.params.id
-		const imdb_id = Number(request.params.id.replace(/\D/g, ""));
+	const getFilmSubtitles = async (id) => {
+		const imdb_full_id = id
+		const imdb_id = Number(id.replace(/\D/g, ""));
 		const OST_API_KEY = process.env.OST_API_KEY
 
 		let sql = `SELECT * FROM subtitles WHERE imdb_id = $1`
@@ -237,7 +186,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			let wantedLanguages = ["en", "fi"]
 
 			wantedLanguages.forEach(language => {
-				const languageSubs = allSubs.filter(sub => sub.language === language && sub.fps === 23.976)
+				const languageSubs = allSubs.filter(sub => sub.language === language && (sub.fps === 23.976 || sub.fps === 24))
 				if (languageSubs.length > 0) {
 					const languageSub = languageSubs.reduce((a, b) => (a.download_count > b.download_count ? a : b))
 					finalSubs.push(languageSub)
@@ -264,11 +213,11 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 				});
 			})
 
-			response.status(200).send("Download succesful")
+			// response.status(200).send("Download succesful")
 		} else {
-			response.status(200).send("Subs already downloaded")
+			// response.status(200).send("Subs already downloaded")
 		}
-	})
+	}
 
 	app.get("/api/streaming/subtext/:id/:language", async (request, response) => {
 		const imdb_id = request.params.id
@@ -304,5 +253,59 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 
 		response.status(200).send(subtitleTracks)
 	})
+
+	app.get("/api/streaming/torrent/:id", async (request, response) => {
+		const imdb_id = request.params.id;
+
+		let sql = `SELECT * FROM downloads WHERE imdb_id = $1 AND file_type = 'mp4'`;
+		const { rows } = await pool.query(sql, [imdb_id]);
+
+		let responseSent = false;
+
+		if (rows.length > 0 && rows[0]["completed"] === "YES")
+			startFileStream(request, response)
+		// return response.status(200).send(`Ready to play`);
+		else if (
+			rows.length > 0 &&
+			fs.existsSync(rows[0]["path"]) &&
+			fs.statSync(rows[0]["path"]).size > 50000000
+		) {
+			startFileStream(request, response)
+			// response.status(200).send(`Ready to play`);
+			responseSent = true;
+		}
+
+		getFilmSubtitles(imdb_id)
+
+		const movieInfo = await axios.get(
+			`${process.env.TORRENT_API}?query_term=${imdb_id}`
+		).then(response => response.data.data.movies[0]);
+
+		let torrentInfo = movieInfo.torrents;
+		let film_title = movieInfo.title_long;
+
+		if (torrentInfo.length > 1)
+			torrentInfo.sort((a, b) => (a.seeds > b.seeds ? -1 : 1));
+
+		let magnet_link = getMagnetLink(torrentInfo[0], film_title);
+
+		let torrent_files = await downloadTorrent(magnet_link, imdb_id);
+		console.log("Torrent files: ", torrent_files);
+
+		while (fs.existsSync(`movies/${torrent_files[0].path}`) === false)
+			await new Promise(r => setTimeout(r, 1000));
+
+		fs.watch(`movies/${torrent_files[0].path}`, (curr, prev) => {
+			fs.stat(`movies/${torrent_files[0].path}`, (err, stats) => {
+				if (stats.size > 50000000 && responseSent === false) {
+					console.log(stats.size);
+					startFileStream(request, response)
+					// if (stats.size > torrent_files[0].size / 10 && responseSent === false) {
+					// response.status(200).send(`Ready to play`);
+					// responseSent = true;
+				}
+			});
+		});
+	});
 
 };

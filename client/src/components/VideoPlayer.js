@@ -18,10 +18,27 @@ const VideoPlayer = ({ imdb_id, status }) => {
 			console.log(response);
 			setSubtitles(response);
 		});
-	}, [imdb_id, status]);
+	}, [imdb_id, statusPlayer]);
+
+	const downloadSubs = () => {
+		streamingService.downloadSubs(imdb_id);
+	};
+
+	const getTorrent = () => {
+		downloadSubs();
+		streamingService.getTorrent(imdb_id).then((response) => {
+			console.log(response);
+			// if (response === "Ready to play") {
+			// 	setPlayerStatus("ready");
+			// }
+		});
+	};
 
 	const onPlay = () => {
+		// downloadSubs();
+		// getTorrent();
 		setStatusPlayer('playing');
+		console.log('onPlay')
 		// here set the movie as watched
 	};
 
@@ -77,7 +94,7 @@ const VideoPlayer = ({ imdb_id, status }) => {
 		};
 	}, []);
 
-	let stream_url = `http://localhost:3001/api/moviestream/${imdb_id}`;
+	let stream_url = `http://localhost:3001/api/streaming/torrent/${imdb_id}`;
 
 	return (
 		<>
