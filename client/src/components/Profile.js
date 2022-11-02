@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
 	Typography,
 	Button,
@@ -9,20 +9,20 @@ import {
 	Box,
 	Grid,
 	Avatar,
-} from "@mui/material";
-import AspectRatio from "@mui/joy/AspectRatio";
-import { Container } from "@mui/system";
-import Notification from "./Notification";
-import { getProfileData } from "../reducers/profileReducer";
-import { changeSeverity } from "../reducers/severityReducer";
-import { changeNotification } from "../reducers/notificationReducer";
-import profileService from "../services/profileService";
-import Loader from "./Loader";
+} from '@mui/material';
+import AspectRatio from '@mui/joy/AspectRatio';
+import { Container } from '@mui/system';
+import Notification from './Notification';
+import { getProfileData } from '../reducers/profileReducer';
+import { changeSeverity } from '../reducers/severityReducer';
+import { changeNotification } from '../reducers/notificationReducer';
+import profileService from '../services/profileService';
+import Loader from './Loader';
 
 const theme = createTheme({
 	palette: {
 		primary: {
-			main: "#FF1E56",
+			main: '#FF1E56',
 		},
 	},
 });
@@ -30,7 +30,7 @@ const theme = createTheme({
 const deleteTheme = createTheme({
 	palette: {
 		primary: {
-			main: "#FF0000",
+			main: '#FF0000',
 		},
 	},
 });
@@ -53,20 +53,20 @@ const Profile = ({ t }) => {
 		return <Loader text="Getting profile data..." />;
 	}
 
-	const profile_pic = profileData.profile_pic["picture_data"];
+	const profile_pic = profileData.profile_pic['picture_data'];
 
 	const profilePictureStyle = {
-		width: "100%",
-		aspectRatio: "1/1",
-		borderRadius: "50%",
-		objectFit: "cover",
+		width: '100%',
+		aspectRatio: '1/1',
+		borderRadius: '50%',
+		objectFit: 'cover',
 	};
 
 	const deleteUser = () => {
-		if (window.confirm(`${t("del.1")}`)) {
-			if (window.confirm(`${t("del.2")}`)) {
-				if (window.confirm(`${t("del.3")}`)) {
-					navigate("/deleteuser");
+		if (window.confirm(`${t('del.1')}`)) {
+			if (window.confirm(`${t('del.2')}`)) {
+				if (window.confirm(`${t('del.3')}`)) {
+					navigate('/deleteuser');
 				}
 			}
 		}
@@ -75,22 +75,22 @@ const Profile = ({ t }) => {
 		const image = event.target.files[0];
 		console.log(image);
 		if (image.size > 5242880) {
-			dispatch(changeSeverity("error"));
-			dispatch(changeNotification(`${t("profile.0")}`));
+			dispatch(changeSeverity('error'));
+			dispatch(changeNotification(`${t('profile.0')}`));
 		} else {
 			let formData = new FormData();
-			formData.append("file", image);
+			formData.append('file', image);
 			const result = await profileService.setProfilePic(formData);
 			if (result === true) {
 				dispatch(getProfileData());
-				dispatch(changeSeverity("success"));
-				dispatch(changeNotification(`${t("profile.8")}`));
+				dispatch(changeSeverity('success'));
+				dispatch(changeNotification(`${t('profile.8')}`));
 			} else {
-				dispatch(changeSeverity("error"));
+				dispatch(changeSeverity('error'));
 				dispatch(changeNotification(result));
 			}
 		}
-		event.target.value = "";
+		event.target.value = '';
 	};
 
 	return (
@@ -98,14 +98,14 @@ const Profile = ({ t }) => {
 			<Paper elevation={10} sx={{ padding: 3 }}>
 				<Grid
 					sx={{
-						display: "flex",
-						alignContent: "center",
-						alignItems: "center",
-						justifyContent: "center",
+						display: 'flex',
+						alignContent: 'center',
+						alignItems: 'center',
+						justifyContent: 'center',
 						mb: 2,
 					}}
 				>
-					<Box sx={{ width: "200px", display: "inline-block" }}>
+					<Box sx={{ width: '200px', display: 'inline-block' }}>
 						<AspectRatio ratio={1}>
 							<Avatar
 								src={profile_pic}
@@ -114,36 +114,36 @@ const Profile = ({ t }) => {
 							/>
 						</AspectRatio>
 					</Box>
-					<Box sx={{ width: "fit-content", ml: 5 }}>
-						<Typography variant="h2" sx={{ fontSize: "250%" }}>
+					<Box sx={{ width: 'fit-content', ml: 5 }}>
+						<Typography variant="h2" sx={{ fontSize: '250%' }}>
 							{profileData.username}
 						</Typography>
 					</Box>
 				</Grid>
 				<Container
 					sx={{
-						pb: "5",
-						display: "flex",
-						flexDirection: "column",
-						alignItems: "center",
+						pb: '5',
+						display: 'flex',
+						flexDirection: 'column',
+						alignItems: 'center',
 					}}
 				>
-					<h4>{t("profile.1")}</h4>
+					<h4>{t('profile.1')}</h4>
 					<Typography>{profileData.firstname}</Typography>
-					<h4>{t("profile.2")}</h4>
+					<h4>{t('profile.2')}</h4>
 					<Typography>{profileData.lastname}</Typography>
-					<h4>{t("profile.3")}</h4>
+					<h4>{t('profile.3')}</h4>
 					<Typography>{profileData.email}</Typography>
 				</Container>
-				<Button theme={theme} onClick={() => navigate("/settings")}>
-					{t("profile.4")}
+				<Button theme={theme} onClick={() => navigate('/settings')}>
+					{t('profile.4')}
 				</Button>
 				<Button theme={theme}>
 					<label
 						htmlFor="set_profilepic"
 						className="styled-image-upload"
 					>
-						{t("profile.5")}
+						{t('profile.5')}
 					</label>
 					<input
 						type="file"
@@ -155,16 +155,16 @@ const Profile = ({ t }) => {
 				</Button>
 				<Button
 					theme={theme}
-					onClick={() => navigate("/changepassword")}
+					onClick={() => navigate('/changepassword')}
 				>
-					{t("profile.6")}
+					{t('profile.6')}
 				</Button>
 				<Button
 					theme={deleteTheme}
 					variant="contained"
 					onClick={() => deleteUser()}
 				>
-					{t("profile.7")}
+					{t('profile.7')}
 				</Button>
 			</Paper>
 			<Notification />

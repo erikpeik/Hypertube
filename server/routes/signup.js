@@ -119,7 +119,7 @@ module.exports = function (app, pool, bcrypt, transporter, helperFunctions) {
 	app.post('/api/signup', async (request, response) => {
 		const checkResult = await checkSignUpData(request.body);
 		if (checkResult === true) {
-			const { username, firstname, lastname, email, password } =
+			const { username, firstname, lastname, email, password, language } =
 				request.body;
 
 			const saveHashedUser = async () => {
@@ -137,7 +137,12 @@ module.exports = function (app, pool, bcrypt, transporter, helperFunctions) {
 					return;
 				} catch (error) {
 					console.log('ERROR :', error);
-					throw 'User creation failed!';
+					res = await helperFunctions.translate(
+						'User creation failed!',
+						pool,
+						language
+					);
+					throw res;
 				}
 			};
 
