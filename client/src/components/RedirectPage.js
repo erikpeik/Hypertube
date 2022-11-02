@@ -11,7 +11,7 @@ const RedirectPage = () => {
 		const redirectPages = ['/login', '/signup', '/login/resetpassword', '/oauth', "/"]
 
 		if (user !== null) {
-			if (user === '') {
+			if (user === '' ) {
 				if (!redirectPages.includes(location.pathname) && location.pathname.includes('resetpassword') === false) {
 					navigate('/')
 				}

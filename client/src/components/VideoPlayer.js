@@ -6,7 +6,7 @@ import streamingService from '../services/streamingService';
 import video_banner from '../images/video_banner.png';
 import { PlayCircleFilledWhiteOutlined } from '@mui/icons-material';
 
-const VideoPlayer = ({ imdb_id }) => {
+const VideoPlayer = ({ imdb_id, status }) => {
 	const playerRef = useRef(null);
 	const buffering = useRef(false);
 	const [statusPlayer, setStatusPlayer] = useState('');
@@ -18,7 +18,7 @@ const VideoPlayer = ({ imdb_id }) => {
 			console.log(response);
 			setSubtitles(response);
 		});
-	}, [imdb_id]);
+	}, [imdb_id, status]);
 
 	const onPlay = () => {
 		setStatusPlayer('playing');

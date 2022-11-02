@@ -47,7 +47,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			engine.on("ready", () => {
 				superFile = engine.files.reduce((a, b) => (a.length > b.length ? a : b));
 				engine.files.forEach(async (file) => {
-					if (file.name.endsWith(".mp4")) {
+					if (file.name.endsWith(".mp4") || file.name.endsWith(".mkv")) {
 						files.push({
 							name: file.name,
 							path: file.path,
@@ -96,7 +96,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		const id = request.params.id;
 		let notLoaded = false;
 
-		let sql = `SELECT * FROM downloads WHERE imdb_id = $1 AND file_type = 'mp4'`;
+		let sql = `SELECT * FROM downloads WHERE imdb_id = $1`;
 		const { rows } = await pool.query(sql, [id]);
 
 		let moviefile;
@@ -119,9 +119,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 				"Content-Range": `bytes ${start}-${end}/${rows[0]?.file_size || fileSize}`,
 				"Accept-Ranges": "bytes",
 				"Content-Length": contentLength,
-				"Content-Type": "video/mp4",
-				// "Cache-Control": "no-cache",
-				// "Connection": "upgrade, keep-alive"
+				"Content-Type": "video/mp4"
 			};
 			// notLoaded ? response.writeHead(416, head) : response.writeHead(206, head);
 			response.writeHead(206, head);
@@ -239,7 +237,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			let wantedLanguages = ["en", "fi"]
 
 			wantedLanguages.forEach(language => {
-				const languageSubs = allSubs.filter(sub => sub.language === language)
+				const languageSubs = allSubs.filter(sub => sub.language === language && sub.fps === 23.976)
 				if (languageSubs.length > 0) {
 					const languageSub = languageSubs.reduce((a, b) => (a.download_count > b.download_count ? a : b))
 					finalSubs.push(languageSub)

@@ -44,7 +44,12 @@ const MoviePage = ({ t }) => {
 		return i <= 12 || data[0] === "imdbRating" || data[0] === "imdbVotes";
 	});
 
+	const downloadSubs = () => {
+		streamingService.downloadSubs(params.id);
+	};
+
 	const getTorrent = () => {
+		downloadSubs();
 		streamingService.getTorrent(params.id).then((response) => {
 			console.log(response);
 			if (response === "Ready to play") {
@@ -56,10 +61,6 @@ const MoviePage = ({ t }) => {
 	const navigateToMovie = (movie_id) => {
 		navigate(`/movie/${movie_id}`);
 		window.location.reload();
-	};
-
-	const downloadSubs = () => {
-		streamingService.downloadSubs(params.id);
 	};
 
 	return (
@@ -78,13 +79,6 @@ const MoviePage = ({ t }) => {
 				}}
 			>
 				Get Movie
-			</Button>
-			<Button
-				onClick={() => {
-					downloadSubs();
-				}}
-			>
-				Get Subtitles
 			</Button>
 			<h5 className="comment" onClick={() => setShow(!show)}>
 				{t("movie.0")}{" "}
