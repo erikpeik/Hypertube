@@ -3,8 +3,10 @@ import { useState, useRef, useEffect } from 'react';
 import ReactPlayer from 'react-player/lazy';
 import { Container, LinearProgress, Typography } from '@mui/material';
 import streamingService from '../services/streamingService';
+import movieService from '../services/movieService';
 import video_banner from '../images/video_banner.png';
 import { PlayCircleFilledWhiteOutlined } from '@mui/icons-material';
+import { useSelector, useDispatch } from 'react-redux';
 
 const VideoPlayer = ({ imdb_id, status }) => {
 	const playerRef = useRef(null);
@@ -13,6 +15,9 @@ const VideoPlayer = ({ imdb_id, status }) => {
 	const [error, setError] = useState(false);
 	const [subtitles, setSubtitles] = useState([]);
 
+	const profileData = useSelector((state) => state.profile);
+	const dispatch = useDispatch();
+
 	useEffect(() => {
 		streamingService.getSubtitles(imdb_id).then((response) => {
 			console.log(response);
@@ -20,8 +25,16 @@ const VideoPlayer = ({ imdb_id, status }) => {
 		});
 	}, [imdb_id]);
 
+	console.log(imdb_id)
+	console.log(profileData)
+
+	const isWatched = () => {
+		movieService.getUserWatchMovie(imdb_id, profileData.id);
+	};
+
 	const onPlay = () => {
 		setStatusPlayer('playing');
+		isWatched();
 		// here set the movie as watched
 	};
 
