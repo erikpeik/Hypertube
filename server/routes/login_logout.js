@@ -1,19 +1,26 @@
-module.exports = function (app, pool, bcrypt, jwt) {
+module.exports = function (app, pool, bcrypt, jwt, helperFunctions) {
 	app.post('/api/login', async (request, response) => {
-		const { username, password } = request.body;
-
-		if (!username || !password)
+		const { username, password, language } = request.body;
+		if (!username || !password || !language)
 			return response.send('Required login data missing');
 
 		var sql = `SELECT * FROM users
 					WHERE username = $1 OR email = $1`;
 		const { rows } = await pool.query(sql, [username]);
 		if (rows.length === 0) {
-			response.send('User not found!');
-		} else if (rows[0]['verified'] === 'NO') {
-			response.send(
-				'User account not yeat activated! Please check your inbox for confirmation email.'
+			res = await helperFunctions.translate(
+				'User not found!',
+				pool,
+				language
 			);
+			return response.send(res);
+		} else if (rows[0]['verified'] === 'NO') {
+			res = await helperFunctions.translate(
+				'User account not yeat activated! Please check your inbox for confirmation email.',
+				pool,
+				language
+			);
+			return response.send(res);
 		} else {
 			const compareResult = await bcrypt.compare(
 				password,
@@ -46,7 +53,14 @@ module.exports = function (app, pool, bcrypt, jwt) {
 				await pool.query(sql1, [refreshToken, userId]);
 
 				response.json({ accessToken, username: name, userid: userId });
-			} else response.send('Wrong password!');
+			} else {
+				res = await helperFunctions.translate(
+					'Wrong password!',
+					pool,
+					language
+				);
+				return response.send(res);
+			}
 		}
 	});
 

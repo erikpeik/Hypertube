@@ -1,18 +1,19 @@
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import signUpService from "../services/signUpService";
-import { setUser } from "../reducers/userReducer";
-import { changeNotification } from "../reducers/notificationReducer";
-import { changeSeverity } from "../reducers/severityReducer";
-import { getProfileData } from "../reducers/profileReducer";
-import { Typography, Button, Paper, TextField } from "@mui/material";
-import { Container } from "@mui/system";
-import { createTheme } from "@mui/material/styles";
-import Notification from "./Notification";
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import signUpService from '../services/signUpService';
+import { setUser } from '../reducers/userReducer';
+import { changeNotification } from '../reducers/notificationReducer';
+import { changeSeverity } from '../reducers/severityReducer';
+import { getProfileData } from '../reducers/profileReducer';
+import { Typography, Button, Paper, TextField } from '@mui/material';
+import { Container } from '@mui/system';
+import { createTheme } from '@mui/material/styles';
+import Notification from './Notification';
 
 const Login = ({ t }) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+	const language = useSelector((state) => state.language);
 
 	const submitUser = async (event) => {
 		event.preventDefault();
@@ -20,6 +21,7 @@ const Login = ({ t }) => {
 		const signedUpUser = {
 			username: event.target.username.value,
 			password: event.target.password.value,
+			language: language,
 		};
 
 		signUpService.logInUser(signedUpUser).then((result) => {
@@ -30,50 +32,50 @@ const Login = ({ t }) => {
 				};
 				dispatch(setUser(sessionUser));
 				dispatch(getProfileData());
-				dispatch(changeNotification(""));
+				dispatch(changeNotification(''));
 			} else {
-				dispatch(changeSeverity("error"));
+				dispatch(changeSeverity('error'));
 				dispatch(changeNotification(result));
 			}
 		});
 	};
 
 	const navigateToReset = () => {
-		navigate("/login/resetpassword");
+		navigate('/login/resetpassword');
 	};
 
 	const theme = createTheme({
 		palette: {
 			primary: {
-				main: "#fcba03",
+				main: '#fcba03',
 			},
 			secondary: {
-				main: "#F5F5F5",
+				main: '#F5F5F5',
 			},
 		},
 	});
 
-	let redirect_url = "http://localhost:3001/api/oauth/42direct";
+	let redirect_url = 'http://localhost:3001/api/oauth/42direct';
 
 	return (
-		<Container maxWidth="sm" sx={{ display: "grid", pt: 5, pb: 5 }}>
+		<Container maxWidth="sm" sx={{ display: 'grid', pt: 5, pb: 5 }}>
 			<Paper elevation={10} sx={{ padding: 3 }}>
 				<Typography
 					variant="h5"
 					align="center"
 					sx={{ fontWeight: 550 }}
 				>
-					{t("login.1")}
+					{t('login.1')}
 				</Typography>
 				<Typography align="center" xs={{ mb: 4 }}>
-					{t("login.2")}
+					{t('login.2')}
 				</Typography>
 				<form onSubmit={submitUser}>
 					<TextField
 						fullWidth
 						margin="normal"
 						name="username"
-						label={t("login.3")}
+						label={t('login.3')}
 						placeholder="Username or email address"
 						required
 					></TextField>
@@ -82,7 +84,7 @@ const Login = ({ t }) => {
 						margin="dense"
 						type="password"
 						name="password"
-						label={t("login.4")}
+						label={t('login.4')}
 						placeholder="Password"
 						required
 					></TextField>
@@ -93,15 +95,15 @@ const Login = ({ t }) => {
 						size="large"
 						sx={{ mt: 1 }}
 					>
-						{t("login.5")}
+						{t('login.5')}
 					</Button>
 				</form>
 				<Container
 					maxWidth="md"
 					sx={{
-						display: "flex",
-						justifyContent: "center",
-						alignItems: "center",
+						display: 'flex',
+						justifyContent: 'center',
+						alignItems: 'center',
 						pt: 1,
 						pb: 1,
 					}}
@@ -128,7 +130,7 @@ const Login = ({ t }) => {
 					<br></br>
 				</Container>
 				<Button onClick={navigateToReset} sx={{ mt: 1 }}>
-					{t("login.6")}
+					{t('login.6')}
 				</Button>
 				<Notification />
 			</Paper>

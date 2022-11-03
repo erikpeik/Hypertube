@@ -193,7 +193,7 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 			const cookie = request.cookies.refreshToken;
 			const image =
 				'http://localhost:3001/images/' + request.file.filename;
-			const language = request.body
+			const language = request.body 
 			console.log(language)
 
 			if (cookie) {

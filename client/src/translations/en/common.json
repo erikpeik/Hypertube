@@ -23,7 +23,8 @@
 		"6": "E-mail",
 		"7": "Password",
 		"8": "Confirm password",
-		"9": "Submit"
+		"9": "Submit",
+		"10": "User created successfully! Please check your inbox for confirmation e-mail."
 	},
 	"profile": {
 		"0": "The maximum size for uploaded images is 5 megabytes.",
