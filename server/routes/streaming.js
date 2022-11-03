@@ -101,36 +101,48 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		if (rows.length > 0) moviefile = rows[0]["path"];
 		else moviefile = `movies/pushthebutton.mp4`;
 
-		const fileSize = fs.statSync(moviefile).size
+		const isMp4 = rows[0]["file_type"] === 'mp4'
+
+		const actualFileSize = Number(fs.statSync(moviefile).size)
+		const fileSize = Number(rows[0].file_size)
 		const range = request.headers.range
 		if (range) {
 			console.log("Requested Movie Range: ", range)
 			const CHUNK_SIZE = 10 ** 6;
 			let start = Number(range.replace(/\D/g, ""))
-			if (start > fileSize - 1) {
+			if (start > actualFileSize - 1) {
 				notLoaded = true;
 				start = 0;
 			}
-			const end = Math.min(start + CHUNK_SIZE, fileSize - 1);
+			const end = isMp4 ? Math.min(start + CHUNK_SIZE, fileSize - 1) : fileSize - 1
 			const contentLength = (end - start) + 1
-			const head = {
-				"Content-Range": `bytes ${start}-${end}/${rows[0]?.file_size || fileSize}`,
-				"Accept-Ranges": "bytes",
-				"Content-Length": contentLength,
-				"Content-Type": "video/mp4"
-			};
+			const head = isMp4
+				? {
+					"Content-Range": `bytes ${start}-${end}/${fileSize}`,
+					"Accept-Ranges": "bytes",
+					"Content-Length": contentLength,
+					"Content-Type": "video/mp4"
+				}
+				: {
+					"Content-Range": `bytes ${start}-${end}/${fileSize}`,
+					"Accept-Ranges": "bytes",
+					"Content-Type": "video/webm"
+				}
 			notLoaded ? response.writeHead(416, head) : response.writeHead(206, head);
 			// response.writeHead(206, head);
 			const videoStream = fs.createReadStream(moviefile, { start: start, end: end })
-			// ffmpeg(videoStream)
-			// 	.format('webm')
-			// 	.on('error', () => { })
-			// 	.pipe(response);
-			videoStream.pipe(response);
+			if (isMp4) {
+				videoStream.pipe(response)
+			} else {
+				ffmpeg(videoStream)
+					.format('webm')
+					.on('error', () => { })
+					.pipe(response);
+			}
 		} else {
 			console.log("No Movie Range Defined");
 			const head = {
-				'Content-Length': fileSize,
+				'Content-Length': rows[0]?.file_size,
 				'Content-Type': 'video/mp4',
 			}
 			response.writeHead(200, head)
@@ -186,7 +198,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			let wantedLanguages = ["en", "fi"]
 
 			wantedLanguages.forEach(language => {
-				const languageSubs = allSubs.filter(sub => sub.language === language && (sub.fps === 23.976 || sub.fps === 24))
+				const languageSubs = allSubs.filter(sub => sub.language === language && (sub.fps !== 25))
 				if (languageSubs.length > 0) {
 					const languageSub = languageSubs.reduce((a, b) => (a.download_count > b.download_count ? a : b))
 					finalSubs.push(languageSub)

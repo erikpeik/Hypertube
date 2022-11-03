@@ -11,6 +11,7 @@ import { useSelector, useDispatch } from 'react-redux';
 const VideoPlayer = ({ imdb_id, status }) => {
 	const playerRef = useRef(null);
 	const buffering = useRef(false);
+	const [playing, setPlaying] = useState(false)
 	const [statusPlayer, setStatusPlayer] = useState('');
 	const [error, setError] = useState(false);
 	const [subtitles, setSubtitles] = useState([]);
@@ -73,6 +74,7 @@ const VideoPlayer = ({ imdb_id, status }) => {
 	};
 
 	const onReady = () => {
+		setPlaying(true)
 		buffering.current = false;
 	};
 
@@ -97,9 +99,10 @@ const VideoPlayer = ({ imdb_id, status }) => {
 	return (
 		<>
 			<Container maxWidth="md">
+				{/* <video src={stream_url} type="video/mp4"></video> */}
 				<ReactPlayer
 					ref={playerRef}
-					playing={true}
+					playing={playing}
 					controls={buffering.current === false}
 					pip={false}
 					url={stream_url}
