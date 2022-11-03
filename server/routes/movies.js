@@ -1,4 +1,4 @@
-module.exports = function (app, pool) {
+module.exports = function (app, pool, axios) {
 	app.post('/api/movies/watch/:id', async (request, response) => {
 		const refreshToken = request.cookies.refreshToken;
 		if (!refreshToken) return response.send('User not signed in!');
@@ -34,5 +34,14 @@ module.exports = function (app, pool) {
 			finish_array.push(watched.rows[i].imdb_id);
 		}
 		response.send(finish_array);
+	});
+
+	app.get('/api/movies/:imdb_id', async (request, response) => {
+		const imdb_id = request.params.imdb_id;
+		axios
+			.get(`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`)
+			.then((res) => {
+				response.send(res.data.data.movie);
+			});
 	});
 };

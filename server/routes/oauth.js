@@ -119,7 +119,7 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 		} else {
 			let sql = `SELECT * FROM users WHERE username = $1`;
 			let oldUser = await pool.query(sql, [data.login]);
-			while (user.rows.length) {
+			while (oldUser.rows.length) {
 				userData.username = data.login + String(Math.floor(Math.random() * (999999 - 100000 + 1) + 100000))
 				let sql = `SELECT * FROM users WHERE username = $1`;
 				oldUser = await pool.query(sql, [userData.username]);
