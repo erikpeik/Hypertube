@@ -11,6 +11,7 @@ import Signup from './components/Signup';
 import Profile from './components/Profile';
 import UserProfile from './components/UserProfile';
 import ProfileSettings from './components/profile/ProfileSettings';
+import Watchlist from './components/profile/Watchlist';
 import NavBar from './components/Navbar';
 import PathNotExists from './components/PathNotExists';
 import ConfirmMail from './components/login/ConfirmMail';
@@ -172,6 +173,10 @@ const App = () => {
 						<Route
 							path="/settings"
 							element={<ProfileSettings t={t} />}
+						/>
+						<Route
+							path="/watchlist"
+							element={<Watchlist t={t} />}
 						/>
 						<Route path="/logout" element={<Logout t={t} />} />
 						<Route

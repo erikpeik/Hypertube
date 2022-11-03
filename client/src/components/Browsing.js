@@ -44,11 +44,6 @@ const Browsing = ({ t }) => {
 	const navigate = useNavigate();
 	const profileData = useSelector((state) => state.profile);
 
-
-	useEffect(() => {
-		console.log('profileData:', profileData);
-	}, [profileData]);
-
 	useEffect(() => {
 		if (profileData) {
 			movieService.isWatched(profileData.id).then((response) => {

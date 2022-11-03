@@ -7,7 +7,6 @@ const getUserWatchMovie = (imdb_id, userId) => {
 };
 
 const isWatched = (userId) => {
-	console.log('userID', userId);
 	const request = axios.post(`${baseUrl}`, { userId });
 	return request.then((response) => response.data);
 };
