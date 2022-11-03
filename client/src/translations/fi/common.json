@@ -23,7 +23,8 @@
 		"6": "Sähköpostiosoite",
 		"7": "Salasana",
 		"8": "Vahvista salasana",
-		"9": "Lähetä"
+		"9": "Lähetä",
+		"10": "Käyttäjän luominen onnistui! Tarkista sähköpostiisi vahvistussähköposti."
 	},
 	"profile": {
 		"0": "Suurin sallittu kuvatiedoston koko on 5 megatavua.",

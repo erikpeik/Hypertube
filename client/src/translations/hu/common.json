@@ -23,7 +23,8 @@
 		"6": "E-mail",
 		"7": "Jelszó",
 		"8": "Jelszó megerősítése",
-		"9": "Létrehoz"
+		"9": "Létrehoz",
+		"10": "Felhasználó sikeresen létrehozva! Kérjük, ellenőrizze beérkező leveleit a megerősítő e-mailért."
 	},
 	"profile": {
 		"0": "Maximum képméret 5megabájt.",

@@ -51,11 +51,7 @@ const Signup = ({ t }) => {
 			.then((result) => {
 				if (result === true) {
 					dispatch(changeSeverity('success'));
-					dispatch(
-						changeNotification(
-							'User created successfully! Please check your inbox for confirmation e-mail.'
-						)
-					);
+					dispatch(changeNotification(`${t('register.10')}`));
 					navigate('/login');
 				} else {
 					dispatch(changeSeverity('error'));
