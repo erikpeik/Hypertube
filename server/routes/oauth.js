@@ -62,19 +62,26 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 		const email = await octokit.request("GET /user/emails", {});
 		const user = await octokit.request("GET /user", {});
 
-		const userData = {
+		let userData = {
 			username: user.data.login,
 			firstname: user.data.name.split(" ")[0],
 			lastname: user.data.name.split(" ")[1],
 			email: email.data[0].email,
 		};
 
-		let sql = `SELECT * FROM users WHERE email = $1 OR username = $2`;
-		let { rows } = await pool.query(sql, [email.data[0].email, user.data.login]);
+		let sql = `SELECT * FROM users WHERE email = $1`;
+		let { rows } = await pool.query(sql, [email.data[0].email]);
 
 		if (rows.length) {
 			await logInUser(userData, rows[0]["id"], response)
 		} else {
+			let sql = `SELECT * FROM users WHERE username = $1`;
+			let oldUser = await pool.query(sql, [user.data.login]);
+			while (oldUser.rows.length) {
+				userData.username = user.data.login + String(Math.floor(Math.random() * (999999 - 100000 + 1) + 100000))
+				let sql = `SELECT * FROM users WHERE username = $1`;
+				oldUser = await pool.query(sql, [userData.username]);
+			}
 			await signUpUser(userData, response)
 		}
 
@@ -97,22 +104,26 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 			headers: { Authorization: 'Bearer ' + fortytwo_response.data.access_token }
 		})
 
-		const userData = {
+		let userData = {
 			username: data.login,
 			firstname: data.first_name,
 			lastname: data.last_name,
 			email: data.email,
 		};
 
-		let sql = `SELECT * FROM users WHERE email = $1 OR username = $2`;
-		let { rows } = await pool.query(sql, [
-			data.email,
-			data.login,
-		]);
+		let sql = `SELECT * FROM users WHERE email = $1`;
+		let { rows } = await pool.query(sql, [data.email]);
 
 		if (rows.length) {
 			await logInUser(userData, rows[0]["id"], response)
 		} else {
+			let sql = `SELECT * FROM users WHERE username = $1`;
+			let oldUser = await pool.query(sql, [data.login]);
+			while (user.rows.length) {
+				userData.username = data.login + String(Math.floor(Math.random() * (999999 - 100000 + 1) + 100000))
+				let sql = `SELECT * FROM users WHERE username = $1`;
+				oldUser = await pool.query(sql, [userData.username]);
+			}
 			await signUpUser(userData, response)
 		}
 
