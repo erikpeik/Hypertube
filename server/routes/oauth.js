@@ -76,9 +76,11 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 			await logInUser(userData, rows[0]["id"], response)
 		} else {
 			let sql = `SELECT * FROM users WHERE username = $1`;
-			let { rows } = await pool.query(sql, [user.data.login]);
-			if (rows.length) {
+			let oldUser = await pool.query(sql, [user.data.login]);
+			while (oldUser.rows.length) {
 				userData.username = user.data.login + String(Math.floor(Math.random() * (999999 - 100000 + 1) + 100000))
+				let sql = `SELECT * FROM users WHERE username = $1`;
+				oldUser = await pool.query(sql, [userData.username]);
 			}
 			await signUpUser(userData, response)
 		}
@@ -116,9 +118,11 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 			await logInUser(userData, rows[0]["id"], response)
 		} else {
 			let sql = `SELECT * FROM users WHERE username = $1`;
-			let { rows } = await pool.query(sql, [data.login]);
-			if (rows.length) {
+			let oldUser = await pool.query(sql, [data.login]);
+			while (user.rows.length) {
 				userData.username = data.login + String(Math.floor(Math.random() * (999999 - 100000 + 1) + 100000))
+				let sql = `SELECT * FROM users WHERE username = $1`;
+				oldUser = await pool.query(sql, [userData.username]);
 			}
 			await signUpUser(userData, response)
 		}
