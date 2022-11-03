@@ -3,7 +3,6 @@ module.exports = function (app, pool, bcrypt, jwt, helperFunctions) {
 		const { username, password, language } = request.body;
 		if (!username || !password || !language)
 			return response.send('Required login data missing');
-
 		var sql = `SELECT * FROM users
 					WHERE username = $1 OR email = $1`;
 		const { rows } = await pool.query(sql, [username]);

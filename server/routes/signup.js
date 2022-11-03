@@ -167,16 +167,31 @@ module.exports = function (app, pool, bcrypt, transporter, helperFunctions) {
 				return code;
 			};
 
+			let subject = await helperFunctions.translate(
+				'Hypertube account confirmation',
+				pool,
+				language
+			);
+			let html = await helperFunctions.translate(
+				`<h1>Welcome</h1><p>You have just signed up for Hypertube, well done!</p>
+				<p>To fully access the world of Hypertube and find the movie that was meant for you,
+				you just need to confirm your account with a single click. Yes, it's that easy!</p>
+				<p>Kisses and hugs, Hypertube Mail xoxoxoxo</p>`,
+				pool,
+				language
+			);
+			let click = await helperFunctions.translate(
+				'Click here to start finding the perfect movies!',
+				pool,
+				language
+			);
+
 			const sendConfirmationMail = (useremail, code) => {
 				var mailOptions = {
 					from: process.env.EMAIL_ADDRESS,
 					to: useremail,
-					subject: 'Hypertube account confirmation',
-					html: `<h1>Welcome</h1><p>You have just signed up for Hypertube, well done!</p>
-						<p>To fully access the world of Hypertube and find the movie that was meant for you,
-						you just need to confirm your account with a single click. Yes, it's that easy!</p>
-						<a href="http://localhost:3000/confirm/${username}/${code}">Click here to start finding perfect movies!</a>
-						<p>Kisses and hugs, Hypertube Mail xoxoxoxo</p>`,
+					subject: subject,
+					html: `${html} <a href="http://localhost:3000/confirm/${username}/${code}">${click}</a>`,
 				};
 
 				transporter.sendMail(mailOptions, function (error, info) {
