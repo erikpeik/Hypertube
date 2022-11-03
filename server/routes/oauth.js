@@ -78,7 +78,7 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 			let sql = `SELECT * FROM users WHERE username = $1`;
 			let { rows } = await pool.query(sql, [user.data.login]);
 			if (rows.length) {
-				userData.username = user.data.login + String(Math.random() * (999999 - 100000 + 1) + 100000)
+				userData.username = user.data.login + String(Math.floor(Math.random() * (999999 - 100000 + 1) + 100000))
 			}
 			await signUpUser(userData, response)
 		}
@@ -118,7 +118,7 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 			let sql = `SELECT * FROM users WHERE username = $1`;
 			let { rows } = await pool.query(sql, [data.login]);
 			if (rows.length) {
-				userData.username = data.login + String(Math.random() * (999999 - 100000 + 1) + 100000)
+				userData.username = data.login + String(Math.floor(Math.random() * (999999 - 100000 + 1) + 100000))
 			}
 			await signUpUser(userData, response)
 		}
