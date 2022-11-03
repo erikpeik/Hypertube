@@ -21,8 +21,8 @@ const getProfileData = () => {
 	return request.then((response) => response.data);
 };
 
-const setProfilePic = (Picture) => {
-	const request = axios.post(`${baseUrl}/setprofilepic`, Picture);
+const setProfilePic = (Picture, language) => {
+	const request = axios.post(`${baseUrl}/setprofilepic/${language}`, Picture);
 	return request.then((response) => response.data);
 };
 
