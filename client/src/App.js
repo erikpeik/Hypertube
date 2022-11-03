@@ -11,7 +11,7 @@ import Signup from './components/Signup';
 import Profile from './components/Profile';
 import UserProfile from './components/UserProfile';
 import ProfileSettings from './components/profile/ProfileSettings';
-import Watchlist from './components/profile/Watchlist';
+import Watchlist from './components/Watchlist';
 import NavBar from './components/Navbar';
 import PathNotExists from './components/PathNotExists';
 import ConfirmMail from './components/login/ConfirmMail';
