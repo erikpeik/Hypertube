@@ -21,6 +21,7 @@ const Browsing = ({ t }) => {
 
 	useEffect(() => {
 		const getMoviesData = async (response) => {
+			if (response.length === 0) setWatched([]);
 			let movie_list = [];
 			for (let i = 0; i < response.length; i++) {
 				const movieData = await movieService.getMovieData(response[i]);
@@ -67,7 +68,7 @@ const Browsing = ({ t }) => {
 					height: '100%',
 				}}
 			>
-				{watched.map((movie, value) => {
+				{watched.length > 0 ? watched.map((movie, value) => {
 					return (
 						<Box
 							sx={{
@@ -123,7 +124,7 @@ const Browsing = ({ t }) => {
 							</Card>
 						</Box>
 					);
-				})}
+				}) : <Typography color="white">No movies</Typography> }
 			</Box>
 		</Container>
 	);
