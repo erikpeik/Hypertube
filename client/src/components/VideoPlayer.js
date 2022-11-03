@@ -25,11 +25,13 @@ const VideoPlayer = ({ imdb_id, status }) => {
 		});
 	}, [imdb_id]);
 
-	console.log(imdb_id)
-	console.log(profileData)
+	// console.log(imdb_id)
+	// console.log(profileData)
 
 	const isWatched = () => {
-		movieService.getUserWatchMovie(imdb_id, profileData.id);
+		movieService.getUserWatchMovie(imdb_id, profileData.id).then((response) => {
+			console.log(response);
+		});
 	};
 
 	const onPlay = () => {

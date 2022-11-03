@@ -1,14 +1,27 @@
 module.exports = function (app, pool) {
-	app.post("/api/movies/:id", async (request, response) => {
-		const cookie = request.cookies.refreshToken;
+	app.post('/api/movies/watch/:id', async (request, response) => {
+		const refreshToken = request.cookies.refreshToken;
+		if (!refreshToken) return response.send('User not signed in!');
 
-		if (!cookie) return response.send('User not signed in!');
-		const check = `SELECT * FROM users WHERE token = $1`;
-		const user = await pool.query(check, [cookie]);
-		if (user.rows.length === 0) return response.send("User not signed in!");
-			response.send("Success!");
-		// const sql = "INSERT INTO movies (imdb_id) VALUES ($1) RETURNING *";
-		// const { rows } = await pool.query(sql, [request.params.id]);
-		// response.send(rows[0]);
-	})
-}
+		let sql = `SELECT id FROM users WHERE token = $1`;
+		const user = await pool.query(sql, [refreshToken]);
+		if (user.rows.length === 0) return response.send('User not signed in!');
+
+		if (request.body.userId !== user.rows[0].id) {
+			return response.send('User id and token do not match!');
+		}
+
+		sql = `SELECT * FROM movies_watched WHERE imdb_id = $1 AND user_id = $2`;
+		const already_watched = await pool.query(sql, [
+			request.params.id,
+			request.body.userId,
+		]);
+		if (already_watched.rows.length > 0) {
+			return response.send('Movie already watched!');
+		}
+
+		sql = 'INSERT INTO movies_watched (imdb_id, user_id) VALUES ($1, $2)';
+		await pool.query(sql, [request.params.id, request.body.userId]);
+		response.send(true);
+	});
+};

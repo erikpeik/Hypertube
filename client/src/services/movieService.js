@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:3001/api/movie'
+const baseUrl = 'http://localhost:3001/api/movies/watch'
 
 
 const getUserWatchMovie = (imdb_id, userId) => {
