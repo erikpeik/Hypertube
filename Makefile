@@ -37,10 +37,14 @@ npm-front: # Install npm packages in the frontend
 
 npm-all: npm-back npm-front # Install npm packages in both backend and frontend
 
-make sense: re # Make sense of your life
-	@echo "It make(s) sense now"
 
-make clear-volumes: # Remove all volumes
-	docker volume rm $$(docker volume ls -q)
+make sense: # Make sense of your life
+	@clear
+	@echo "It make(s) sense now"
+	@sleep 5
+	@make re
+
+# make clear-volumes: # Remove all volumes
+# 	docker volume rm $$(docker volume ls -q)
 
 .PHONY: all build up build-up clean fclean re npm-back npm-front npm-all sense clear-volumes
