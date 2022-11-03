@@ -119,8 +119,8 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 				"Content-Length": contentLength,
 				"Content-Type": "video/mp4"
 			};
-			// notLoaded ? response.writeHead(416, head) : response.writeHead(206, head);
-			response.writeHead(206, head);
+			notLoaded ? response.writeHead(416, head) : response.writeHead(206, head);
+			// response.writeHead(206, head);
 			const videoStream = fs.createReadStream(moviefile, { start: start, end: end })
 			// ffmpeg(videoStream)
 			// 	.format('webm')
@@ -214,9 +214,10 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			})
 
 			// response.status(200).send("Download succesful")
-		} else {
-			// response.status(200).send("Subs already downloaded")
 		}
+		// else {
+		// 	// response.status(200).send("Subs already downloaded")
+		// }
 	}
 
 	app.get("/api/streaming/subtext/:id/:language", async (request, response) => {
@@ -260,52 +261,46 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		let sql = `SELECT * FROM downloads WHERE imdb_id = $1 AND file_type = 'mp4'`;
 		const { rows } = await pool.query(sql, [imdb_id]);
 
-		let responseSent = false;
-
 		if (rows.length > 0 && rows[0]["completed"] === "YES")
 			startFileStream(request, response)
-		// return response.status(200).send(`Ready to play`);
-		else if (
-			rows.length > 0 &&
-			fs.existsSync(rows[0]["path"]) &&
-			fs.statSync(rows[0]["path"]).size > 50000000
-		) {
+		else if (rows.length > 0 && fs.existsSync(rows[0]["path"])
+			&& fs.statSync(rows[0]["path"]).size > 50000000) {
 			startFileStream(request, response)
-			// response.status(200).send(`Ready to play`);
-			responseSent = true;
 		}
+		else {
+			getFilmSubtitles(imdb_id)
 
-		getFilmSubtitles(imdb_id)
+			let responseSent = false;
 
-		const movieInfo = await axios.get(
-			`${process.env.TORRENT_API}?query_term=${imdb_id}`
-		).then(response => response.data.data.movies[0]);
+			const movieInfo = await axios.get(`${process.env.TORRENT_API}?query_term=${imdb_id}`)
+				.then(response => response.data.data.movies[0]);
 
-		let torrentInfo = movieInfo.torrents;
-		let film_title = movieInfo.title_long;
+			let torrentInfo = movieInfo.torrents;
+			let film_title = movieInfo.title_long;
 
-		if (torrentInfo.length > 1)
-			torrentInfo.sort((a, b) => (a.seeds > b.seeds ? -1 : 1));
+			if (torrentInfo.length > 1)
+				torrentInfo.sort((a, b) => (a.seeds > b.seeds ? -1 : 1));
 
-		let magnet_link = getMagnetLink(torrentInfo[0], film_title);
+			let magnet_link = getMagnetLink(torrentInfo[0], film_title);
 
-		let torrent_files = await downloadTorrent(magnet_link, imdb_id);
-		console.log("Torrent files: ", torrent_files);
+			let torrent_files = await downloadTorrent(magnet_link, imdb_id);
+			console.log("Torrent files: ", torrent_files);
 
-		while (fs.existsSync(`movies/${torrent_files[0].path}`) === false)
-			await new Promise(r => setTimeout(r, 1000));
+			while (fs.existsSync(`movies/${torrent_files[0].path}`) === false)
+				await new Promise(r => setTimeout(r, 1000));
 
-		fs.watch(`movies/${torrent_files[0].path}`, (curr, prev) => {
-			fs.stat(`movies/${torrent_files[0].path}`, (err, stats) => {
-				if (stats.size > 50000000 && responseSent === false) {
-					console.log(stats.size);
-					startFileStream(request, response)
-					// if (stats.size > torrent_files[0].size / 10 && responseSent === false) {
-					// response.status(200).send(`Ready to play`);
-					// responseSent = true;
-				}
+			fs.watch(`movies/${torrent_files[0].path}`, (curr, prev) => {
+				fs.stat(`movies/${torrent_files[0].path}`, (err, stats) => {
+					if (stats.size > 50000000 && responseSent === false) {
+						console.log(stats.size);
+						startFileStream(request, response)
+						responseSent = true;
+						// if (stats.size > torrent_files[0].size / 10 && responseSent === false) {
+						// response.status(200).send(`Ready to play`);
+					}
+				});
 			});
-		});
+		}
 	});
 
 };
