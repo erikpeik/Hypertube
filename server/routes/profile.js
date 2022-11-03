@@ -5,7 +5,7 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 		if (!cookie) return response.send('User not signed in!');
 		const check = `SELECT * FROM users WHERE token = $1`;
 		const user = await pool.query(check, [cookie]);
-		if (user.rows.length === 0) return response.send("User not signed in!");
+		if (user.rows.length === 0) return response.send('User not signed in!');
 
 		const { username, firstname, lastname, email, language } = request.body;
 		var sql =
@@ -187,26 +187,35 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 	});
 
 	app.post(
-		'/api/profile/setprofilepic',
+		'/api/profile/setprofilepic/:language',
 		upload.single('file'),
 		async (request, response) => {
 			const cookie = request.cookies.refreshToken;
 			const image =
 				'http://localhost:3001/images/' + request.file.filename;
-			const language = request.body 
-			console.log(language)
+			const language = request.params.language;
 
 			if (cookie) {
-				if (request.file.size > 5242880)
-					return response.send(
-						'The maximum size for uploaded images is 5 megabytes.'
+				if (request.file.size > 5242880) {
+					res = await helperFunctions.translate(
+						'The maximum size for uploaded images is 5 megabytes.',
+						pool,
+						language
 					);
+					return response.send(res);
+				}
 				if (
 					request.file.mimetype !== 'image/png' &&
 					request.file.mimetype !== 'image/jpg' &&
 					request.file.mimetype !== 'image/jpeg'
-				)
-					return response.send('Not right file type!');
+				) {
+					res = await helperFunctions.translate(
+						'Not right file type!',
+						pool,
+						language
+					);
+					return response.send(res);
+				}
 				try {
 					let sql = `SELECT * FROM users WHERE token = $1`;
 					let user = await pool.query(sql, [cookie]);
@@ -241,7 +250,12 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 					response.send(true);
 				} catch (error) {
 					console.log(error);
-					response.send('Image uploading failed for some reason.');
+					res = await helperFunctions.translate(
+						'Image uploading failed for some reason.',
+						pool,
+						language
+					);
+					return response.send(res);
 				}
 			}
 		}

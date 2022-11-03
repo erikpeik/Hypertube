@@ -40,6 +40,7 @@ const Profile = ({ t }) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const profileData = useSelector((state) => state.profile);
+	const language = useSelector((state) => state.language);
 
 	useEffect(() => {
 		const getData = async () => {
@@ -73,14 +74,13 @@ const Profile = ({ t }) => {
 	};
 	const setProfilePicture = async (event) => {
 		const image = event.target.files[0];
-		console.log(image);
 		if (image.size > 5242880) {
 			dispatch(changeSeverity('error'));
 			dispatch(changeNotification(`${t('profile.0')}`));
 		} else {
 			let formData = new FormData();
 			formData.append('file', image);
-			const result = await profileService.setProfilePic(formData);
+			const result = await profileService.setProfilePic(formData, language);
 			if (result === true) {
 				dispatch(getProfileData());
 				dispatch(changeSeverity('success'));
