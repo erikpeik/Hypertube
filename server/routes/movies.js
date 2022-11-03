@@ -24,4 +24,15 @@ module.exports = function (app, pool) {
 		await pool.query(sql, [request.params.id, request.body.userId]);
 		response.send(true);
 	});
+
+	app.post('/api/movies/watch', async (request, response) => {
+		console.log('request', request.body.userId);
+		const sql = 'SELECT * FROM movies_watched WHERE user_id = $1';
+		const watched = await pool.query(sql, [request.body.userId]);
+		let finish_array = [];
+		for (let i = 0; i < watched.rows.length; i++) {
+			finish_array.push(watched.rows[i].imdb_id);
+		}
+		response.send(finish_array);
+	});
 };

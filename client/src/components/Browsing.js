@@ -17,6 +17,9 @@ import LoaderDots from './LoaderDots';
 import QuerySearch from './browsing/QuerySearch';
 import AutoBrowsing from './browsing/AutoBrowsing';
 import OrderBy from './browsing/OrderBy';
+import movieService from '../services/movieService';
+import { useSelector } from 'react-redux';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const Browsing = ({ t }) => {
 	const [page, setPage] = useState(1);
@@ -25,6 +28,7 @@ const Browsing = ({ t }) => {
 	const [sort_by, setSortBy] = useState(null);
 	const [order_by, setOrderBy] = useState('desc');
 	const [imdb_rating, setImdbRating] = useState(null);
+	const [watched, setWatched] = useState(false);
 
 	const [submittedQuery, setSubmittedQuery] = useState('');
 	const { loading, error, movies } = useFetch(
@@ -38,6 +42,20 @@ const Browsing = ({ t }) => {
 	);
 	const loader = useRef();
 	const navigate = useNavigate();
+	const profileData = useSelector((state) => state.profile);
+
+
+	useEffect(() => {
+		console.log('profileData:', profileData);
+	}, [profileData]);
+
+	useEffect(() => {
+		if (profileData) {
+			movieService.isWatched(profileData.id).then((response) => {
+				setWatched(response);
+			});
+		}
+	}, [profileData]);
 
 	const handleQueryChange = (event) => {
 		setQuery(event.target.value);
@@ -233,6 +251,12 @@ const Browsing = ({ t }) => {
 									<Typography>
 										IMDB rate: {movie.rating}
 									</Typography>
+									{watched &&
+									watched.includes(movie.imdb_code) ? (
+										<Typography>
+											<VisibilityIcon />
+										</Typography>
+									) : null}
 									{/* <Typography>
 										Seeds: {movie.torrents[0].seeds}
 									</Typography> */}
