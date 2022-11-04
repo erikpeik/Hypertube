@@ -90,7 +90,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			})
 		})
 
-	const startFileStream = async (request, response) => {
+	app.get("/api/moviestream/:id", async (request, response) => {
 		const id = request.params.id;
 		let notLoaded = false;
 
@@ -110,7 +110,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			console.log("Requested Movie Range: ", range)
 			const CHUNK_SIZE = 10 ** 6;
 			let start = Number(range.replace(/\D/g, ""))
-			if (start > actualFileSize - 1) {
+			if (start > fileSize - 1) {
 				notLoaded = true;
 				start = 0;
 			}
@@ -149,7 +149,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			const videoStream = fs.createReadStream(moviefile)
 			videoStream.pipe(response)
 		}
-	}
+	})
 
 	const downloadSubtitle = async (imdb_id, language, download_url) => {
 		if (!fs.existsSync(`./subtitles/${imdb_id}`)) {
@@ -225,11 +225,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 				});
 			})
 
-			// response.status(200).send("Download succesful")
 		}
-		// else {
-		// 	// response.status(200).send("Subs already downloaded")
-		// }
 	}
 
 	app.get("/api/streaming/subtext/:id/:language", async (request, response) => {
@@ -274,10 +270,10 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		const { rows } = await pool.query(sql, [imdb_id]);
 
 		if (rows.length > 0 && rows[0]["completed"] === "YES")
-			startFileStream(request, response)
+			response.status(200).send(`Ready to play`);
 		else if (rows.length > 0 && fs.existsSync(rows[0]["path"])
 			&& fs.statSync(rows[0]["path"]).size > 50000000) {
-			startFileStream(request, response)
+			response.status(200).send(`Ready to play`);
 		}
 		else {
 			getFilmSubtitles(imdb_id)
@@ -305,10 +301,8 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 				fs.stat(`movies/${torrent_files[0].path}`, (err, stats) => {
 					if (stats.size > 50000000 && responseSent === false) {
 						console.log(stats.size);
-						startFileStream(request, response)
 						responseSent = true;
-						// if (stats.size > torrent_files[0].size / 10 && responseSent === false) {
-						// response.status(200).send(`Ready to play`);
+						response.status(200).send(`Ready to play`);
 					}
 				});
 			});

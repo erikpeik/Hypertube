@@ -44,20 +44,6 @@ const MoviePage = ({ t }) => {
 		return i <= 12 || data[0] === "imdbRating" || data[0] === "imdbVotes";
 	});
 
-	const downloadSubs = () => {
-		streamingService.downloadSubs(params.id);
-	};
-
-	const getTorrent = () => {
-		downloadSubs();
-		streamingService.getTorrent(params.id).then((response) => {
-			console.log(response);
-			if (response === "Ready to play") {
-				setPlayerStatus("ready");
-			}
-		});
-	};
-
 	const navigateToMovie = (movie_id) => {
 		navigate(`/movie/${movie_id}`);
 		window.location.reload();
@@ -73,13 +59,6 @@ const MoviePage = ({ t }) => {
 				movieTitle={movieData[0][1]}
 				status={playerStatus}
 			/>
-			<Button
-				onClick={() => {
-					getTorrent();
-				}}
-			>
-				Get Movie
-			</Button>
 			<h5 className="comment" onClick={() => setShow(!show)}>
 				{t("movie.0")}{" "}
 			</h5>
