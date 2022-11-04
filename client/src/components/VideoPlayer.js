@@ -1,7 +1,7 @@
 import '../css/VideoPlayer.css';
 import { useState, useRef, useEffect } from 'react';
 import ReactPlayer from 'react-player/lazy';
-import { Container, LinearProgress, Typography } from '@mui/material';
+import { Container, LinearProgress, Typography, Box } from '@mui/material';
 import streamingService from '../services/streamingService';
 import movieService from '../services/movieService';
 import video_banner from '../images/video_banner.png';
@@ -11,23 +11,13 @@ import { useSelector, useDispatch } from 'react-redux';
 const VideoPlayer = ({ imdb_id, status }) => {
 	const playerRef = useRef(null);
 	const buffering = useRef(false);
-	const [playing, setPlaying] = useState(false)
+	const [readyToPlay, setReadyToPlay] = useState(false)
 	const [statusPlayer, setStatusPlayer] = useState('');
 	const [error, setError] = useState(false);
 	const [subtitles, setSubtitles] = useState([]);
 
 	const profileData = useSelector((state) => state.profile);
 	const dispatch = useDispatch();
-
-	useEffect(() => {
-		streamingService.getSubtitles(imdb_id).then((response) => {
-			console.log(response);
-			setSubtitles(response);
-		});
-	}, [imdb_id]);
-
-	// console.log(imdb_id)
-	// console.log(profileData)
 
 	const isWatched = () => {
 		movieService.getUserWatchMovie(imdb_id, profileData.id).then((response) => {
@@ -74,7 +64,6 @@ const VideoPlayer = ({ imdb_id, status }) => {
 	};
 
 	const onReady = () => {
-		setPlaying(true)
 		buffering.current = false;
 	};
 
@@ -94,21 +83,43 @@ const VideoPlayer = ({ imdb_id, status }) => {
 		};
 	}, []);
 
-	let stream_url = `http://localhost:3001/api/streaming/torrent/${imdb_id}`;
+	let stream_url = `http://localhost:3001/api/moviestream/${imdb_id}`;
+
+	const getTorrent = () => {
+		setStatusPlayer('buffering');
+		buffering.current = true;
+		streamingService.getTorrent(imdb_id).then(async (response) => {
+			let subtitles = await streamingService.getSubtitles(imdb_id)
+			setSubtitles(subtitles);
+			if (response === "Ready to play") {
+				setReadyToPlay(true);
+			}
+		});
+	};
 
 	return (
 		<>
 			<Container maxWidth="md">
-				{/* <video src={stream_url} type="video/mp4"></video> */}
-				<ReactPlayer
+				{!readyToPlay &&
+					<Box sx={{ display: 'flex', justifyContent: 'center' }}>
+						<PlayCircleFilledWhiteOutlined
+							style={{ fontSize: 100, color: 'white' }}
+							cursor='pointer'
+							onClick={() => {
+								getTorrent();
+							}} />
+					</Box>
+				}
+				{readyToPlay && <ReactPlayer
 					ref={playerRef}
-					playing={playing}
+					playing={true}
+					autoPlay={true}
 					controls={buffering.current === false}
 					pip={false}
 					url={stream_url}
 					onPlay={onPlay}
 					width="100%"
-					light={video_banner}
+					// light={video_banner}
 					playIcon={
 						<PlayCircleFilledWhiteOutlined fontSize="large" />
 					}
@@ -125,7 +136,7 @@ const VideoPlayer = ({ imdb_id, status }) => {
 							attributes: { crossOrigin: 'true' },
 						},
 					}}
-				/>
+				/>}
 				<Typography variant="body2" color="initial">
 					{statusPlayer}
 				</Typography>
