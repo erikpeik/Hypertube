@@ -35,7 +35,8 @@
 		"5": "Valitse profiilikuva",
 		"6": "Vaihda salasana",
 		"7": "Poista käyttäjä",
-		"8": "Profiilikuva asetettu!"
+		"8": "Profiilikuva asetettu!",
+		"10": "Katsottu elokuvia"
 	},
 	"del": {
 		"1": "Are you sure you want to completely delete your account?",

@@ -35,7 +35,8 @@
 		"5": "Set profile picture",
 		"6": "Change passwords",
 		"7": "Delete user",
-		"8": "Profile picture set!"
+		"8": "Profile picture set!",
+		"10": "Watched movies"
 	},
 	"del": {
 		"1": "Are you sure you want to completely delete your account?",

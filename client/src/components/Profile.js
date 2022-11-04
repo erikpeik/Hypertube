@@ -136,7 +136,7 @@ const Profile = ({ t }) => {
 					<Typography>{profileData.email}</Typography>
 				</Container>
 				<Button theme={theme} onClick={() => navigate('/watchlist')}>
-					Watched movies
+				{t('profile.10')}
 				</Button>
 				<Button theme={theme} onClick={() => navigate('/settings')}>
 					{t('profile.4')}
