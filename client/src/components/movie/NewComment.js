@@ -7,7 +7,6 @@ import Box from "@mui/material/Box";
 import { Button, Paper, TextField } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import commentService from "../../services/commentService";
-import { current } from "@reduxjs/toolkit";
 const theme = createTheme({
 	palette: {
 		primary: {

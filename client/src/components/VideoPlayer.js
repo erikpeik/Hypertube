@@ -4,11 +4,11 @@ import ReactPlayer from 'react-player/lazy';
 import { Container, LinearProgress, Typography, Box } from '@mui/material';
 import streamingService from '../services/streamingService';
 import movieService from '../services/movieService';
-import video_banner from '../images/video_banner.png';
+// import video_banner from '../images/video_banner.png';
 import { PlayCircleFilledWhiteOutlined } from '@mui/icons-material';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-const VideoPlayer = ({ imdb_id, status }) => {
+const VideoPlayer = ({ imdb_id }) => {
 	const playerRef = useRef(null);
 	const buffering = useRef(false);
 	const [readyToPlay, setReadyToPlay] = useState(false)
@@ -17,7 +17,6 @@ const VideoPlayer = ({ imdb_id, status }) => {
 	const [subtitles, setSubtitles] = useState([]);
 
 	const profileData = useSelector((state) => state.profile);
-	const dispatch = useDispatch();
 
 	const isWatched = () => {
 		movieService.getUserWatchMovie(imdb_id, profileData.id).then((response) => {

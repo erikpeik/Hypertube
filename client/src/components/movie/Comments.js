@@ -5,12 +5,11 @@ import { Container } from '@mui/system';
 import NewComment from './NewComment';
 import commentService from '../../services/commentService';
 import { format } from 'timeago.js';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 const Comments = ({ movieId, t }) => {
 	const profileData = useSelector((state) => state.profile);
-	const dispatch = useDispatch();
 
 	const [comments, setComments] = useState({});
 	const [refresh, setRefresh] = useState(null);
