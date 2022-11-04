@@ -62,7 +62,7 @@ const NewComment = ({ movieId, setRefresh, t }) => {
 							margin="normal"
 							name="comment"
 							label={t("movie.4")}
-							placeholder="comment"
+							placeholder={t("movie.4")}
 							autoComplete="comment"
 							required
 						/>
