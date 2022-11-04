@@ -22,7 +22,7 @@ import Loader from './Loader';
 const theme = createTheme({
 	palette: {
 		primary: {
-			main: '#FF1E56',
+			main: '#6A5ACD',
 		},
 	},
 });
@@ -30,7 +30,7 @@ const theme = createTheme({
 const deleteTheme = createTheme({
 	palette: {
 		primary: {
-			main: '#FF0000',
+			main: '#483D8B',
 		},
 	},
 });
@@ -80,7 +80,10 @@ const Profile = ({ t }) => {
 		} else {
 			let formData = new FormData();
 			formData.append('file', image);
-			const result = await profileService.setProfilePic(formData, language);
+			const result = await profileService.setProfilePic(
+				formData,
+				language
+			);
 			if (result === true) {
 				dispatch(getProfileData());
 				dispatch(changeSeverity('success'));
@@ -128,47 +131,60 @@ const Profile = ({ t }) => {
 						alignItems: 'center',
 					}}
 				>
-					<h4>{t('profile.1')}</h4>
+					<h4 style={{ color: "#6A5ACD"}}>{t('profile.1')}</h4>
 					<Typography>{profileData.firstname}</Typography>
-					<h4>{t('profile.2')}</h4>
+					<br />
+					<h4 style={{ color: "#6A5ACD"}}>{t('profile.2')}</h4>
 					<Typography>{profileData.lastname}</Typography>
-					<h4>{t('profile.3')}</h4>
+					<br />
+					<h4 style={{ color: "#6A5ACD"}}>{t('profile.3')}</h4>
 					<Typography>{profileData.email}</Typography>
+					<br />
 				</Container>
-				<Button theme={theme} onClick={() => navigate('/watchlist')}>
-				{t('profile.10')}
-				</Button>
-				<Button theme={theme} onClick={() => navigate('/settings')}>
-					{t('profile.4')}
-				</Button>
-				<Button theme={theme}>
-					<label
-						htmlFor="set_profilepic"
-						className="styled-image-upload"
+				<Container
+					sx={{ display: 'flex', justifyContent: 'space-between' }}
+				>
+					<Button
+						theme={theme}
+						onClick={() => navigate('/watchlist')}
 					>
-						{t('profile.5')}
-					</label>
-					<input
-						type="file"
-						name="file"
-						id="set_profilepic"
-						accept="image/jpeg, image/png, image/jpg"
-						onChange={setProfilePicture}
-					></input>
-				</Button>
-				<Button
-					theme={theme}
-					onClick={() => navigate('/changepassword')}
-				>
-					{t('profile.6')}
-				</Button>
-				<Button
-					theme={deleteTheme}
-					variant="contained"
-					onClick={() => deleteUser()}
-				>
-					{t('profile.7')}
-				</Button>
+						{t('profile.10')}
+					</Button>
+					<Button theme={theme} onClick={() => navigate('/settings')}>
+						{t('profile.4')}
+					</Button>
+					<Button theme={theme}>
+						<label
+							htmlFor="set_profilepic"
+							className="styled-image-upload"
+						>
+							{t('profile.5')}
+						</label>
+						<input
+							type="file"
+							name="file"
+							id="set_profilepic"
+							accept="image/jpeg, image/png, image/jpg"
+							onChange={setProfilePicture}
+						></input>
+					</Button>
+					<Button
+						theme={theme}
+						onClick={() => navigate('/changepassword')}
+					>
+						{t('profile.6')}
+					</Button>
+				</Container>
+				<br />
+				<Container sx={{ display: 'flex', justifyContent: 'center' }}>
+					<Button
+						theme={deleteTheme}
+						variant="contained"
+						onClick={() => deleteUser()}
+					>
+						{t('profile.7')}
+					</Button>
+				</Container>
 			</Paper>
 			<Notification />
 		</Container>
