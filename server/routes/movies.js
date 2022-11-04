@@ -23,11 +23,14 @@ module.exports = function (app, pool, axios) {
 		sql = 'INSERT INTO movies_watched (imdb_id, user_id) VALUES ($1, $2)';
 		await pool.query(sql, [request.params.id, request.body.userId]);
 		response.send(true);
+
+		sql = "UPDATE movies_watched SET created_at = NOW() WHERE user_id = $1 AND imdb_id = $2";
+		await pool.query(sql, [request.body.userId, request.params.id]);
 	});
 
 	app.post('/api/movies/watch', async (request, response) => {
 		console.log('request', request.body.userId);
-		const sql = 'SELECT * FROM movies_watched WHERE user_id = $1';
+		let sql = 'SELECT * FROM movies_watched WHERE user_id = $1';
 		const watched = await pool.query(sql, [request.body.userId]);
 		let finish_array = [];
 		for (let i = 0; i < watched.rows.length; i++) {
