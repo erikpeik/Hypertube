@@ -70,8 +70,6 @@ const Profile = ({ t }) => {
 					<Typography>{profileId.firstname}</Typography>
 					<h4>{t('profile.2')}</h4>
 					<Typography>{profileId.lastname}</Typography>
-					<h4>{t('profile.3')}</h4>
-					<Typography>{profileId.email}</Typography>
 				</Container>
 			</Paper>
 			<Notification />
