@@ -12,12 +12,14 @@ import '../css/style.css';
 import movieService from '../services/movieService';
 import { useSelector } from 'react-redux';
 import Loader from './Loader';
+import { useNavigate } from 'react-router-dom';
 
 const Browsing = ({ t }) => {
 	const [watched, setWatched] = useState(false);
 	const profileData = useSelector((state) => state.profile);
+	const navigate = useNavigate();
 
-	useEffect(() => console.log(watched), [watched]);
+	// useEffect(() => console.log(watched), [watched]);
 
 	useEffect(() => {
 		const getMoviesData = async (response) => {
@@ -25,7 +27,7 @@ const Browsing = ({ t }) => {
 			let movie_list = [];
 			for (let i = 0; i < response.length; i++) {
 				const movieData = await movieService.getMovieData(response[i]);
-				console.log('movieData', movieData);
+				// console.log('movieData', movieData);
 				movie_list.push(movieData);
 				if (i === response.length - 1) setWatched(movie_list);
 			}
@@ -38,9 +40,12 @@ const Browsing = ({ t }) => {
 		}
 	}, [profileData]);
 
-	// const navigateToMovie = (movie_id) => {
-	// 	console.log(movie_id);
-	// };
+	const navigateToMovie = (movie_id) => {
+		navigate(`/movie/${movie_id}`, {
+			state: watched.filter((movie) => movie.imdb_code === movie_id),
+		});
+	};
+
 
 	if (!watched) {
 		return <Loader />;
@@ -80,6 +85,7 @@ const Browsing = ({ t }) => {
 							key={value}
 							item="true"
 							xs={3}
+							onClick={() => navigateToMovie(movie.imdb_code)}
 						>
 							<Card className="container" sx={{ flexGrow: 1 }}>
 								<CardActionArea>
@@ -100,6 +106,7 @@ const Browsing = ({ t }) => {
 												overflow: 'hidden',
 											}}
 										>
+
 											{movie.title_long}
 										</Typography>
 										<Typography>
