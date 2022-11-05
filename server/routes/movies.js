@@ -17,6 +17,8 @@ module.exports = function (app, pool, axios) {
 			request.body.userId,
 		]);
 		if (already_watched.rows.length > 0) {
+			sql = "UPDATE movies_watched SET created_at = NOW() WHERE user_id = $1 AND imdb_id = $2";
+			await pool.query(sql, [request.body.userId, request.params.id]);
 			return response.send('Movie already watched!');
 		}
 
@@ -24,8 +26,6 @@ module.exports = function (app, pool, axios) {
 		await pool.query(sql, [request.params.id, request.body.userId]);
 		response.send(true);
 
-		sql = "UPDATE movies_watched SET created_at = NOW() WHERE user_id = $1 AND imdb_id = $2";
-		await pool.query(sql, [request.body.userId, request.params.id]);
 	});
 
 	app.post('/api/movies/watch', async (request, response) => {
