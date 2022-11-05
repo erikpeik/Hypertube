@@ -163,7 +163,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 				videoStream.pipe(response)
 			} else {
 				ffmpeg(videoStream)
-					.format('webm')
+					.format('matroska')
 					.on('error', () => { })
 					.pipe(response);
 			}
@@ -294,7 +294,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 	app.get("/api/streaming/torrent/:id", async (request, response) => {
 		const imdb_id = request.params.id;
 
-		let sql = `SELECT * FROM downloads WHERE imdb_id = $1 AND file_type = 'mp4'`;
+		let sql = `SELECT * FROM downloads WHERE imdb_id = $1`;
 		const { rows } = await pool.query(sql, [imdb_id]);
 
 		if (rows.length > 0 && rows[0]["completed"] === "YES")
