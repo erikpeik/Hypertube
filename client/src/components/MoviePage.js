@@ -5,7 +5,6 @@ import {
 	Typography,
 	Paper,
 	Grid,
-	Button,
 	Box,
 	Card,
 	CardActionArea,
@@ -15,13 +14,11 @@ import {
 import { Container } from "@mui/system";
 import Loader from "./Loader";
 import browsingService from "../services/browsingService";
-import streamingService from "../services/streamingService";
 import VideoPlayer from "./VideoPlayer";
 import Comments from "./movie/Comments";
 
 const MoviePage = ({ t }) => {
 	const [imdbData, setImdbData] = useState(null);
-	const [playerStatus, setPlayerStatus] = useState("pending");
 	const [show, setShow] = useState(false);
 	const [recommendedMovies, setRecommendedMovies] = useState(null);
 	const params = useParams();
@@ -57,7 +54,6 @@ const MoviePage = ({ t }) => {
 			<VideoPlayer
 				imdb_id={params.id}
 				movieTitle={movieData[0][1]}
-				status={playerStatus}
 			/>
 			<h5 className="comment" onClick={() => setShow(!show)}>
 				{t("movie.0")}{" "}

@@ -1,4 +1,5 @@
 module.exports = (app, fs, path, axios, pool, ffmpeg) => {
+	let torrentStream = require("torrent-stream");
 
 	const getMagnetLink = (torrentInfo, film_title) => {
 		let hash = torrentInfo.hash;
@@ -7,10 +8,38 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		return `magnet:?xt=urn:btih:${hash}&dn=${film_title.split(" ").join("+")}`;
 	};
 
+	const checkYTStorrents = async (magnet_link) => {
+		return new Promise((resolve) => {
+			let engine = torrentStream(magnet_link);
+
+			let files = [];
+
+			engine.on("ready", () => {
+				engine.files.forEach((file) => {
+					if (file.name.includes("YTS") && (file.name.endsWith(".mp4") || file.name.endsWith(".mkv"))) {
+						files.push({
+							name: file.name,
+							path: file.path,
+							size: file.length,
+						});
+					}
+				});
+				if (files.length > 0)
+					resolve(true)
+				else
+					resolve(false)
+			});
+
+			engine.on('idle', () => {
+				engine.destroy(() => {
+					console.log("Engine connection destroyed");
+				})
+			})
+		})
+	}
+
 	const downloadTorrent = async (magnet_link, imdb_id) =>
 		new Promise((resolve) => {
-			let torrentStream = require("torrent-stream");
-
 			let videoPath = path.resolve(__dirname, "../movies");
 			console.log("Downloading files to: ", videoPath);
 
@@ -43,7 +72,6 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			let files = [];
 
 			engine.on("ready", () => {
-				superFile = engine.files.reduce((a, b) => (a.length > b.length ? a : b));
 				engine.files.forEach(async (file) => {
 					if (file.name.endsWith(".mp4") || file.name.endsWith(".mkv")) {
 						files.push({
@@ -135,7 +163,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 				videoStream.pipe(response)
 			} else {
 				ffmpeg(videoStream)
-					.format('webm')
+					.format('matroska')
 					.on('error', () => { })
 					.pipe(response);
 			}
@@ -266,7 +294,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 	app.get("/api/streaming/torrent/:id", async (request, response) => {
 		const imdb_id = request.params.id;
 
-		let sql = `SELECT * FROM downloads WHERE imdb_id = $1 AND file_type = 'mp4'`;
+		let sql = `SELECT * FROM downloads WHERE imdb_id = $1`;
 		const { rows } = await pool.query(sql, [imdb_id]);
 
 		if (rows.length > 0 && rows[0]["completed"] === "YES")
@@ -283,13 +311,33 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			const movieInfo = await axios.get(`${process.env.TORRENT_API}?query_term=${imdb_id}`)
 				.then(response => response.data.data.movies[0]);
 
+			console.log(movieInfo)
+
 			let torrentInfo = movieInfo.torrents;
 			let film_title = movieInfo.title_long;
 
-			if (torrentInfo.length > 1)
-				torrentInfo.sort((a, b) => (a.seeds > b.seeds ? -1 : 1));
+			const checkGoodTorrent = async (torrent) => {
+				let magnet_link = getMagnetLink(torrent, film_title);
+				let YTStorrent = await checkYTStorrents(magnet_link)
+				console.log("YTS torrent:", YTStorrent, torrent.quality)
+				return YTStorrent === true
+			}
 
-			let magnet_link = getMagnetLink(torrentInfo[0], film_title);
+			let goodTorrents = torrentInfo.filter(checkGoodTorrent)
+
+			console.log("Good Torrents: ", goodTorrents)
+
+			let magnet_link
+			if (goodTorrents.length > 0) {
+				if (goodTorrents.length > 1)
+					goodTorrents.sort((a, b) => (a.seeds > b.seeds ? -1 : 1));
+				magnet_link = getMagnetLink(goodTorrents[0], film_title)
+			}
+			else {
+				if (torrentInfo.length > 1)
+					torrentInfo.sort((a, b) => (a.seeds > b.seeds ? -1 : 1));
+				magnet_link = getMagnetLink(torrentInfo[0], film_title)
+			}
 
 			let torrent_files = await downloadTorrent(magnet_link, imdb_id);
 			console.log("Torrent files: ", torrent_files);
