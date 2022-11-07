@@ -163,11 +163,11 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 	});
 
 	app.get('/api/profile/:id', async (request, response) => {
-		let = sql =
+		let sql =
 			'SELECT * FROM users \
-						JOIN user_pictures up on users.id = up.user_id \
-						where user_id = $1';
-		const { rows } = await pool.query(sql, [request.params.id]);
+			LEFT JOIN user_pictures up on users.id = up.user_id \
+			where users.id = 1';
+		const { rows } = await pool.query(sql);
 		response.send(rows[0]);
 	});
 
