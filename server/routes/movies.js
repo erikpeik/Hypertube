@@ -1,4 +1,24 @@
+const cronJob = require('../utils/cronJob');
+
 module.exports = function (app, pool, axios) {
+	let sql = `SELECT  TO_CHAR(created_at, 'YYYY/MM/DD') AS created_at FROM movies_watched`;
+	pool.query(sql, (err, result) => {
+		if (err) throw err;
+		console.log(result.rows);
+		result.rows.forEach((element) => {
+			// ================== CRON JOB BROKEN ==================
+			// if (cronJob.crontab(element.created_at) === true) {
+			// 	console.log('true');
+			// } else {
+			// 	console.log('false');
+			// }
+			// ================================
+			console.log('============');
+			console.log(element.created_at);
+			console.log('============');
+		});
+	});
+
 	app.post('/api/movies/watch/:id', async (request, response) => {
 		const refreshToken = request.cookies.refreshToken;
 		if (!refreshToken) return response.send('User not signed in!');
@@ -17,7 +37,8 @@ module.exports = function (app, pool, axios) {
 			request.body.userId,
 		]);
 		if (already_watched.rows.length > 0) {
-			sql = "UPDATE movies_watched SET created_at = NOW() WHERE user_id = $1 AND imdb_id = $2";
+			sql =
+				'UPDATE movies_watched SET created_at = NOW() WHERE user_id = $1 AND imdb_id = $2';
 			await pool.query(sql, [request.body.userId, request.params.id]);
 			return response.send('Movie already watched!');
 		}
@@ -25,7 +46,6 @@ module.exports = function (app, pool, axios) {
 		sql = 'INSERT INTO movies_watched (imdb_id, user_id) VALUES ($1, $2)';
 		await pool.query(sql, [request.params.id, request.body.userId]);
 		response.send(true);
-
 	});
 
 	app.post('/api/movies/watch', async (request, response) => {
