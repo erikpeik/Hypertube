@@ -41,4 +41,11 @@ const translate = async (text, pool, toLang) => {
 	} else return text;
 };
 
-module.exports = { makeToken, translate };
+const checkValidLanguage = language => {
+	if (language === 'en' || language === 'fi' || language === 'hu' || language === 'ro')
+		return true
+	else
+		return 'Faulty language information';
+}
+
+module.exports = { makeToken, translate, checkValidLanguage };

@@ -28,7 +28,8 @@ test('null profile values', async () => {
 		lastname: undefined,
 		email: undefined,
 		password: undefined,
-		confirmPassword: undefined
+		confirmPassword: undefined,
+		language: null
 	}
 
 	await api
@@ -45,7 +46,8 @@ test('too short username', async () => {
 		lastname: 'JO@EJ@EO',
 		email: 'testi@testi.com',
 		password: 'whateva',
-		confirmPassword: 'whateva'
+		confirmPassword: 'whateva',
+		language: 'en'
 	}
 
 	await api
@@ -61,7 +63,8 @@ test('too long username', async () => {
 		lastname: 'JO@EJ@EO',
 		email: 'testi@testi.com',
 		password: 'whateva',
-		confirmPassword: 'whateva'
+		confirmPassword: 'whateva',
+		language: 'en'
 	}
 
 	await api
@@ -77,7 +80,8 @@ test('faulty username characters', async () => {
 		lastname: 'JO@EJ@EO',
 		email: 'testi@testi.com',
 		password: 'whateva',
-		confirmPassword: 'whateva'
+		confirmPassword: 'whateva',
+		language: 'en'
 	}
 
 	await api
@@ -93,7 +97,8 @@ test('too long firstname', async () => {
 		lastname: 'JO@EJ@EO',
 		email: 'testi@testi.com',
 		password: 'whateva',
-		confirmPassword: 'whateva'
+		confirmPassword: 'whateva',
+		language: 'en'
 	}
 
 	await api
@@ -109,7 +114,8 @@ test('too long lastname', async () => {
 		lastname: 'sahkshafkjhdsfkjhalsdfkhdfklsajhdafskljhkldjsafhklsdfjahklasfdhkldsfahkljdfhs',
 		email: 'testi@testi.com',
 		password: 'whateva',
-		confirmPassword: 'whateva'
+		confirmPassword: 'whateva',
+		language: 'en'
 	}
 
 	await api
@@ -125,7 +131,8 @@ test('faulty firstname characters', async () => {
 		lastname: 'testi',
 		email: 'testi@testi.com',
 		password: 'whateva',
-		confirmPassword: 'whateva'
+		confirmPassword: 'whateva',
+		language: 'en'
 	}
 
 	await api
@@ -141,7 +148,8 @@ test('faulty lastname characters', async () => {
 		lastname: 'testi1',
 		email: 'testi@testi.com',
 		password: 'whateva',
-		confirmPassword: 'whateva'
+		confirmPassword: 'whateva',
+		language: 'en'
 	}
 
 	await api
@@ -157,7 +165,8 @@ test('too long email', async () => {
 		lastname: 'testi',
 		email: '12uu1o23io213uoi231uoi123uio213uoi213uoi123uoiu213iou23oiu123opu132oipu231oipu2o13ipuoi213upo2i31uoip231uoip231uoip2u13oipu213oipu231oipu213oipu231oiu231opiu231poiu231oipu231opiu213poiu123oipu123poiu12p3o',
 		password: 'whateva',
-		confirmPassword: 'whateva'
+		confirmPassword: 'whateva',
+		language: 'en'
 	}
 
 	await api
@@ -173,7 +182,8 @@ test('faulty email characters', async () => {
 		lastname: 'testi',
 		email: 'oikeaosoite<>@fkl.fi',
 		password: 'whateva',
-		confirmPassword: 'whateva'
+		confirmPassword: 'whateva',
+		language: 'en'
 	}
 
 	await api
@@ -189,13 +199,14 @@ test('too short password', async () => {
 		lastname: 'testi',
 		email: 'oikeaosoite@fkl.fi',
 		password: '1234',
-		confirmPassword: '1234'
+		confirmPassword: '1234',
+		language: 'en'
 	}
 
 	await api
 		.post('/api/signup')
 		.send(newUser)
-		.expect("PLEASE ENTER A PASSWORD WITH: a length between 8 and 30 characters, at least one lowercase character (a-z), at least one uppercase character (A-Z), at least one numeric character (0-9) and at least one special character (!.@#$%^&*)")
+		.expect("PLEASE ENTER A PASSWORD WITH: a length between 8 and 30 characters, at least one lowercase character, at least one uppercase character, at least one numeric character and at least one special character")
 })
 
 test('too long password', async () => {
@@ -205,13 +216,14 @@ test('too long password', async () => {
 		lastname: 'testi',
 		email: 'oikeaosoite@fkl.fi',
 		password: '1234abcdefg3712987312983721891327908312790',
-		confirmPassword: '1234abcdefg3712987312983721891327908312790'
+		confirmPassword: '1234abcdefg3712987312983721891327908312790',
+		language: 'en'
 	}
 
 	await api
 		.post('/api/signup')
 		.send(newUser)
-		.expect("PLEASE ENTER A PASSWORD WITH: a length between 8 and 30 characters, at least one lowercase character (a-z), at least one uppercase character (A-Z), at least one numeric character (0-9) and at least one special character (!.@#$%^&*)")
+		.expect("PLEASE ENTER A PASSWORD WITH: a length between 8 and 30 characters, at least one lowercase character, at least one uppercase character, at least one numeric character and at least one special character")
 })
 
 test('too simple password', async () => {
@@ -221,13 +233,14 @@ test('too simple password', async () => {
 		lastname: 'testi',
 		email: 'oikeaosoite@fkl.fi',
 		password: '1234abcdefg',
-		confirmPassword: '1234abcdefg'
+		confirmPassword: '1234abcdefg',
+		language: 'en'
 	}
 
 	await api
 		.post('/api/signup')
 		.send(newUser)
-		.expect("PLEASE ENTER A PASSWORD WITH: a length between 8 and 30 characters, at least one lowercase character (a-z), at least one uppercase character (A-Z), at least one numeric character (0-9) and at least one special character (!.@#$%^&*)")
+		.expect("PLEASE ENTER A PASSWORD WITH: a length between 8 and 30 characters, at least one lowercase character, at least one uppercase character, at least one numeric character and at least one special character")
 })
 
 test('passwords not matching', async () => {
@@ -237,13 +250,31 @@ test('passwords not matching', async () => {
 		lastname: 'testi',
 		email: 'oikeaosoite@fkl.fi',
 		password: '1234ABC&&&bx2',
-		confirmPassword: '1234ABC&&&bx1'
+		confirmPassword: '1234ABC&&&bx1',
+		language: 'en'
 	}
 
 	await api
 		.post('/api/signup')
 		.send(newUser)
 		.expect("The entered passwords are not the same!")
+})
+
+test('faulty language info', async () => {
+	const newUser = {
+		username: 'testi',
+		firstname: 'testi',
+		lastname: 'testi',
+		email: 'oikeaosoite@fkl.fi',
+		password: '1234ABC&&&bx2',
+		confirmPassword: '1234ABC&&&bx1',
+		language: 'romanian-hungarian with finnish-dialect'
+	}
+
+	await api
+		.post('/api/signup')
+		.send(newUser)
+		.expect("Faulty language information")
 })
 
 // remember to delete the user after each try //

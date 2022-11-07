@@ -11,6 +11,9 @@ module.exports = function (app, pool, bcrypt, transporter, helperFunctions) {
 			!body.language
 		)
 			return 'Required profile data missing';
+		if (helperFunctions.checkValidLanguage(body.language) !== true) {
+			return 'Faulty language information';
+		}
 		if (body.username.length < 4 || body.username.length > 25) {
 			res = helperFunctions.translate(
 				'Username has to be between 4 and 25 characters.',

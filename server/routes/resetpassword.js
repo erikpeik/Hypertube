@@ -3,6 +3,9 @@ module.exports = function (app, pool, bcrypt, transporter, helperFunctions) {
 		const { resetvalue, language } = request.body;
 
 		if (!resetvalue) return response.send('Reset value missing');
+		if (helperFunctions.checkValidLanguage(language) !== true) {
+			return response.send('Faulty language information');
+		}
 
 		const findUserAccount = async () => {
 			var sql = 'SELECT * FROM users WHERE username = $1 OR email = $1';

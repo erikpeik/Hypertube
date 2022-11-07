@@ -320,10 +320,10 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 				let magnet_link = getMagnetLink(torrent, film_title);
 				let YTStorrent = await checkYTStorrents(magnet_link)
 				console.log("YTS torrent:", YTStorrent, torrent.quality)
-				return YTStorrent === true
+				return (YTStorrent === true)
 			}
 
-			let goodTorrents = torrentInfo.filter(checkGoodTorrent)
+			let goodTorrents = await torrentInfo.filter(checkGoodTorrent)
 
 			console.log("Good Torrents: ", goodTorrents)
 

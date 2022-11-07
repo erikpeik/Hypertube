@@ -3,6 +3,9 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 		const cookie = request.cookies.refreshToken;
 		const { username, firstname, lastname, email, language } = request.body;
 
+		if (helperFunctions.checkValidLanguage(language) !== true) {
+			return 'Faulty language information';
+		}
 		if (!cookie) {
 			res = await helperFunctions.translate(
 				'User not signed in!',
@@ -163,11 +166,10 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 	});
 
 	app.get('/api/profile/:id', async (request, response) => {
-		let sql =
-			'SELECT * FROM users \
-			LEFT JOIN user_pictures up on users.id = up.user_id \
-			where users.id = 1';
-		const { rows } = await pool.query(sql);
+		let sql = `SELECT * FROM users
+				LEFT JOIN user_pictures ON users.id = user_pictures.user_id
+				WHERE users.id = $1`;
+		const { rows } = await pool.query(sql, [request.params.id]);
 		response.send(rows[0]);
 	});
 
