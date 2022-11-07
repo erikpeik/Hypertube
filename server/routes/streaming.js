@@ -134,7 +134,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			} else {
 				ffmpeg(videoStream)
 					.format('matroska')
-					.videoBitrate('4096k')
+					.videoBitrate('2048k')
 					.on('error', () => { })
 					.pipe(response);
 			}
