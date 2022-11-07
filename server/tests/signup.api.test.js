@@ -29,7 +29,7 @@ test('null profile values', async () => {
 		email: undefined,
 		password: undefined,
 		confirmPassword: undefined,
-		language: undefined
+		language: null
 	}
 
 	await api

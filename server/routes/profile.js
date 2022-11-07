@@ -3,6 +3,9 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 		const cookie = request.cookies.refreshToken;
 		const { username, firstname, lastname, email, language } = request.body;
 
+		if (helperFunctions.checkValidLanguage(language) !== true) {
+			return 'Faulty language information';
+		}
 		if (!cookie) {
 			res = await helperFunctions.translate(
 				'User not signed in!',

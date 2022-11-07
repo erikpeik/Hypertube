@@ -16,6 +16,7 @@ test('empty values as login data', async () => {
 	const loginUser = {
 		username: undefined,
 		password: null,
+		language: undefined
 	};
 
 	await api
