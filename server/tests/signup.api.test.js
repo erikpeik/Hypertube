@@ -286,7 +286,8 @@ test('faulty language info', async () => {
 // 		lastname: 'testi',
 // 		email: 'oikeaosoite@fkl.fi',
 // 		password: '1234ABC&&&bx1',
-// 		confirmPassword: '1234ABC&&&bx1'
+// 		confirmPassword: '1234ABC&&&bx1',
+// 		language: 'en'
 // 	}
 
 // 	await api

@@ -2,7 +2,7 @@ module.exports = function (app, pool, bcrypt, transporter, helperFunctions) {
 	app.post('/api/resetpassword', async (request, response) => {
 		const { resetvalue, language } = request.body;
 
-		if (!resetvalue) return response.send('Reset value missing');
+		if (!resetvalue || !language) return response.send('Reset values missing');
 		if (helperFunctions.checkValidLanguage(language) !== true) {
 			return response.send('Faulty language information');
 		}
@@ -86,17 +86,18 @@ module.exports = function (app, pool, bcrypt, transporter, helperFunctions) {
 		const { user, code, password, confirmPassword, language } =
 			request.body;
 
+		if (!user || !code || !password || !confirmPassword || !language)
+			return response.send('Required password data missing')
+		if (helperFunctions.checkValidLanguage(language) !== true) {
+			return response.send('Faulty language information');
+		}
+
 		if (password !== confirmPassword) {
 			res = await helperFunctions.translate(
-				'The entered passwords are not the same!',
-				pool,
-				language
-			);
+				'The entered passwords are not the same!', pool, language);
 			return response.send(res);
-		} else if (
-			!password.match(
-				/(?=^.{8,30}$)(?=.*\d)(?=.*[!.@#$%^&*]+)(?=.*[A-Z])(?=.*[a-z]).*$/
-			)
+		} else if (!password.match(
+			/(?=^.{8,30}$)(?=.*\d)(?=.*[!.@#$%^&*]+)(?=.*[A-Z])(?=.*[a-z]).*$/)
 		) {
 			res = await helperFunctions.translate(
 				'PLEASE ENTER A PASSWORD WITH: a length between 8 and 30 characters, at least one lowercase character (a-z), at least one uppercase character (A-Z), at least one numeric character (0-9) and at least one special character.',

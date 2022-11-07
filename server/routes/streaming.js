@@ -8,36 +8,6 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		return `magnet:?xt=urn:btih:${hash}&dn=${film_title.split(" ").join("+")}`;
 	};
 
-	const checkYTStorrents = async (magnet_link) => {
-		return new Promise((resolve) => {
-			let engine = torrentStream(magnet_link);
-
-			let files = [];
-
-			engine.on("ready", () => {
-				engine.files.forEach((file) => {
-					if (file.name.includes("YTS") && (file.name.endsWith(".mp4") || file.name.endsWith(".mkv"))) {
-						files.push({
-							name: file.name,
-							path: file.path,
-							size: file.length,
-						});
-					}
-				});
-				if (files.length > 0)
-					resolve(true)
-				else
-					resolve(false)
-			});
-
-			engine.on('idle', () => {
-				engine.destroy(() => {
-					console.log("Engine connection destroyed");
-				})
-			})
-		})
-	}
-
 	const downloadTorrent = async (magnet_link, imdb_id) =>
 		new Promise((resolve) => {
 			let videoPath = path.resolve(__dirname, "../movies");
@@ -129,15 +99,16 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		if (rows.length > 0) moviefile = rows[0]["path"];
 		else moviefile = `movies/pushthebutton.mp4`;
 
-		const isMp4 = rows[0]["file_type"] === 'mp4'
+		const isMp4 = ((rows[0]["file_type"] === 'mp4' && moviefile.includes("YTS")) || rows[0]["completed"] === 'YES')
 
-		const actualFileSize = Number(fs.statSync(moviefile).size)
 		const fileSize = Number(rows[0].file_size)
 		const range = request.headers.range
-		if (range) {
+		if (!range) {
+			response.status(404).send('Requires Range header');
+		} else {
 			console.log("Requested Movie Range: ", range)
 			const CHUNK_SIZE = 10 ** 6;
-			let start = Number(range.replace(/\D/g, ""))
+			let start = Number(range.replace(/\D/g, ''))
 			if (start > fileSize - 1) {
 				notLoaded = true;
 				start = 0;
@@ -154,28 +125,19 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 				: {
 					"Content-Range": `bytes ${start}-${end}/${fileSize}`,
 					"Accept-Ranges": "bytes",
-					"Content-Type": "video/webm"
+					"Content-Type": "video/matroska"
 				}
 			notLoaded ? response.writeHead(416, head) : response.writeHead(206, head);
-			// response.writeHead(206, head);
-			const videoStream = fs.createReadStream(moviefile, { start: start, end: end })
+			const videoStream = fs.createReadStream(moviefile, { start, end })
 			if (isMp4) {
 				videoStream.pipe(response)
 			} else {
 				ffmpeg(videoStream)
 					.format('matroska')
+					.videoBitrate('4096k')
 					.on('error', () => { })
 					.pipe(response);
 			}
-		} else {
-			console.log("No Movie Range Defined");
-			const head = {
-				'Content-Length': rows[0]?.file_size,
-				'Content-Type': 'video/mp4',
-			}
-			response.writeHead(200, head)
-			const videoStream = fs.createReadStream(moviefile)
-			videoStream.pipe(response)
 		}
 	})
 
@@ -316,28 +278,9 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			let torrentInfo = movieInfo.torrents;
 			let film_title = movieInfo.title_long;
 
-			const checkGoodTorrent = async (torrent) => {
-				let magnet_link = getMagnetLink(torrent, film_title);
-				let YTStorrent = await checkYTStorrents(magnet_link)
-				console.log("YTS torrent:", YTStorrent, torrent.quality)
-				return (YTStorrent === true)
-			}
-
-			let goodTorrents = await torrentInfo.filter(checkGoodTorrent)
-
-			console.log("Good Torrents: ", goodTorrents)
-
-			let magnet_link
-			if (goodTorrents.length > 0) {
-				if (goodTorrents.length > 1)
-					goodTorrents.sort((a, b) => (a.seeds > b.seeds ? -1 : 1));
-				magnet_link = getMagnetLink(goodTorrents[0], film_title)
-			}
-			else {
-				if (torrentInfo.length > 1)
-					torrentInfo.sort((a, b) => (a.seeds > b.seeds ? -1 : 1));
-				magnet_link = getMagnetLink(torrentInfo[0], film_title)
-			}
+			if (torrentInfo.length > 1)
+				torrentInfo.sort((a, b) => (a.seeds > b.seeds ? -1 : 1));
+			let magnet_link = getMagnetLink(torrentInfo[0], film_title)
 
 			let torrent_files = await downloadTorrent(magnet_link, imdb_id);
 			console.log("Torrent files: ", torrent_files);
