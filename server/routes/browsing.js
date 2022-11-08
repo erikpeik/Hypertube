@@ -59,6 +59,14 @@ module.exports = function (app, axios) {
 			});
 	});
 
+	app.get(`${baseUrl}/movie_query/:id`, async (req, res) => {
+		const imdb_id = req.params.id;
+		const movie_details = await axios.get(
+			`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`
+		);
+		res.send(movie_details.data.data)
+	});
+
 	app.get(`${baseUrl}/recommended_movies/:id`, async (req, res) => {
 		const imdb_id = req.params.id;
 		const movie_details = await axios.get(

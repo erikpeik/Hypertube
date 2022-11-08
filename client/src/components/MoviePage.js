@@ -2,14 +2,7 @@ import "../css/movie.css";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
-	Typography,
-	Paper,
-	Grid,
-	Box,
-	Card,
-	CardActionArea,
-	CardContent,
-	CardMedia,
+	Typography, Paper, Grid, Box, Card, CardActionArea, CardContent, CardMedia
 } from "@mui/material";
 import { Container } from "@mui/system";
 import Loader from "./Loader";
@@ -53,7 +46,6 @@ const MoviePage = ({ t }) => {
 			</h2>
 			<VideoPlayer
 				imdb_id={params.id}
-				movieTitle={movieData[0][1]}
 			/>
 			<h5 className="comment" onClick={() => setShow(!show)}>
 				{t("movie.0")}{" "}

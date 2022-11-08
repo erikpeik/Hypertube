@@ -1,8 +1,8 @@
 import axios from 'axios'
 const baseUrl = 'http://localhost:3001/api/streaming'
 
-const getTorrent = (imdb_id) => {
-	const request = axios.get(`${baseUrl}/torrent/${imdb_id}`)
+const getTorrent = (imdb_id, quality) => {
+	const request = axios.get(`${baseUrl}/torrent/${imdb_id}/${quality}`)
 	return request.then(response => response.data)
 }
 

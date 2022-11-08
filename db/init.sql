@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS downloads (
 	file_size BIGINT NOT NULL,
 	completed enum_yesno DEFAULT 'NO',
 	imdb_id VARCHAR(15) NOT NULL,
+	quality VARCHAR(10) NOT NULL,
 	download_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

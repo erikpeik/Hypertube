@@ -8,7 +8,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		return `magnet:?xt=urn:btih:${hash}&dn=${film_title.split(" ").join("+")}`;
 	};
 
-	const downloadTorrent = async (magnet_link, imdb_id) =>
+	const downloadTorrent = async (magnet_link, imdb_id, quality) =>
 		new Promise((resolve) => {
 			let videoPath = path.resolve(__dirname, "../movies");
 			console.log("Downloading files to: ", videoPath);
@@ -59,13 +59,9 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 						]);
 
 						if (rows.length === 0) {
-							sql = `INSERT INTO downloads (path, file_type, file_size, imdb_id) VALUES ($1,$2,$3,$4)`;
+							sql = `INSERT INTO downloads (path, file_type, file_size, imdb_id, quality) VALUES ($1,$2,$3,$4,$5)`;
 							pool.query(sql, [
-								`movies/${file.path}`,
-								file.name.slice(-3),
-								file.length,
-								imdb_id,
-							]);
+								`movies/${file.path}`, file.name.slice(-3), file.length, imdb_id, quality]);
 						}
 					}
 				});
@@ -79,8 +75,8 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			engine.on('idle', (files) => {
 				console.log("All files downloaded");
 
-				sql = `UPDATE downloads SET completed = 'YES' WHERE imdb_id = $1`
-				pool.query(sql, [imdb_id])
+				sql = `UPDATE downloads SET completed = 'YES' WHERE imdb_id = $1 AND quality = $2`
+				pool.query(sql, [imdb_id, quality])
 
 				engine.destroy(() => {
 					console.log("Engine connection destroyed");
@@ -88,12 +84,16 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			})
 		})
 
-	app.get("/api/moviestream/:id", async (request, response) => {
+	app.get("/api/moviestream/:id/:quality", async (request, response) => {
 		const id = request.params.id;
+		const quality = request.params.quality;
 		let notLoaded = false;
 
-		let sql = `SELECT * FROM downloads WHERE imdb_id = $1`;
-		const { rows } = await pool.query(sql, [id]);
+		let sql = `SELECT * FROM downloads WHERE imdb_id = $1 AND quality = $2`;
+		const { rows } = await pool.query(sql, [id, quality]);
+
+		if (rows.length === 0)
+			return response.send("Faulty Movie ID or quality")
 
 		let moviefile;
 		if (rows.length > 0) moviefile = rows[0]["path"];
@@ -253,11 +253,16 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		response.status(200).send(subtitleTracks)
 	})
 
-	app.get("/api/streaming/torrent/:id", async (request, response) => {
+	app.get("/api/streaming/torrent/:id/:quality", async (request, response) => {
 		const imdb_id = request.params.id;
+		const quality = request.params.quality
 
-		let sql = `SELECT * FROM downloads WHERE imdb_id = $1`;
-		const { rows } = await pool.query(sql, [imdb_id]);
+		let qualityList = ['720p', '1080p', '2160p']
+		if (!qualityList.includes(quality))
+			return response.send("Invalid movie quality")
+
+		let sql = `SELECT * FROM downloads WHERE imdb_id = $1 AND quality = $2`;
+		const { rows } = await pool.query(sql, [imdb_id, quality]);
 
 		if (rows.length > 0 && rows[0]["completed"] === "YES")
 			response.status(200).send(`Ready to play`);
@@ -274,19 +279,24 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 
 			let responseSent = false;
 
-			const movieInfo = await axios.get(`${process.env.TORRENT_API}?query_term=${imdb_id}`)
-				.then(response => response.data.data.movies[0]);
+			const movieInfo = await axios.get(`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`)
+				.then(response => response?.data?.data?.movie);
+
+			if (movieInfo === undefined)
+				return response.send("Invalid IMDB_code")
 
 			console.log(movieInfo)
 
-			let torrentInfo = movieInfo.torrents;
+			let torrentInfo = movieInfo.torrents.filter(torrent => torrent.quality === quality);
+			if (torrentInfo.length === 0)
+				return response.send("Invalid movie quality")
 			let film_title = movieInfo.title_long;
 
 			if (torrentInfo.length > 1)
 				torrentInfo.sort((a, b) => (a.seeds > b.seeds ? -1 : 1));
 			let magnet_link = getMagnetLink(torrentInfo[0], film_title)
 
-			let torrent_files = await downloadTorrent(magnet_link, imdb_id);
+			let torrent_files = await downloadTorrent(magnet_link, imdb_id, quality);
 			console.log("Torrent files: ", torrent_files);
 
 			while (fs.existsSync(`movies/${torrent_files[0].path}`) === false)
