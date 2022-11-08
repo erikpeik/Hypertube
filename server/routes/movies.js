@@ -1,23 +1,23 @@
 const cronJob = require('../utils/cronJob');
 
 module.exports = function (app, pool, axios) {
-	let sql = `SELECT  TO_CHAR(created_at, 'YYYY/MM/DD') AS created_at FROM movies_watched`;
-	pool.query(sql, (err, result) => {
-		if (err) throw err;
-		console.log(result.rows);
-		result.rows.forEach((element) => {
-			// ================== CRON JOB BROKEN ==================
-			// if (cronJob.crontab(element.created_at) === true) {
-			// 	console.log('true');
-			// } else {
-			// 	console.log('false');
-			// }
-			// ================================
-			console.log('============');
-			console.log(element.created_at);
-			console.log('============');
-		});
-	});
+	// let sql = `SELECT  TO_CHAR(created_at, 'YYYY/MM/DD') AS created_at FROM movies_watched`;
+	// pool.query(sql, (err, result) => {
+	// 	if (err) throw err;
+	// 	console.log(result.rows);
+	// 	result.rows.forEach((element) => {
+	// 		// ================== CRON JOB BROKEN ==================
+	// 		// if (cronJob.crontab(element.created_at) === true) {
+	// 		// 	console.log('true');
+	// 		// } else {
+	// 		// 	console.log('false');
+	// 		// }
+	// 		// ================================
+	// 		console.log('============');
+	// 		console.log(element.created_at);
+	// 		console.log('============');
+	// 	});
+	// });
 
 	app.post('/api/movies/watch/:id', async (request, response) => {
 		const refreshToken = request.cookies.refreshToken;
