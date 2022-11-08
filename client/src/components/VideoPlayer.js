@@ -121,6 +121,7 @@ const VideoPlayer = ({ imdb_id }) => {
 					url={stream_url}
 					onPlay={onPlay}
 					width="100%"
+					height="100%"
 					// light={video_banner}
 					playIcon={
 						<PlayCircleFilledWhiteOutlined fontSize="large" />
