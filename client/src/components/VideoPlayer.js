@@ -90,7 +90,10 @@ const VideoPlayer = ({ imdb_id }) => {
 		streamingService.getTorrent(imdb_id).then(async (response) => {
 			let subtitles = await streamingService.getSubtitles(imdb_id)
 			setSubtitles(subtitles);
-			if (response === "Ready to play") {
+			if (response.includes("Ready to play")) {
+				let downloadRatio = parseInt(response.replace("Ready to play, ", ''), 10)
+				if (!isNaN(downloadRatio))
+					setStatusPlayer(`Playing as a preview, ${downloadRatio} percent of the movie downloaded. Refresh the page in a moment for full quality.`);
 				setReadyToPlay(true);
 			}
 		});
