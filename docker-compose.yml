@@ -46,6 +46,8 @@ services:
             POSTGRES_USER: hypertube
             POSTGRES_PASSWORD: root
             POSTGRES_DB: hypertube
+            TZ: 'Europe/Helsinki'
+            PGTZ: 'Europe/Helsinki'
         volumes:
             - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
         ports:
