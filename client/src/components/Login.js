@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import signUpService from '../services/signUpService';
 import { setUser } from '../reducers/userReducer';
 import { changeNotification } from '../reducers/notificationReducer';
@@ -9,11 +9,27 @@ import { Typography, Button, Paper, TextField } from '@mui/material';
 import { Container } from '@mui/system';
 import { createTheme } from '@mui/material/styles';
 import Notification from './Notification';
+import { useEffect, useState } from 'react';
 
 const Login = ({ t }) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const language = useSelector((state) => state.language);
+	const profileData = useSelector((state) => state.profile);
+	const [searchParams, setSearchParams] = useSearchParams();
+
+	useEffect(() => {
+		console.log('profileData', profileData);
+		const error_message = searchParams.get('error');
+		if (error_message && profileData != null) {
+			setTimeout(() => {
+				console.log(error_message);
+				dispatch(changeNotification(error_message));
+				dispatch(changeSeverity('error'));
+				setSearchParams({});
+			}, 10);
+		}
+	}, [searchParams, profileData]);
 
 	const submitUser = async (event) => {
 		event.preventDefault();
@@ -124,7 +140,6 @@ const Login = ({ t }) => {
 							alt="42logo"
 							src="https://api.intra.42.fr/assets/42_logo_api.svg"
 							width="50"
-							// onClick = {() => signUpService.connectWith42()}
 						></img>
 					</a>
 					<br></br>

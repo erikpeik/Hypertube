@@ -1,7 +1,7 @@
 module.exports = function (app, pool, axios, helperFunctions, jwt) {
-	const GITHUB_URL = "https://github.com/login/oauth/access_token";
-	const FORTYTWO_URL = 'https://api.intra.42.fr/oauth/token'
-	const { Octokit } = require("octokit");
+	const GITHUB_URL = 'https://github.com/login/oauth/access_token';
+	const FORTYTWO_URL = 'https://api.intra.42.fr/oauth/token';
+	const { Octokit } = require('octokit');
 
 	const logInUser = async (userData, id, response) => {
 		let mail = userData.email;
@@ -10,17 +10,17 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 			{ id, name, mail },
 			process.env.REFRESH_TOKEN_SECRET,
 			{
-				expiresIn: "1d",
+				expiresIn: '1d',
 			}
 		);
-		response.cookie("refreshToken", refreshToken, {
+		response.cookie('refreshToken', refreshToken, {
 			httpOnly: false,
 			maxAge: 24 * 60 * 60 * 1000,
 		});
 		const sql1 = `UPDATE users SET token = $1 WHERE id = $2`;
 		await pool.query(sql1, [refreshToken, id]);
 		return;
-	}
+	};
 
 	const signUpUser = async (userData, response) => {
 		let password = helperFunctions.makeToken(10);
@@ -32,40 +32,49 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 			userData.email,
 			password,
 		]);
-		let id = rows1.rows[0]["id"];
+		let id = rows1.rows[0]['id'];
 		let mail = userData.email;
 		let name = userData.username;
 		const refreshToken = jwt.sign(
 			{ id, name, mail },
 			process.env.REFRESH_TOKEN_SECRET,
 			{
-				expiresIn: "1d",
+				expiresIn: '1d',
 			}
 		);
-		response.cookie("refreshToken", refreshToken, {
+		response.cookie('refreshToken', refreshToken, {
 			httpOnly: false,
 			maxAge: 24 * 60 * 60 * 1000,
 		});
 		const sql1 = `UPDATE users SET token = $1 WHERE id = $2`;
 		await pool.query(sql1, [refreshToken, id]);
 		return;
-	}
+	};
 
-	app.get("/api/oauth/githubdirect", async (request, response) => {
+	app.get('/api/oauth/githubdirect', async (request, response) => {
 		const github_response = await axios({
-			method: "POST",
+			method: 'POST',
 			url: `${GITHUB_URL}?client_id=${process.env.GITHUB_CLIENT_ID}&client_secret=${process.env.GITHUB_CLIENT_SECRET}&code=${request.query.code}`,
-			headers: { Accept: "application/json" }
-		})
+			headers: { Accept: 'application/json' },
+		});
 
-		const octokit = new Octokit({ auth: github_response.data.access_token });
-		const email = await octokit.request("GET /user/emails", {});
-		const user = await octokit.request("GET /user", {});
+		console.log(github_response.data);
+		if (github_response.data.error) {
+			const error_message = encodeURIComponent(github_response.data?.error_description || 'Github login failed');
+			response.redirect(`http://localhost:3000/login?error=${error_message}`);
+			return;
+		}
+
+		const octokit = new Octokit({
+			auth: github_response.data.access_token,
+		});
+		const email = await octokit.request('GET /user/emails', {});
+		const user = await octokit.request('GET /user', {});
 
 		let userData = {
 			username: user.data.login,
-			firstname: user.data.name.split(" ")[0],
-			lastname: user.data.name.split(" ")[1],
+			firstname: user.data.name.split(' ')[0],
+			lastname: user.data.name.split(' ')[1],
 			email: email.data[0].email,
 		};
 
@@ -73,36 +82,43 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 		let { rows } = await pool.query(sql, [email.data[0].email]);
 
 		if (rows.length) {
-			await logInUser(userData, rows[0]["id"], response)
+			await logInUser(userData, rows[0]['id'], response);
 		} else {
 			let sql = `SELECT * FROM users WHERE username = $1`;
 			let oldUser = await pool.query(sql, [user.data.login]);
 			while (oldUser.rows.length) {
-				userData.username = user.data.login + String(Math.floor(Math.random() * (999999 - 100000 + 1) + 100000))
+				userData.username =
+					user.data.login +
+					String(
+						Math.floor(
+							Math.random() * (999999 - 100000 + 1) + 100000
+						)
+					);
 				let sql = `SELECT * FROM users WHERE username = $1`;
 				oldUser = await pool.query(sql, [userData.username]);
 			}
-			await signUpUser(userData, response)
+			await signUpUser(userData, response);
 		}
 
 		response.redirect(`http://localhost:3000/profile`);
-
 	});
 
-	app.get("/api/oauth/42direct", async (request, response) => {
-		let code = request.query.code
+	app.get('/api/oauth/42direct', async (request, response) => {
+		let code = request.query.code;
 
 		const fortytwo_response = await axios.post(`${FORTYTWO_URL}`, {
 			grant_type: 'authorization_code',
 			client_id: process.env.FORTYTWO_CLIENT_ID,
 			client_secret: process.env.FORTYTWO_CLIENT_SECRET,
 			code: code,
-			redirect_uri: 'http://localhost:3001/api/oauth/42direct'
-		})
+			redirect_uri: 'http://localhost:3001/api/oauth/42direct',
+		});
 
-		const { data } = await axios.get("https://api.intra.42.fr/v2/me", {
-			headers: { Authorization: 'Bearer ' + fortytwo_response.data.access_token }
-		})
+		const { data } = await axios.get('https://api.intra.42.fr/v2/me', {
+			headers: {
+				Authorization: 'Bearer ' + fortytwo_response.data.access_token,
+			},
+		});
 
 		let userData = {
 			username: data.login,
@@ -115,20 +131,23 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 		let { rows } = await pool.query(sql, [data.email]);
 
 		if (rows.length) {
-			await logInUser(userData, rows[0]["id"], response)
+			await logInUser(userData, rows[0]['id'], response);
 		} else {
 			let sql = `SELECT * FROM users WHERE username = $1`;
 			let oldUser = await pool.query(sql, [data.login]);
 			while (oldUser.rows.length) {
-				userData.username = data.login + String(Math.floor(Math.random() * (999999 - 100000 + 1) + 100000))
+				userData.username =
+					data.login +
+					String(
+						Math.floor(
+							Math.random() * (999999 - 100000 + 1) + 100000
+						)
+					);
 				let sql = `SELECT * FROM users WHERE username = $1`;
 				oldUser = await pool.query(sql, [userData.username]);
 			}
-			await signUpUser(userData, response)
+			await signUpUser(userData, response);
 		}
-
 		response.redirect(`http://localhost:3000/profile`);
-
-	})
-
+	});
 };
