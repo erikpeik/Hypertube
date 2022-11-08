@@ -209,7 +209,7 @@ const Browsing = ({ t }) => {
 					height: '100%',
 				}}
 			>
-				{movies.length !== 0 ? (
+				{movies.length !== 0 || loading === true ? (
 					movies.map((movie, value) => (
 						<Box
 							sx={{
@@ -253,9 +253,6 @@ const Browsing = ({ t }) => {
 												<VisibilityIcon />
 											</Typography>
 										) : null}
-										{/* <Typography>
-											Seeds: {movie.torrents[0].seeds}
-										</Typography> */}
 									</CardContent>
 									<CardMedia
 										sx={{
@@ -279,7 +276,7 @@ const Browsing = ({ t }) => {
 					<img
 						alt="south_park"
 						src="https://media.techeblog.com/images/404_error_8.jpg"
-					></img>
+					/>
 				)}
 			</Box>
 			{loading && <LoaderDots />}
