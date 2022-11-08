@@ -33,7 +33,7 @@ module.exports = function (app, pool, axios) {
 	}
 	function crontab() {
 		cron.schedule(
-			'0 8 * * *',
+			'0 8 * * *', // '*/1 * * * * *', // every second for testing
 			function () {
 				get()
 			},
