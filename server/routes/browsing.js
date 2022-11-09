@@ -73,7 +73,7 @@ module.exports = function (app, axios) {
 			`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`
 		);
 		if (movie_details.data.length === 0) {
-			res.status(404).send({ error: 'Movie not found' });
+			res.send({ error: 'Movie not found' });
 			return;
 		}
 

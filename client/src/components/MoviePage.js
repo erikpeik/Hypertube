@@ -25,7 +25,7 @@ const MoviePage = ({ t }) => {
 				setImdbData(Object.entries(movieData) || "");
 			});
 		browsingService.getRecommendedMovies(params.id).then((response) => {
-			setRecommendedMovies(response.data.movies || []);
+			setRecommendedMovies(response?.data?.movies || []);
 		});
 	}, [params]);
 
@@ -41,10 +41,11 @@ const MoviePage = ({ t }) => {
 		window.location.reload();
 	};
 
-	return (
-		<Box>
-			{imdbData.length === 0 && recommendedMovies.length === 0 && (
-				<Box
+	console.log("imdbData :", imdbData)
+	console.log("recommendedMovies :", recommendedMovies)
+	if (imdbData[0][1] === 'False') {
+		return (
+			<Box
 				container="true"
 				spacing={3}
 				style={{
@@ -56,27 +57,26 @@ const MoviePage = ({ t }) => {
 					width: '100%',
 					height: '100%',
 				}}
-				>
-					<PathNotExists/>
-				</Box>
-			)}
-			{imdbData && recommendedMovies && (
+			>
+				<PathNotExists />
+			</Box>
+		)
+	} else {
+		return (
 			<Box>
-				<h2 className="movie-title">
-					{movieData[0][1]} ({movieData[1][1]})
-				</h2>
-				<VideoPlayer
-					imdb_id={params.id}
-				/>
-				<h5 className="comment" onClick={() => setShow(!show)}>
-					{t("movie.0")}{" "}
-				</h5>
-			</Box>)}
-			{show && <Comments movieId={params.id} t={t} />}
-			{imdbData && recommendedMovies && (
+				<Box>
+					<h2 className="movie-title">
+						{movieData[0][1]} ({movieData[1][1]})
+					</h2>
+					<VideoPlayer
+						imdb_id={params.id}
+					/>
+					<h5 className="comment" onClick={() => setShow(!show)}>
+						{t("movie.0")}{" "}
+					</h5>
+				</Box>
+				{show && <Comments movieId={params.id} t={t} />}
 				<Container maxWidth="md" sx={{ pt: 5, pb: 5 }}>
-					{/* {movieData.length !== 0 || loading === true ? ( */}
-
 					<Paper elevation={10} sx={{ padding: 3 }}>
 						{movieData.map((value, i) => (
 							<Grid
@@ -106,12 +106,6 @@ const MoviePage = ({ t }) => {
 							</Grid>
 						))}
 					</Paper>
-					{/* ) : (
-					<img
-						alt="south_park"
-						src="https://media.techeblog.com/images/404_error_8.jpg"
-					/>
-				)} */}
 					<Paper sx={{ mt: 4 }}>
 						<Typography
 							sx={{ display: "flex", justifyContent: "center" }}
@@ -194,10 +188,9 @@ const MoviePage = ({ t }) => {
 						</Box>
 					</Paper>
 				</Container>
-			)}
-			{/* {loading && <LoaderDots />} */}
-		</Box>
-	);
+			</Box>
+		);
+	}
 };
 
 export default MoviePage;
