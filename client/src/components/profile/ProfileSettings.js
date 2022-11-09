@@ -128,9 +128,9 @@ const ProfileSettings = ({ t, i18n }) => {
 						id="asc-desc-select"
 						value={settings.language || ''}
 						sx={{
-							width: '50%',
-							marginLeft: '25%',
-							marginRight: '25%',
+							width: '100%',
+							maxWidth: 400,
+							margin: 'auto'
 						}}
 						onChange={handleLanguage}
 					>
