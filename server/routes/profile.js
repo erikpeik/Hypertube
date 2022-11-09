@@ -135,6 +135,12 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 		const { oldPassword, newPassword, confirmPassword, language } =
 			request.body;
 
+		if (!oldPassword || !newPassword || !confirmPassword || !language)
+			return response.send("Required password data missing");
+		if (helperFunctions.checkValidLanguage(language) !== true) {
+			return response.send('Faulty language information');
+		}
+
 		if (newPassword !== confirmPassword) {
 			res = await helperFunctions.translate(
 				'The entered new passwords are not the same!',
@@ -158,6 +164,14 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 		if (cookie) {
 			const sql = 'SELECT * FROM users WHERE token = $1';
 			const { rows } = await pool.query(sql, [cookie]);
+			if (rows.length === 0) {
+				res = await helperFunctions.translate(
+					'User not signed in!',
+					pool,
+					language
+				);
+				return response.send(res);
+			}
 
 			if (!(await bcrypt.compare(oldPassword, rows[0]['password']))) {
 				res = await helperFunctions.translate(
@@ -188,13 +202,12 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 	app.get('/api/profile/:id', async (request, response) => {
 		try {
 			let sql = `SELECT * FROM users
-					LEFT JOIN user_pictures ON users.id = user_pictures.user_id
-					WHERE users.id = $1`;
+				LEFT JOIN user_pictures ON users.id = user_pictures.user_id
+				WHERE users.id = $1`;
 			const { rows } = await pool.query(sql, [request.params.id]);
-
 			response.send(rows[0]);
 		} catch (error) {
-			response.send(false);
+			response.send(false)
 		}
 	});
 
@@ -227,16 +240,20 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 	});
 
 	app.post(
-		'/api/profile/setprofilepic/:language',
-		upload.single('file'),
+		'/api/profile/setprofilepic/:language', upload.single('file'),
 		async (request, response) => {
+			const language = request.params.language;
+			if (helperFunctions.checkValidLanguage(language) !== true) {
+				return response.send('Faulty language information');
+			}
+			if (!request.file)
+				return response.send("Required profile pic data missing");
 			const cookie = request.cookies.refreshToken;
 			const image =
-				'http://localhost:3001/images/' + request.file.filename;
-			const language = request.params.language;
+				'http://localhost:3001/images/' + request.file?.filename;
 
 			if (cookie) {
-				if (request.file.size > 5242880) {
+				if (request.file?.size > 5242880) {
 					res = await helperFunctions.translate(
 						'The maximum size for uploaded images is 5 megabytes.',
 						pool,
@@ -245,9 +262,9 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 					return response.send(res);
 				}
 				if (
-					request.file.mimetype !== 'image/png' &&
-					request.file.mimetype !== 'image/jpg' &&
-					request.file.mimetype !== 'image/jpeg'
+					request.file?.mimetype !== 'image/png' &&
+					request.file?.mimetype !== 'image/jpg' &&
+					request.file?.mimetype !== 'image/jpeg'
 				) {
 					res = await helperFunctions.translate(
 						'Not right file type!',
@@ -297,6 +314,8 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 					);
 					return response.send(res);
 				}
+			} else {
+				response.send(false);
 			}
 		}
 	);
@@ -304,10 +323,10 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 	app.delete('/api/profile/deleteuser', async (request, response) => {
 		const cookie = request.cookies.refreshToken;
 		if (cookie) {
-			const getId = 'SELECT * FROM users WHERE token = $1';
-			const { rows } = await pool.query(getId, [cookie]);
-			const id = rows[0]['id'];
 			try {
+				const getId = 'SELECT * FROM users WHERE token = $1';
+				const { rows } = await pool.query(getId, [cookie]);
+				const id = rows[0]['id'];
 				var sql = `DELETE FROM users WHERE id = $1`;
 				pool.query(sql, [id]);
 				response.send(true);

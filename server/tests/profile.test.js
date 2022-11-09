@@ -187,3 +187,95 @@ test('faulty language info', async () => {
 		.expect("Faulty language information")
 })
 
+test('null as change password data', async () => {
+	const data = null
+
+	await api
+		.post('/api/profile/changepassword')
+		.send(data)
+		.expect("Required password data missing")
+})
+
+test('null values as change password data', async () => {
+	const data = {
+		oldPassword: null,
+		newPassword: undefined,
+		confirmPassword: null,
+		language: undefined
+	}
+
+	await api
+		.post('/api/profile/changepassword')
+		.send(data)
+		.expect("Required password data missing")
+})
+
+test('faulty language in change password data', async () => {
+	const data = {
+		oldPassword: 'Testi123&&&',
+		newPassword: 'Testi456&&&',
+		confirmPassword: 'Testi456&&&',
+		language: 'romanian-hungarian with finnish-dialect'
+	}
+
+	await api
+		.post('/api/profile/changepassword')
+		.send(data)
+		.expect("Faulty language information")
+})
+
+test('different passwords in change password data', async () => {
+	const data = {
+		oldPassword: 'Testi123&&&',
+		newPassword: 'Testi456&&&',
+		confirmPassword: 'Testi456&&&1',
+		language: 'en'
+	}
+
+	await api
+		.post('/api/profile/changepassword')
+		.send(data)
+		.expect("The entered new passwords are not the same!")
+})
+
+test('faulty new password in change password data', async () => {
+	const data = {
+		oldPassword: 'Testi123&&&',
+		newPassword: '456&&&',
+		confirmPassword: '456&&&',
+		language: 'en'
+	}
+
+	await api
+		.post('/api/profile/changepassword')
+		.send(data)
+		.expect("PLEASE ENTER A NEW PASSWORD WITH: a length between 8 and 30 characters, at least one lowercase character (a-z), at least one uppercase character (A-Z), at least one numeric character (0-9) and at least one special character")
+})
+
+test('null as profile pic data', async () => {
+	const data = null
+
+	await api
+		.post('/api/profile/setprofilepic/en')
+		.send(data)
+		.expect("Required profile pic data missing")
+})
+
+test('null as profile pic data', async () => {
+	const data = null
+
+	await api
+		.post('/api/profile/setprofilepic/en')
+		.send(data)
+		.expect("Required profile pic data missing")
+})
+
+test('faulty language in profile pic data', async () => {
+	const data = null
+
+	await api
+		.post('/api/profile/setprofilepic/enkkuu')
+		.send(data)
+		.expect("Faulty language information")
+})
+
