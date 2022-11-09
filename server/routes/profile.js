@@ -1,7 +1,13 @@
 module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 	checkProfileData = async (body) => {
 		let res;
-		if (!body.username || !body.firstname || !body.lastname || !body.email || !body.language)
+		if (
+			!body.username ||
+			!body.firstname ||
+			!body.lastname ||
+			!body.email ||
+			!body.language
+		)
 			return 'Required profile data missing';
 		if (helperFunctions.checkValidLanguage(body.language) !== true) {
 			return 'Faulty language information';
@@ -55,15 +61,15 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 			return res;
 		}
 
-		return true
+		return true;
 	};
 
 	app.post('/api/profile/editsettings', async (request, response) => {
 		const checkResult = await checkProfileData(request.body);
-		if (checkResult !== true)
-			response.send(checkResult)
+		if (checkResult !== true) response.send(checkResult);
 		else {
-			const { username, firstname, lastname, email, language } = request.body;
+			const { username, firstname, lastname, email, language } =
+				request.body;
 			const cookie = request.cookies.refreshToken;
 			if (!cookie) {
 				res = await helperFunctions.translate(
@@ -84,7 +90,8 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 				);
 				return response.send(res);
 			}
-			let sql = 'SELECT * FROM users WHERE (username = $1 OR email = $2) AND id != $3';
+			let sql =
+				'SELECT * FROM users WHERE (username = $1 OR email = $2) AND id != $3';
 			const { rows } = await pool.query(sql, [
 				username,
 				email,
@@ -179,11 +186,16 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 	});
 
 	app.get('/api/profile/:id', async (request, response) => {
-		let sql = `SELECT * FROM users
-				LEFT JOIN user_pictures ON users.id = user_pictures.user_id
-				WHERE users.id = $1`;
-		const { rows } = await pool.query(sql, [request.params.id]);
-		response.send(rows[0]);
+		try {
+			let sql = `SELECT * FROM users
+					LEFT JOIN user_pictures ON users.id = user_pictures.user_id
+					WHERE users.id = $1`;
+			const { rows } = await pool.query(sql, [request.params.id]);
+
+			response.send(rows[0]);
+		} catch (error) {
+			response.send(false);
+		}
 	});
 
 	app.get('/api/profile', async (request, response) => {
