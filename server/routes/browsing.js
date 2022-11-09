@@ -32,9 +32,9 @@ module.exports = function (app, axios) {
 		}
 		const api_search = `${TORRENT_API}?query_term=${query}&genre=${
 			genre || ''
-		}&sort_by=${sort_by}&order_by=${
-			order_by || ''
-		}&minimum_rating=${imdb_rating || ''}&page=${page}&limit=${limit}`;
+		}&sort_by=${sort_by}&order_by=${order_by || ''}&minimum_rating=${
+			imdb_rating || ''
+		}&page=${page}&limit=${limit}`;
 		console.log(api_search);
 		axios
 			.get(api_search)
@@ -64,7 +64,7 @@ module.exports = function (app, axios) {
 		const movie_details = await axios.get(
 			`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`
 		);
-		res.send(movie_details.data.data)
+		res.send(movie_details.data.data);
 	});
 
 	app.get(`${baseUrl}/recommended_movies/:id`, async (req, res) => {
@@ -72,6 +72,11 @@ module.exports = function (app, axios) {
 		const movie_details = await axios.get(
 			`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`
 		);
+		if (movie_details.data.length === 0) {
+			res.status(404).send({ error: 'Movie not found' });
+			return;
+		}
+
 		const movie_id = movie_details.data.data.movie.id;
 		axios
 			.get(
