@@ -279,3 +279,21 @@ test('faulty language in profile pic data', async () => {
 		.expect("Faulty language information")
 })
 
+test('profile get with no cookie', async () => {
+	const data = null
+
+	await api
+		.get('/api/profile')
+		.send(data)
+		.expect('false')
+})
+
+test('deleteuser with no cookie', async () => {
+	const data = null
+
+	await api
+		.delete('/api/profile/deleteuser')
+		.send(data)
+		.expect('false')
+})
+
