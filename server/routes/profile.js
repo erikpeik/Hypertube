@@ -6,7 +6,8 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 			!body.firstname ||
 			!body.lastname ||
 			!body.email ||
-			!body.language
+			!body.language ||
+			!body.infiniteScroll
 		)
 			return 'Required profile data missing';
 		if (helperFunctions.checkValidLanguage(body.language) !== true) {
@@ -61,6 +62,15 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 			return res;
 		}
 
+		if (body.infiniteScroll !== 'YES' && body.infiniteScroll !== 'NO') {
+			res = await helperFunctions.translate(
+				'Faulty infinite scroll information',
+				pool,
+				body.language
+			);
+			return res;
+		}
+
 		return true;
 	};
 
@@ -68,12 +78,18 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 		const checkResult = await checkProfileData(request.body);
 		if (checkResult !== true) response.send(checkResult);
 		else {
-			const { username, firstname, lastname, email, language } =
-				request.body;
+			const {
+				username,
+				firstname,
+				lastname,
+				email,
+				language,
+				infiniteScroll,
+			} = request.body;
 			const cookie = request.cookies.refreshToken;
 			if (!cookie) {
 				res = await helperFunctions.translate(
-					'User not signed in!',
+					'Refresh token is missing!',
 					pool,
 					language
 				);
@@ -107,14 +123,17 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 			}
 
 			try {
-				let sql = `UPDATE users SET username = $1, firstname = $2, lastname = $3, email = $4, language = $5
-						WHERE id = $6`;
+				let sql = `UPDATE users
+				SET username = $1, firstname = $2, lastname = $3,
+				email = $4, language = $5, infinite_scroll = $6
+						WHERE id = $7`;
 				await pool.query(sql, [
 					username,
 					firstname,
 					lastname,
 					email,
 					language,
+					infiniteScroll,
 					user.rows[0]['id'],
 				]);
 				response.send(true);
@@ -136,7 +155,7 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 			request.body;
 
 		if (!oldPassword || !newPassword || !confirmPassword || !language)
-			return response.send("Required password data missing");
+			return response.send('Required password data missing');
 		if (helperFunctions.checkValidLanguage(language) !== true) {
 			return response.send('Faulty language information');
 		}
@@ -207,7 +226,7 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 			const { rows } = await pool.query(sql, [request.params.id]);
 			response.send(rows[0]);
 		} catch (error) {
-			response.send(false)
+			response.send(false);
 		}
 	});
 
@@ -240,14 +259,15 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 	});
 
 	app.post(
-		'/api/profile/setprofilepic/:language', upload.single('file'),
+		'/api/profile/setprofilepic/:language',
+		upload.single('file'),
 		async (request, response) => {
 			const language = request.params.language;
 			if (helperFunctions.checkValidLanguage(language) !== true) {
 				return response.send('Faulty language information');
 			}
 			if (!request.file)
-				return response.send("Required profile pic data missing");
+				return response.send('Required profile pic data missing');
 			const cookie = request.cookies.refreshToken;
 			const image =
 				'http://localhost:3001/images/' + request.file?.filename;

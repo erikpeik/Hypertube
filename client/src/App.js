@@ -58,7 +58,6 @@ const App = () => {
 		}
 	}, [dispatch, profileData]);
 
-	// i18n.changeLanguage('ro')
 	const handleLanguage = (event) => {
 		const lang = event.target.value;
 		dispatch(setLanguage(lang));
@@ -172,7 +171,7 @@ const App = () => {
 						/>
 						<Route
 							path="/settings"
-							element={<ProfileSettings t={t} />}
+							element={<ProfileSettings t={t} i18n={i18n} />}
 						/>
 						<Route
 							path="/watchlist"

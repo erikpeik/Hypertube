@@ -60,7 +60,15 @@
 		"11": "New Password",
 		"12": "Confirm new password",
 		"13": "Submit",
-		"14": "Please confirm your old password to make a new one."
+		"14": "Please confirm your old password to make a new one.",
+		"15": "Change your language",
+		"16": "Change between infinite scroll and pagination",
+		"17": "Infinite Scroll",
+		"18": "Pagination",
+		"19": "English",
+		"20": "Finnish",
+		"21": "Romanian",
+		"22": "Hungarian"
 	},
 	"reset": {
 		"1": "Password successfully changed! Please log in.",

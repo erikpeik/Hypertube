@@ -60,7 +60,15 @@
 		"11": "Új jelszó",
 		"12": "Jelszó megerősítése",
 		"13": "Mentés",
-		"14": "Erősítsd meg a jelszavadat, hogy létrehozzd az újat."
+		"14": "Erősítsd meg a jelszavadat, hogy létrehozzd az újat.",
+		"15": "Change your language",
+		"16": "Change between infinite scroll and pagination",
+		"17": "Infinite Scroll",
+		"18": "Pagination",
+		"19": "English",
+		"20": "Finnish",
+		"21": "Romanian",
+		"22": "Hungarian"
 	},
 	"reset": {
 		"1": "Jelszó sikeresen megváltoztatva! Lépj be.",

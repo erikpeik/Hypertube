@@ -60,7 +60,15 @@
 		"11": "Uusi salasana",
 		"12": "Vahvista uusi salasana",
 		"13": "Lähetä",
-		"14": "Vahvista vanha salasanasi että voit luoda uuden."
+		"14": "Vahvista vanha salasanasi että voit luoda uuden.",
+		"15": "Vaihda kieltä",
+		"16": "Vaihda loputtoman rullauksen ja sivutuksen välillä",
+		"17": "Loputon rullaus",
+		"18": "Sivutus",
+		"19": "Englannin kieli",
+		"20": "Suomen kieli",
+		"21": "Romanian kieli",
+		"22": "Unkarin kieli"
 	},
 	"reset": {
 		"1": "Salasana vaihdettu onnistuneesti! Kirjaudu sisään.",
@@ -131,14 +139,14 @@
 		"4": "Lähetä kommentti"
 	},
 	"videoplayer": {
-		"0": "playing",
-		"1": "buffering",
-		"2": "movie not loaded yet",
-		"3": "source file error",
-		"4": "paused",
-		"5": "movie playing",
-		"6": "Playing as a preview,",
-		"7": " percent of the movie downloaded. Refresh the page after complete download for full quality.",
-		"8": "Quality"
+		"0": "toistaa elokuvaa",
+		"1": "puskuroida elokuvaa",
+		"2": "elokuva ei ole vielä ladattu",
+		"3": "lähde tiedosto virhe",
+		"4": "tauolla",
+		"5": "elokuva pyörii",
+		"6": "Pyörii esikatseulla,",
+		"7": " prosenttia elokuvasta on ladattuna. Päivitä sivu latauksen jälkeen täyden katselukokemuksen saamiseksi.",
+		"8": "Laatu"
 	}
 }

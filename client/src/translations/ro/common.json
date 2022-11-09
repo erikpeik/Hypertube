@@ -60,7 +60,15 @@
 		"11": "Parola nouă",
 		"12": "Confirmă parola nouă",
 		"13": "Submite",
-		"14": "Introduce parola veche, iar apoi pe cea nouă."
+		"14": "Introduce parola veche, iar apoi pe cea nouă.",
+		"15": "Change your language",
+		"16": "Change between infinite scroll and pagination",
+		"17": "Infinite Scroll",
+		"18": "Pagination",
+		"19": "English",
+		"20": "Finnish",
+		"21": "Romanian",
+		"22": "Hungarian"
 	},
 	"reset": {
 		"1": "Noua parolă setată!",

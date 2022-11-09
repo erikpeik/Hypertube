@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS users (
 	language VARCHAR(255) DEFAULT 'en',
 	password VARCHAR(255) NOT NULL,
 	verified enum_yesno DEFAULT 'NO',
-	token VARCHAR(1000)
+	token VARCHAR(1000),
+	infinite_scroll enum_yesno DEFAULT 'YES'
 );
 
 CREATE TABLE IF NOT EXISTS email_verify (
