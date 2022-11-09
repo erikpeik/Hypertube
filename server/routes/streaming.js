@@ -257,7 +257,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		const imdb_id = request.params.id;
 		const quality = request.params.quality
 
-		let qualityList = ['720p', '1080p', '2160p']
+		let qualityList = ['720p', '1080p', '2160p', '3D']
 		if (!qualityList.includes(quality))
 			return response.send("Invalid movie quality")
 

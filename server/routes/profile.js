@@ -1,112 +1,125 @@
 module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
-	app.post('/api/profile/editsettings', async (request, response) => {
-		const cookie = request.cookies.refreshToken;
-		const { username, firstname, lastname, email, language } = request.body;
-
-		if (helperFunctions.checkValidLanguage(language) !== true) {
+	checkProfileData = async (body) => {
+		let res;
+		if (!body.username || !body.firstname || !body.lastname || !body.email || !body.language)
+			return 'Required profile data missing';
+		if (helperFunctions.checkValidLanguage(body.language) !== true) {
 			return 'Faulty language information';
 		}
-		if (!cookie) {
-			res = await helperFunctions.translate(
-				'User not signed in!',
-				pool,
-				language
-			);
-			return response.send(res);
-		}
-		const check = `SELECT * FROM users WHERE token = $1`;
-		const user = await pool.query(check, [cookie]);
-		if (user.rows.length === 0) {
-			res = await helperFunctions.translate(
-				'User not signed in!',
-				pool,
-				language
-			);
-			return response.send(res);
-		}
-		var sql =
-			'SELECT * FROM users WHERE (username = $1 OR email = $2) AND id != $3';
-		const { rows } = await pool.query(sql, [
-			username,
-			email,
-			user.rows[0]['id'],
-		]);
-		if (rows.length !== 0) {
-			res = await helperFunctions.translate(
-				'Username or email is already in use!',
-				pool,
-				language
-			);
-			return response.send(res);
-		}
-		if (username.length < 4 || username.length > 25) {
+		if (body.username.length < 4 || body.username.length > 25) {
 			res = await helperFunctions.translate(
 				'Username has to be between 4 and 25 characters.',
 				pool,
-				language
+				body.language
 			);
-			return response.send(res);
+			return res;
 		}
-		if (!username.match(/^[a-z0-9]+$/i)) {
+		if (!body.username.match(/^[a-z0-9]+$/i)) {
 			res = await helperFunctions.translate(
 				'Username should only include characters (a-z or A-Z) and numbers (0-9).',
 				pool,
-				language
+				body.language
 			);
-			return response.send(res);
+			return res;
 		}
-		if (firstname.length > 50 || lastname.length > 50) {
+		if (body.firstname.length > 50 || body.lastname.length > 50) {
 			res = await helperFunctions.translate(
-				'Maximum length for firstname and lastname is 50 characters.',
+				"Come on, your name can't seriously be that long. Maximum for first name and last name is 50 characters.",
 				pool,
-				language
+				body.language
 			);
-			return response.send(res);
+			return res;
 		}
 		if (
-			!firstname.match(/^[a-zåäö-]+$/i) ||
-			!lastname.match(/^[a-zåäö-]+$/i)
+			!body.firstname.match(/^[a-zåäö-]+$/i) ||
+			!body.lastname.match(/^[a-zåäö-]+$/i)
 		) {
 			res = await helperFunctions.translate(
 				'First name and last name can only include characters a-z, å, ä, ö and dash (-).',
 				pool,
-				language
+				body.language
 			);
-			return response.send(res);
+			return res;
 		}
 		if (
-			email.length > 254 ||
-			!email.match(
+			body.email.length > 254 ||
+			!body.email.match(
 				/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 			)
 		) {
 			res = await helperFunctions.translate(
 				'Please enter a valid e-mail address.',
 				pool,
-				language
+				body.language
 			);
-			return response.send(res);
+			return res;
 		}
-		try {
-			let sql = `UPDATE users SET username = $1, firstname = $2, lastname = $3, email = $4, language = $5
-						WHERE id = $6`;
-			await pool.query(sql, [
+
+		return true
+	};
+
+	app.post('/api/profile/editsettings', async (request, response) => {
+		const checkResult = await checkProfileData(request.body);
+		if (checkResult !== true)
+			response.send(checkResult)
+		else {
+			const { username, firstname, lastname, email, language } = request.body;
+			const cookie = request.cookies.refreshToken;
+			if (!cookie) {
+				res = await helperFunctions.translate(
+					'User not signed in!',
+					pool,
+					language
+				);
+				return response.send(res);
+			}
+
+			const check = `SELECT * FROM users WHERE token = $1`;
+			const user = await pool.query(check, [cookie]);
+			if (user.rows.length === 0) {
+				res = await helperFunctions.translate(
+					'User not signed in!',
+					pool,
+					language
+				);
+				return response.send(res);
+			}
+			let sql = 'SELECT * FROM users WHERE (username = $1 OR email = $2) AND id != $3';
+			const { rows } = await pool.query(sql, [
 				username,
-				firstname,
-				lastname,
 				email,
-				language,
 				user.rows[0]['id'],
 			]);
-			response.send(true);
-		} catch (error) {
-			console.log(error);
-			res = await helperFunctions.translate(
-				'User settings update failed for some reason ¯\\_(ツ)_/¯',
-				pool,
-				language
-			);
-			return response.send(res);
+			if (rows.length !== 0) {
+				res = await helperFunctions.translate(
+					'Username or email is already in use!',
+					pool,
+					language
+				);
+				return response.send(res);
+			}
+
+			try {
+				let sql = `UPDATE users SET username = $1, firstname = $2, lastname = $3, email = $4, language = $5
+						WHERE id = $6`;
+				await pool.query(sql, [
+					username,
+					firstname,
+					lastname,
+					email,
+					language,
+					user.rows[0]['id'],
+				]);
+				response.send(true);
+			} catch (error) {
+				console.log(error);
+				res = await helperFunctions.translate(
+					'User settings update failed for some reason ¯\\_(ツ)_/¯',
+					pool,
+					language
+				);
+				return response.send(res);
+			}
 		}
 	});
 

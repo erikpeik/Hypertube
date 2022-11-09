@@ -1,7 +1,10 @@
 module.exports = function (app, pool) {
 	app.post("/api/newcomment/:id", async (request, response) => {
 		const imdb_id = request.params.id;
-		const comment = request.body;
+		const { comment } = request.body;
+		if (comment.length > 500)
+			return response.send("Maximum length for comments is 500 characters.")
+
 		const cookie = request.cookies.refreshToken;
 		if (cookie) {
 			let sql = "SELECT * FROM users WHERE token = $1";
@@ -26,7 +29,7 @@ module.exports = function (app, pool) {
 						username,
 						picture_path,
 						imdb_id,
-						comment.comment,
+						comment,
 					]);
 					response.send(true);
 					return;

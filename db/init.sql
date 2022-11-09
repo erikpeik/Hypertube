@@ -54,8 +54,8 @@ CREATE TABLE IF NOT EXISTS comments (
 	user_id INT NOT NULL,
 	username VARCHAR(100) NOT NULL,
 	user_pic TEXT NOT NULL,
-	imdb_id TEXT NOT NULL,
-	comment TEXT NOT NULL,
+	imdb_id VARCHAR(15) NOT NULL,
+	comment VARCHAR(1000) NOT NULL,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
