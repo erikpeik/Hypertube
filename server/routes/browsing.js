@@ -20,6 +20,10 @@ module.exports = function (app, axios) {
 		const { data } = await axios.get(
 			`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&i=${imdb_id}`
 		);
+		if (data.Response === 'False' && data.Error === 'Error getting data.') {
+			const yts_data = await axios.get(`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`);
+			return res.status(200).send(yts_data.data.data.movie);
+		}
 		res.status(200).send(data);
 	});
 

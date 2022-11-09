@@ -24,13 +24,76 @@ const MoviePage = ({ t }) => {
 	const [recommendedMovies, setRecommendedMovies] = useState(null);
 	const params = useParams();
 	const navigate = useNavigate();
-	// const { loading } = useFetch();
+
 	useEffect(() => {
-		browsingService
-			.getIMDbData({ imdb_id: params.id })
-			.then((movieData) => {
-				setImdbData(Object.entries(movieData) || '');
-			});
+		browsingService.getIMDbData({ imdb_id: params.id }).then((data) => {
+			const imdbArray = [
+				'Title',
+				'Year',
+				'Rated',
+				'Released',
+				'Runtime',
+				'Genre',
+				'Director',
+				'Writer',
+				'Actors',
+				'Plot',
+				'Language',
+				'Country',
+				'Awards',
+				'Metascore',
+				'imdbRating',
+				'imdbVotes',
+			];
+			const ytsArray = [
+				'description_full',
+				'genres',
+				'language',
+				'rating',
+				'runtime',
+				'title',
+				'year',
+			];
+			const asArray = Object.entries(data);
+			const filtered = asArray.filter(
+				([key, value]) =>
+					(typeof value === 'string' || typeof value === 'number') &&
+					value !== 'N/A' &&
+					(imdbArray.includes(key) || ytsArray.includes(key))
+			);
+			let backToNormal = Object.fromEntries(filtered);
+			for (const [key, value] of Object.entries(backToNormal)) {
+				if (key === 'description_full') {
+					backToNormal['Plot'] = value;
+					delete backToNormal['description_full'];
+				}
+				if (key === 'genres') {
+					backToNormal['Genre'] = value;
+					delete backToNormal['genres'];
+				}
+				if (key === 'language') {
+					backToNormal['Language'] = value;
+					delete backToNormal['language'];
+				}
+				if (key === 'rating') {
+					backToNormal['imdbRating'] = value;
+					delete backToNormal['rating'];
+				}
+				if (key === 'runtime') {
+					backToNormal['Runtime'] = value;
+					delete backToNormal['runtime'];
+				}
+				if (key === 'title') {
+					backToNormal['Title'] = value;
+					delete backToNormal['title'];
+				}
+				if (key === 'year') {
+					backToNormal['Year'] = value;
+					delete backToNormal['year'];
+				}
+			}
+			setImdbData(backToNormal || '');
+		});
 		browsingService.getRecommendedMovies(params.id).then((response) => {
 			setRecommendedMovies(response?.data?.movies || []);
 		});
@@ -38,18 +101,12 @@ const MoviePage = ({ t }) => {
 
 	if (!imdbData || !recommendedMovies) return <Loader />;
 
-	const movieData = imdbData.filter((data, i) => {
-		return i <= 12 || data[0] === 'imdbRating' || data[0] === 'imdbVotes';
-	});
-
 	const navigateToMovie = (movie_id) => {
 		navigate(`/movie/${movie_id}`);
 		window.location.reload();
 	};
 
-	console.log('imdbData :', imdbData);
-	console.log('recommendedMovies :', recommendedMovies);
-	if (imdbData[0][1] === 'False') {
+	if (imdbData.Response === 'False') {
 		return (
 			<Box
 				container="true"
@@ -72,7 +129,7 @@ const MoviePage = ({ t }) => {
 			<Box>
 				<Box>
 					<h2 className="movie-title">
-						{movieData[0][1]} ({movieData[1][1]})
+						{imdbData.Title} ({imdbData.Year})
 					</h2>
 					<VideoPlayer imdb_id={params.id} t={t} />
 					<h5 className="comment" onClick={() => setShow(!show)}>
@@ -82,10 +139,10 @@ const MoviePage = ({ t }) => {
 				{show && <Comments movieId={params.id} t={t} />}
 				<Container maxWidth="md" sx={{ pt: 5, pb: 5 }}>
 					<Paper elevation={10} sx={{ padding: 3 }}>
-						{movieData.map((value, i) => (
+						{Object.keys(imdbData).map((key) => (
 							<Grid
 								container
-								key={`container${i}`}
+								key={`container${key + imdbData[key]}`}
 								sx={{
 									display: 'flex',
 									justifyContent: 'space-between',
@@ -98,7 +155,7 @@ const MoviePage = ({ t }) => {
 										fontWeight: '700',
 									}}
 								>
-									{`${value[0]}:`}
+									{`${key || ''}:`}
 								</Typography>
 								<Grid item xs={12} sm={10}>
 									<Typography
@@ -107,7 +164,7 @@ const MoviePage = ({ t }) => {
 											wordBreak: 'break-all',
 										}}
 									>
-										{value[1]}
+										{imdbData[key]}
 									</Typography>
 								</Grid>
 							</Grid>
@@ -127,7 +184,6 @@ const MoviePage = ({ t }) => {
 								alignItems: 'center',
 								justifyContent: 'left',
 								display: 'flex',
-								// flexWrap: "wrap",
 								width: '100%',
 								height: '100%',
 								overflowX: 'auto',
