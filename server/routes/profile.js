@@ -334,6 +334,8 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 				console.log(error);
 				response.send('Failed to delete user!');
 			}
+		} else {
+			response.send(false);
 		}
 	});
 };
