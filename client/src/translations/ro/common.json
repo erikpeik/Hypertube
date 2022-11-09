@@ -129,5 +129,16 @@
 		"2": "Niciun comentariu. 😔",
 		"3": "Comentariu adăugat.",
 		"4": "Lăsați un comentariu"
+	},
+	"videoplayer": {
+		"0": "redare",
+		"1": "încărcare",
+		"2": "filmul nu s-a încărcat încă",
+		"3": "eroare",
+		"4": "pauză",
+		"5": "redare film",
+		"6": "Previzualizare,",
+		"7": " procent din film descărcat. Reîmprospătați pagina după descărcarea completă pentru calitate deplină.",
+		"8": "Calitate"
 	}
 }

@@ -129,5 +129,16 @@
 		"2": "Nincs hozzászólás. 😔",
 		"3": "Hozzászólás hozzáadva.",
 		"4": "Szólj hozzá"
+	},
+	"videoplayer": {
+		"0": "playing",
+		"1": "buffering",
+		"2": "movie not loaded yet",
+		"3": "source file error",
+		"4": "paused",
+		"5": "movie playing",
+		"6": "Playing as a preview,",
+		"7": " percent of the movie downloaded. Refresh the page after complete download for full quality.",
+		"8": "Quality"
 	}
 }
