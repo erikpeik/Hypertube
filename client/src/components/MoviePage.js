@@ -9,8 +9,7 @@ import Loader from "./Loader";
 import browsingService from "../services/browsingService";
 import VideoPlayer from "./VideoPlayer";
 import Comments from "./movie/Comments";
-import PathNotExcist from './PathNotExists';
-
+import PathNotExists from "./PathNotExists";
 
 const MoviePage = ({ t }) => {
 	const [imdbData, setImdbData] = useState(null);
@@ -18,7 +17,7 @@ const MoviePage = ({ t }) => {
 	const [recommendedMovies, setRecommendedMovies] = useState(null);
 	const params = useParams();
 	const navigate = useNavigate();
-
+	// const { loading } = useFetch();
 	useEffect(() => {
 		browsingService
 			.getIMDbData({ imdb_id: params.id })
@@ -30,9 +29,22 @@ const MoviePage = ({ t }) => {
 		});
 	}, [params]);
 
-	if (!imdbData || !recommendedMovies) {
-		return (
-			<Box
+	if (!imdbData || !recommendedMovies) return <Loader />;
+
+	const movieData = imdbData.filter((data, i) => {
+		return i <= 12 || data[0] === "imdbRating" || data[0] === "imdbVotes";
+	});
+
+
+	const navigateToMovie = (movie_id) => {
+		navigate(`/movie/${movie_id}`);
+		window.location.reload();
+	};
+
+	return (
+		<Box>
+			{imdbData.length === 0 && recommendedMovies.length === 0 && (
+				<Box
 				container="true"
 				spacing={3}
 				style={{
@@ -44,33 +56,27 @@ const MoviePage = ({ t }) => {
 					width: '100%',
 					height: '100%',
 				}}
-			>
-				<PathNotExcist/>
-			</Box>);
-	}
-
-	const movieData = imdbData.filter((data, i) => {
-		return i <= 12 || data[0] === "imdbRating" || data[0] === "imdbVotes";
-	});
-
-	const navigateToMovie = (movie_id) => {
-		navigate(`/movie/${movie_id}`);
-		window.location.reload();
-	};
-
-	return (
-		<>
-			<h2 className="movie-title">
-				{movieData[0][1]} ({movieData[1][1]})
-			</h2>
-			<VideoPlayer
-				imdb_id={params.id}
-			/>
-			<h5 className="comment" onClick={() => setShow(!show)}>
-				{t("movie.0")}{" "}
-			</h5>
+				>
+					<PathNotExists/>
+				</Box>
+			)}
+			{imdbData && recommendedMovies && (
+			<Box>
+				<h2 className="movie-title">
+					{movieData[0][1]} ({movieData[1][1]})
+				</h2>
+				<VideoPlayer
+					imdb_id={params.id}
+				/>
+				<h5 className="comment" onClick={() => setShow(!show)}>
+					{t("movie.0")}{" "}
+				</h5>
+			</Box>)}
 			{show && <Comments movieId={params.id} t={t} />}
-			<Container maxWidth="md" sx={{ pt: 5, pb: 5 }}>
+			{imdbData && recommendedMovies && (
+				<Container maxWidth="md" sx={{ pt: 5, pb: 5 }}>
+					{/* {movieData.length !== 0 || loading === true ? ( */}
+
 					<Paper elevation={10} sx={{ padding: 3 }}>
 						{movieData.map((value, i) => (
 							<Grid
@@ -100,89 +106,97 @@ const MoviePage = ({ t }) => {
 							</Grid>
 						))}
 					</Paper>
-				<Paper sx={{ mt: 4 }}>
-					<Typography
-						sx={{ display: "flex", justifyContent: "center" }}
-					>
-						{t("movie.1")}
-					</Typography>
-					<Box
-						container="true"
-						spacing={3}
-						style={{
-							direction: "column",
-							alignItems: "center",
-							justifyContent: "left",
-							display: "flex",
-							// flexWrap: "wrap",
-							width: "100%",
-							height: "100%",
-							overflowX: "auto",
-						}}
-					>
-						{recommendedMovies.map((movie, value) => (
-							<Box
-								sx={{
-									margin: 1,
-									marginBottom: 3,
-									maxHeight: 345,
-									maxWidth: 245,
-								}}
-								key={value}
-								item="true"
-								xs={3}
-								onClick={() => navigateToMovie(movie.imdb_code)}
-							>
-								<Card
-									className="container"
-									sx={{ flexGrow: 1 }}
+					{/* ) : (
+					<img
+						alt="south_park"
+						src="https://media.techeblog.com/images/404_error_8.jpg"
+					/>
+				)} */}
+					<Paper sx={{ mt: 4 }}>
+						<Typography
+							sx={{ display: "flex", justifyContent: "center" }}
+						>
+							{t("movie.1")}
+						</Typography>
+						<Box
+							container="true"
+							spacing={3}
+							style={{
+								direction: "column",
+								alignItems: "center",
+								justifyContent: "left",
+								display: "flex",
+								// flexWrap: "wrap",
+								width: "100%",
+								height: "100%",
+								overflowX: "auto",
+							}}
+						>
+							{recommendedMovies.map((movie, value) => (
+								<Box
+									sx={{
+										margin: 1,
+										marginBottom: 3,
+										maxHeight: 345,
+										maxWidth: 245,
+									}}
+									key={value}
+									item="true"
+									xs={3}
+									onClick={() => navigateToMovie(movie.imdb_code)}
 								>
-									<CardActionArea>
-										<CardContent
-											style={{
-												textOverflow: "ellipsis",
-											}}
-											className="newsletter"
-										>
-											<Typography
-												gutterBottom
-												variant="h7"
+									<Card
+										className="container"
+										sx={{ flexGrow: 1 }}
+									>
+										<CardActionArea>
+											<CardContent
 												style={{
-													whiteSpace: "pre-line",
-													overflowWrap: "break-word",
-													wordWrap: "break-word",
-													hyphens: "auto",
-													overflow: "hidden",
+													textOverflow: "ellipsis",
 												}}
+												className="newsletter"
 											>
-												{movie.title_long}
-											</Typography>
-											<Typography>
-												IMDB rate: {movie.rating}
-											</Typography>
-										</CardContent>
-										<CardMedia
-											sx={{
-												borderRadius: 1,
-												width: 245,
-												height: 345,
-											}}
-											component="img"
-											image={movie.medium_cover_image}
-											alt={movie.title_long}
-											onError={(e) => {
-												e.target.onerror = null;
-												e.target.src = require("../images/no_image.png");
-											}}
-										/>
-									</CardActionArea>
-								</Card>
-							</Box>
-						))}
-					</Box>
-				</Paper>
-			</Container>
-		</>
+												<Typography
+													gutterBottom
+													variant="h7"
+													style={{
+														whiteSpace: "pre-line",
+														overflowWrap: "break-word",
+														wordWrap: "break-word",
+														hyphens: "auto",
+														overflow: "hidden",
+													}}
+												>
+													{movie.title_long}
+												</Typography>
+												<Typography>
+													IMDB rate: {movie.rating}
+												</Typography>
+											</CardContent>
+											<CardMedia
+												sx={{
+													borderRadius: 1,
+													width: 245,
+													height: 345,
+												}}
+												component="img"
+												image={movie.medium_cover_image}
+												alt={movie.title_long}
+												onError={(e) => {
+													e.target.onerror = null;
+													e.target.src = require("../images/no_image.png");
+												}}
+											/>
+										</CardActionArea>
+									</Card>
+								</Box>
+							))}
+						</Box>
+					</Paper>
+				</Container>
+			)}
+			{/* {loading && <LoaderDots />} */}
+		</Box>
 	);
 };
 
