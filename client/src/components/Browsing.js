@@ -20,6 +20,7 @@ import OrderBy from './browsing/OrderBy';
 import movieService from '../services/movieService';
 import { useSelector } from 'react-redux';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import PathNotExcist from './PathNotExists';
 
 const Browsing = ({ t }) => {
 	const [page, setPage] = useState(1);
@@ -273,10 +274,7 @@ const Browsing = ({ t }) => {
 						</Box>
 					))
 				) : (
-					<img
-						alt="south_park"
-						src="https://media.techeblog.com/images/404_error_8.jpg"
-					/>
+					<PathNotExcist/>
 				)}
 			</Box>
 			{loading && <LoaderDots />}

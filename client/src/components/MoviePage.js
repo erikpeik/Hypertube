@@ -9,8 +9,8 @@ import Loader from "./Loader";
 import browsingService from "../services/browsingService";
 import VideoPlayer from "./VideoPlayer";
 import Comments from "./movie/Comments";
-// import LoaderDots from './LoaderDots';
-// import useFetch from '../hooks/useFetch';
+import PathNotExcist from './PathNotExists';
+
 
 const MoviePage = ({ t }) => {
 	const [imdbData, setImdbData] = useState(null);
@@ -18,7 +18,7 @@ const MoviePage = ({ t }) => {
 	const [recommendedMovies, setRecommendedMovies] = useState(null);
 	const params = useParams();
 	const navigate = useNavigate();
-	// const { loading } = useFetch();
+
 	useEffect(() => {
 		browsingService
 			.getIMDbData({ imdb_id: params.id })
@@ -45,11 +45,7 @@ const MoviePage = ({ t }) => {
 					height: '100%',
 				}}
 			>
-				<img
-					style={{width: '100%', height: '100%'}}
-					alt="south_park"
-					src="https://media.techeblog.com/images/404_error_8.jpg"
-				/>
+				<PathNotExcist/>
 			</Box>);
 	}
 
@@ -75,8 +71,6 @@ const MoviePage = ({ t }) => {
 			</h5>
 			{show && <Comments movieId={params.id} t={t} />}
 			<Container maxWidth="md" sx={{ pt: 5, pb: 5 }}>
-				{/* {movieData.length !== 0 || loading === true ? ( */}
-
 					<Paper elevation={10} sx={{ padding: 3 }}>
 						{movieData.map((value, i) => (
 							<Grid
@@ -106,12 +100,6 @@ const MoviePage = ({ t }) => {
 							</Grid>
 						))}
 					</Paper>
-				{/* ) : (
-					<img
-						alt="south_park"
-						src="https://media.techeblog.com/images/404_error_8.jpg"
-					/>
-				)} */}
 				<Paper sx={{ mt: 4 }}>
 					<Typography
 						sx={{ display: "flex", justifyContent: "center" }}
@@ -194,7 +182,6 @@ const MoviePage = ({ t }) => {
 					</Box>
 				</Paper>
 			</Container>
-			{/* {loading && <LoaderDots />} */}
 		</>
 	);
 };
