@@ -9,7 +9,7 @@ import { Typography, Button, Paper, TextField } from '@mui/material';
 import { Container } from '@mui/system';
 import { createTheme } from '@mui/material/styles';
 import Notification from './Notification';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 const Login = ({ t }) => {
 	const dispatch = useDispatch();
@@ -29,7 +29,7 @@ const Login = ({ t }) => {
 				setSearchParams({});
 			}, 10);
 		}
-	}, [searchParams, profileData]);
+	}, [searchParams, profileData, dispatch, setSearchParams]);
 
 	const submitUser = async (event) => {
 		event.preventDefault();
