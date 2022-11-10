@@ -16,7 +16,6 @@ import {
 import { grey } from '@mui/material/colors';
 import streamingService from '../services/streamingService';
 import movieService from '../services/movieService';
-// import video_banner from '../images/video_banner.png';
 import { PlayCircleFilledWhiteOutlined } from '@mui/icons-material';
 import browsingService from '../services/browsingService';
 import NotificationSnackbar from './NotificationSnackbar';
@@ -47,7 +46,6 @@ const VideoPlayer = ({ imdb_id, t }) => {
 	const onPlay = () => {
 		setStatusPlayer(`${t('videoplayer.0')}`);
 		isWatched();
-		// here set the movie as watched
 	};
 
 	const onBuffer = () => {
@@ -98,14 +96,18 @@ const VideoPlayer = ({ imdb_id, t }) => {
 
 	useEffect(() => {
 		browsingService.getSingleMovieQuery(imdb_id).then((response) => {
-			let torrentQualities = response.movie.torrents.map(
-				(torrent) => torrent.quality
-			);
-			let uniqueQualities = torrentQualities.filter((quality, index) => {
-				return torrentQualities.indexOf(quality) === index;
-			});
-			setTorrentInfo(uniqueQualities);
-			setQuality(uniqueQualities[0]);
+			if (response.movie?.torrents) {
+				let torrentQualities = response.movie.torrents.map(
+					(torrent) => torrent.quality
+				);
+				let uniqueQualities = torrentQualities.filter(
+					(quality, index) => {
+						return torrentQualities.indexOf(quality) === index;
+					}
+				);
+				setTorrentInfo(uniqueQualities);
+				setQuality(uniqueQualities[0]);
+			}
 		});
 		return () => {
 			if (buffering.current === true) window.location.reload();

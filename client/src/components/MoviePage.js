@@ -22,11 +22,12 @@ const MoviePage = ({ t }) => {
 	const [imdbData, setImdbData] = useState(null);
 	const [show, setShow] = useState(false);
 	const [recommendedMovies, setRecommendedMovies] = useState(null);
-	const params = useParams();
 	const navigate = useNavigate();
+	const params = useParams();
+	const imdb_id = params.id;
 
 	useEffect(() => {
-		browsingService.getIMDbData({ imdb_id: params.id }).then((data) => {
+		browsingService.getIMDbData({ imdb_id: imdb_id }).then((data) => {
 			const imdbArray = [
 				'Title',
 				'Year',
@@ -54,50 +55,57 @@ const MoviePage = ({ t }) => {
 				'title',
 				'year',
 			];
-			const asArray = Object.entries(data);
-			const filtered = asArray.filter(
-				([key, value]) =>
-					(typeof value === 'string' || typeof value === 'number') &&
-					value !== 'N/A' &&
-					(imdbArray.includes(key) || ytsArray.includes(key))
-			);
-			let backToNormal = Object.fromEntries(filtered);
-			for (const [key, value] of Object.entries(backToNormal)) {
-				if (key === 'description_full') {
-					backToNormal['Plot'] = value;
-					delete backToNormal['description_full'];
+
+			if (data.error) {
+				setImdbData('error');
+			} else {
+				const asArray = Object.entries(data);
+				const filtered = asArray.filter(
+					([key, value]) =>
+						(typeof value === 'string' ||
+							typeof value === 'number') &&
+						value !== 'N/A' &&
+						(imdbArray.includes(key) || ytsArray.includes(key))
+				);
+				let backToNormal = Object.fromEntries(filtered);
+				for (const [key, value] of Object.entries(backToNormal)) {
+					if (key === 'description_full') {
+						backToNormal['Plot'] = value;
+						delete backToNormal['description_full'];
+					}
+					if (key === 'genres') {
+						backToNormal['Genre'] = value;
+						delete backToNormal['genres'];
+					}
+					if (key === 'language') {
+						backToNormal['Language'] = value;
+						delete backToNormal['language'];
+					}
+					if (key === 'rating') {
+						backToNormal['imdbRating'] = value;
+						delete backToNormal['rating'];
+					}
+					if (key === 'runtime') {
+						backToNormal['Runtime'] = value;
+						delete backToNormal['runtime'];
+					}
+					if (key === 'title') {
+						backToNormal['Title'] = value;
+						delete backToNormal['title'];
+					}
+					if (key === 'year') {
+						backToNormal['Year'] = value;
+						delete backToNormal['year'];
+					}
 				}
-				if (key === 'genres') {
-					backToNormal['Genre'] = value;
-					delete backToNormal['genres'];
-				}
-				if (key === 'language') {
-					backToNormal['Language'] = value;
-					delete backToNormal['language'];
-				}
-				if (key === 'rating') {
-					backToNormal['imdbRating'] = value;
-					delete backToNormal['rating'];
-				}
-				if (key === 'runtime') {
-					backToNormal['Runtime'] = value;
-					delete backToNormal['runtime'];
-				}
-				if (key === 'title') {
-					backToNormal['Title'] = value;
-					delete backToNormal['title'];
-				}
-				if (key === 'year') {
-					backToNormal['Year'] = value;
-					delete backToNormal['year'];
-				}
+				setImdbData(backToNormal || '');
 			}
-			setImdbData(backToNormal || '');
 		});
-		browsingService.getRecommendedMovies(params.id).then((response) => {
+
+		browsingService.getRecommendedMovies(imdb_id).then((response) => {
 			setRecommendedMovies(response?.data?.movies || []);
 		});
-	}, [params]);
+	}, [imdb_id]);
 
 	if (!imdbData || !recommendedMovies) return <Loader />;
 
@@ -106,11 +114,11 @@ const MoviePage = ({ t }) => {
 		window.location.reload();
 	};
 
-	if (imdbData.Response === 'False') {
+	if (imdbData === 'error') {
 		return (
 			<Box
 				container="true"
-				spacing={3}
+				// spacing={3}
 				style={{
 					direction: 'column',
 					alignItems: 'center',
@@ -131,12 +139,12 @@ const MoviePage = ({ t }) => {
 					<h2 className="movie-title">
 						{imdbData.Title} ({imdbData.Year})
 					</h2>
-					<VideoPlayer imdb_id={params.id} t={t} />
+					<VideoPlayer imdb_id={imdb_id} t={t} />
 					<h5 className="comment" onClick={() => setShow(!show)}>
 						{t('movie.0')}{' '}
 					</h5>
 				</Box>
-				{show && <Comments movieId={params.id} t={t} />}
+				{show && <Comments movieId={imdb_id} t={t} />}
 				<Container maxWidth="md" sx={{ pt: 5, pb: 5 }}>
 					<Paper elevation={10} sx={{ padding: 3 }}>
 						{Object.keys(imdbData).map((key) => (

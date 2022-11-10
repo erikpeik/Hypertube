@@ -14,29 +14,34 @@ module.exports = function (app, axios) {
 					res.status(500).send({ error: 'Something went wrong' });
 				});
 		} catch (error) {
-			res.status(500).send({ error: 'Something went wrong with torrent API' });
+			res.status(500).send({
+				error: 'Something went wrong with torrent API',
+			});
 		}
 	});
 
 	app.post(`${baseUrl}/imdb_data`, async (req, res) => {
 		try {
 			const imdb_id = req.body.imdb_id;
-
-			const { data } = await axios.get(
+			console.log('imdb_id', imdb_id);
+			const omdb_data = await axios.get(
 				`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&i=${imdb_id}`
 			);
-			if (
-				data.Response === 'False' &&
-				data.Error === 'Error getting data.'
-			) {
-				const yts_data = await axios.get(
-					`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`
-				);
-				return res.status(200).send(yts_data.data.data.movie);
+			const yts_data = await axios.get(
+				`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`
+			);
+			const yts_movie = yts_data.data?.data?.movie;
+			if (yts_movie === undefined || yts_movie.title === null) {
+				return res.send({ error: 'Movie not found on database' });
+			} else if (omdb_data.data.Response === 'False') {
+				console.log('Returning yts data');
+				return res.status(200).send(yts_movie);
 			}
-			res.status(200).send(data);
+			console.log('Returning omdb data');
+			res.status(200).send(omdb_data.data);
 		} catch (error) {
-			res.status(500).send({ error: 'Something went wrong with faulty imdb_id' });
+			console.log(error);
+			return res.send({ error: 'Something went wrong' });
 		}
 	});
 
@@ -77,7 +82,9 @@ module.exports = function (app, axios) {
 					res.status(406).send({ error: 'Something went wrong' });
 				});
 		} catch (error) {
-			res.status(500).send({ error: 'Something went wrong with movie_query' });
+			res.status(500).send({
+				error: 'Something went wrong with movie_query',
+			});
 		}
 	});
 
@@ -89,7 +96,9 @@ module.exports = function (app, axios) {
 			);
 			res.send(movie_details.data.data);
 		} catch (error) {
-			res.status(500).send({ error: 'Something went wrong with faulty movie_query ID' });
+			res.status(500).send({
+				error: 'Something went wrong with faulty movie_query ID',
+			});
 		}
 	});
 
@@ -117,7 +126,9 @@ module.exports = function (app, axios) {
 					res.status(500).send({ error: 'Something went wrong' });
 				});
 		} catch (error) {
-			res.status(500).send({ error: 'Something went wrong with recommended_movies ID' });
+			res.status(500).send({
+				error: 'Something went wrong with recommended_movies ID',
+			});
 		}
 	});
 
