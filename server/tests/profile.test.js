@@ -4,6 +4,7 @@ const app = require('../app')
 const api = supertest(app)
 const fs = require('fs')
 
+// change cookie to your current token
 let cookie = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6InBsZWh0aWthIiwibWFpbCI6InBsZWh0aWthQHN0dWRlbnQuaGl2ZS5maSIsImlhdCI6MTY2ODA4NDcxNywiZXhwIjoxNjY4MTcxMTE3fQ.C7mNRy4S1RNEWJrMJEplSNSJFKVZ_oEkA29h7tYisuA'
 
 test('null as profile data', async () => {
