@@ -87,15 +87,17 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		})
 
 	app.get("/api/moviestream/:id/:quality", async (request, response) => {
-		const id = request.params.id;
+		const imdb_id = request.params.id;
 		const quality = request.params.quality;
 		let notLoaded = false;
 
 		if (!qualityList.includes(quality))
 			return response.send("Invalid movie quality")
+		if (!imdb_id.match(/(?=^.{9}$)(^tt[\d]{7})$/))
+			return response.send("Invalid IMDB_code")
 
 		let sql = `SELECT * FROM downloads WHERE imdb_id = $1 AND quality = $2`;
-		const { rows } = await pool.query(sql, [id, quality]);
+		const { rows } = await pool.query(sql, [imdb_id, quality]);
 		if (rows.length === 0)
 			return response.send("Faulty Movie ID or quality")
 
@@ -226,6 +228,8 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		const language = request.params.language
 		if (!subtitleLanguages.includes(language))
 			return response.send("Faulty language option")
+		if (!imdb_id.match(/(?=^.{9}$)(^tt[\d]{7})$/))
+			return response.send("Invalid IMDB_code")
 
 		const subtitle_file = `./subtitles/${imdb_id}/${imdb_id}-${language}.vtt`
 
@@ -265,6 +269,8 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 
 		if (!qualityList.includes(quality))
 			return response.send("Invalid movie quality")
+		if (!imdb_id.match(/(?=^.{9}$)(^tt[\d]{7})$/))
+			return response.send("Invalid IMDB_code")
 		const check = `SELECT * FROM users WHERE token = $1`;
 		const user = await pool.query(check, [cookie]);
 		if (user.rows.length === 0)

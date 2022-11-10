@@ -4,7 +4,7 @@ module.exports = function (app, pool) {
 		const { comment } = request.body;
 		if (!comment || comment === '')
 			return response.send("Comment missing")
-		if (imdb_id.length > 12)
+		if (!imdb_id.match(/(?=^.{9}$)(^tt[\d]{7})$/))
 			return response.send("Faulty imdb_id")
 		if (comment.length > 500)
 			return response.send("Maximum length for comments is 500 characters.")
@@ -40,7 +40,7 @@ module.exports = function (app, pool) {
 
 	app.get("/api/getcomments/:token", async (request, response) => {
 		const imdb_id = request.params.token;
-		if (imdb_id.length > 12)
+		if (!imdb_id.match(/(?=^.{9}$)(^tt[\d]{7})$/))
 			return response.send("Faulty imdb_id")
 		try {
 			sql = "SELECT * FROM comments WHERE imdb_id = $1";

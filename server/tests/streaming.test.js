@@ -13,9 +13,15 @@ test('moviestream with random quality', async () => {
 })
 
 // requires database access
-test('moviestream with faulty imdb_id', async () => {
+test('moviestream with impossible imdb_id', async () => {
 	await api
 		.get('/api/moviestream/tt2779318*JWLKWE/1080p')
+		.expect("Invalid IMDB_code")
+})
+
+test('moviestream with random imdb_id', async () => {
+	await api
+		.get('/api/moviestream/tt9999999/1080p')
 		.expect("Faulty Movie ID or quality")
 })
 
@@ -29,8 +35,7 @@ test('subtext with faulty language', async () => {
 test('subtext with random id', async () => {
 	await api
 		.get('/api/streaming/subtext/tt2779318312890!(@)po/en')
-		.expect(404)
-		.expect("Subtitle file doesn't exist")
+		.expect("Invalid IMDB_code")
 })
 
 test('subtitle search with random id', async () => {
@@ -48,7 +53,7 @@ test('torrent download with random quality', async () => {
 
 test('torrent download with faulty imdb id', async () => {
 	await api
-		.get('/api/streaming/torrent/tt277931881320981230981320983120jdjadslkjq/1080p')
+		.get('/api/streaming/torrent/0tt2779318/1080p')
 		.set('Cookie', [`refreshToken=${cookie}`])
 		.expect("Invalid IMDB_code")
 })
@@ -61,7 +66,7 @@ test('torrent download with no cookie', async () => {
 
 test('torrent download with false cookie', async () => {
 	await api
-		.get('/api/streaming/torrent/tt277931881320981230981320983120jdjadslkjq/1080p')
+		.get('/api/streaming/torrent/tt2779318/1080p')
 		.set('Cookie', [`refreshToken=somethingtotallyfake`])
 		.expect("User not signed in!")
 })

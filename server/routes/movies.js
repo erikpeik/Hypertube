@@ -45,7 +45,7 @@ module.exports = function (app, pool, axios) {
 
 	app.get('/api/movies/:imdb_id', async (request, response) => {
 		const imdb_id = request.params.imdb_id;
-		if (!imdb_id.match(/(?=^.{9}$)(tt[\d]{7})$/))
+		if (!imdb_id.match(/(?=^.{9}$)(^tt[\d]{7})$/))
 			return response.send('Faulty Imdb_id!');
 
 		axios
