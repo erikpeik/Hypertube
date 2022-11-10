@@ -48,6 +48,7 @@ module.exports = function (app, pool) {
 			response.send(comments.rows);
 		} catch (error) {
 			console.log("ERROR: ", error);
+			response.send("");
 		}
 	});
 };
