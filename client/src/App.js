@@ -54,6 +54,7 @@ const App = () => {
 				lastname: profileData.lastname,
 				email: profileData.email,
 				language: profileData.language,
+				infiniteScroll: profileData.infinite_scroll,
 			});
 		}
 	}, [dispatch, profileData]);
