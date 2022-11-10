@@ -3,96 +3,122 @@ module.exports = function (app, axios) {
 	const { TORRENT_API, OMDB_API_KEY } = process.env;
 
 	app.get(`${baseUrl}/movies`, (req, res) => {
-		axios
-			.get(`${TORRENT_API}`)
-			.then((response) => {
-				res.send(response.data);
-			})
-			.catch((error) => {
-				console.log(error);
-				res.status(500).send({ error: 'Something went wrong' });
-			});
+		try {
+			axios
+				.get(`${TORRENT_API}`)
+				.then((response) => {
+					res.send(response.data);
+				})
+				.catch((error) => {
+					console.log(error);
+					res.status(500).send({ error: 'Something went wrong' });
+				});
+		} catch (error) {
+			res.status(500).send({ error: 'Something went wrong with torrent API' });
+		}
 	});
 
 	app.post(`${baseUrl}/imdb_data`, async (req, res) => {
-		const imdb_id = req.body.imdb_id;
+		try {
+			const imdb_id = req.body.imdb_id;
 
-		const { data } = await axios.get(
-			`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&i=${imdb_id}`
-		);
-		if (data.Response === 'False' && data.Error === 'Error getting data.') {
-			const yts_data = await axios.get(`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`);
-			return res.status(200).send(yts_data.data.data.movie);
+			const { data } = await axios.get(
+				`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&i=${imdb_id}`
+			);
+			if (
+				data.Response === 'False' &&
+				data.Error === 'Error getting data.'
+			) {
+				const yts_data = await axios.get(
+					`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`
+				);
+				return res.status(200).send(yts_data.data.data.movie);
+			}
+			res.status(200).send(data);
+		} catch (error) {
+			res.status(500).send({ error: 'Something went wrong with faulty imdb_id' });
 		}
-		res.status(200).send(data);
 	});
 
 	app.post(`${baseUrl}/movie_query`, async (req, res) => {
-		let { query, genre, sort_by, order_by, imdb_rating, page } = req.body;
-		console.log(req.body);
-		const limit = page === 1 ? 20 : 22;
-		if (sort_by === undefined) {
-			sort_by = 'rating';
+		try {
+			let { query, genre, sort_by, order_by, imdb_rating, page } =
+				req.body;
+			console.log(req.body);
+			const limit = page === 1 ? 20 : 22;
+			if (sort_by === undefined) {
+				sort_by = 'rating';
+			}
+			const api_search = `${TORRENT_API}?query_term=${query}&genre=${
+				genre || ''
+			}&sort_by=${sort_by}&order_by=${order_by || ''}&minimum_rating=${
+				imdb_rating || ''
+			}&page=${page}&limit=${limit}`;
+			console.log(api_search);
+			axios
+				.get(api_search)
+				.then(async (response) => {
+					let movies = response.data.data.movies;
+					if (movies) {
+						await Promise.all(
+							movies.map(async (movie) => {
+								await axios
+									.get(movie.medium_cover_image)
+									.catch((error) => {
+										movie.medium_cover_image =
+											'../images/no_image.png';
+									});
+							})
+						);
+					}
+					res.send(movies);
+				})
+				.catch((error) => {
+					res.status(406).send({ error: 'Something went wrong' });
+				});
+		} catch (error) {
+			res.status(500).send({ error: 'Something went wrong with movie_query' });
 		}
-		const api_search = `${TORRENT_API}?query_term=${query}&genre=${
-			genre || ''
-		}&sort_by=${sort_by}&order_by=${order_by || ''}&minimum_rating=${
-			imdb_rating || ''
-		}&page=${page}&limit=${limit}`;
-		console.log(api_search);
-		axios
-			.get(api_search)
-			.then(async (response) => {
-				let movies = response.data.data.movies;
-				if (movies) {
-					await Promise.all(
-						movies.map(async (movie) => {
-							await axios
-								.get(movie.medium_cover_image)
-								.catch((error) => {
-									movie.medium_cover_image =
-										'../images/no_image.png';
-								});
-						})
-					);
-				}
-				res.send(movies);
-			})
-			.catch((error) => {
-				res.status(406).send({ error: 'Something went wrong' });
-			});
 	});
 
 	app.get(`${baseUrl}/movie_query/:id`, async (req, res) => {
-		const imdb_id = req.params.id;
-		const movie_details = await axios.get(
-			`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`
-		);
-		res.send(movie_details.data.data);
+		try {
+			const imdb_id = req.params.id;
+			const movie_details = await axios.get(
+				`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`
+			);
+			res.send(movie_details.data.data);
+		} catch (error) {
+			res.status(500).send({ error: 'Something went wrong with faulty movie_query ID' });
+		}
 	});
 
 	app.get(`${baseUrl}/recommended_movies/:id`, async (req, res) => {
-		const imdb_id = req.params.id;
-		const movie_details = await axios.get(
-			`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`
-		);
-		if (movie_details.data.length === 0) {
-			res.send({ error: 'Movie not found' });
-			return;
-		}
+		try {
+			const imdb_id = req.params.id;
+			const movie_details = await axios.get(
+				`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`
+			);
+			if (movie_details.data.length === 0) {
+				res.send({ error: 'Movie not found' });
+				return;
+			}
 
-		const movie_id = movie_details.data.data.movie.id;
-		axios
-			.get(
-				`https://yts.mx/api/v2/movie_suggestions.json?movie_id=${movie_id}`
-			)
-			.then((response) => {
-				res.send(response.data);
-			})
-			.catch((error) => {
-				console.log(error);
-				res.status(500).send({ error: 'Something went wrong' });
-			});
+			const movie_id = movie_details.data.data.movie.id;
+			axios
+				.get(
+					`https://yts.mx/api/v2/movie_suggestions.json?movie_id=${movie_id}`
+				)
+				.then((response) => {
+					res.send(response.data);
+				})
+				.catch((error) => {
+					console.log(error);
+					res.status(500).send({ error: 'Something went wrong' });
+				});
+		} catch (error) {
+			res.status(500).send({ error: 'Something went wrong with recommended_movies ID' });
+		}
 	});
 
 	app.post(`${baseUrl}/check_image`, async (req, res) => {

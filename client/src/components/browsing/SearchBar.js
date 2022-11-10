@@ -62,7 +62,6 @@ const SearchBar = ({ t, browsingSettings, setBrowsingSettings }) => {
 	};
 
 	const setGenre = (event) => {
-		console.log('event', event.value);
 		setBrowsingSettings({
 			...browsingSettings,
 			genre: event,
