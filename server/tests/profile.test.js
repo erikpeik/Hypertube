@@ -2,6 +2,9 @@ const supertest = require('supertest')
 const app = require('../app')
 
 const api = supertest(app)
+const fs = require('fs')
+
+let cookie = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6InBsZWh0aWthIiwibWFpbCI6InBsZWh0aWthQHN0dWRlbnQuaGl2ZS5maSIsImlhdCI6MTY2ODA4NDcxNywiZXhwIjoxNjY4MTcxMTE3fQ.C7mNRy4S1RNEWJrMJEplSNSJFKVZ_oEkA29h7tYisuA'
 
 test('null as profile data', async () => {
 	const newUser = null
@@ -27,14 +30,15 @@ test('null profile values', async () => {
 		firstname: undefined,
 		lastname: undefined,
 		email: undefined,
-		language: null
+		language: null,
+		infiniteScroll: null
 	}
 
 	await api
 		.post('/api/profile/editsettings')
 		.send(newUser)
 		.expect("Required profile data missing")
-		// .expect('Content-Type', /application\/json/)
+	// .expect('Content-Type', /application\/json/)
 })
 
 test('too short username', async () => {
@@ -43,7 +47,8 @@ test('too short username', async () => {
 		firstname: 'TEHOwrweq',
 		lastname: 'JO@EJ@EO',
 		email: 'testi@testi.com',
-		language: 'en'
+		language: 'en',
+		infiniteScroll: 'YES'
 	}
 
 	await api
@@ -58,7 +63,8 @@ test('too long username', async () => {
 		firstname: 'TEHOwrweq',
 		lastname: 'JO@EJ@EO',
 		email: 'testi@testi.com',
-		language: 'en'
+		language: 'en',
+		infiniteScroll: 'YES'
 	}
 
 	await api
@@ -73,7 +79,8 @@ test('faulty username characters', async () => {
 		firstname: 'TEHOwrweq',
 		lastname: 'JO@EJ@EO',
 		email: 'testi@testi.com',
-		language: 'en'
+		language: 'en',
+		infiniteScroll: 'YES'
 	}
 
 	await api
@@ -88,7 +95,8 @@ test('too long firstname', async () => {
 		firstname: 'sahkshafkjhdsfkjhalsdfkhdfklsajhdafskljhkldjsafhklsdfjahklasfdhkldsfahkljdfhs',
 		lastname: 'JO@EJ@EO',
 		email: 'testi@testi.com',
-		language: 'en'
+		language: 'en',
+		infiniteScroll: 'YES'
 	}
 
 	await api
@@ -103,7 +111,8 @@ test('too long lastname', async () => {
 		firstname: 'testi',
 		lastname: 'sahkshafkjhdsfkjhalsdfkhdfklsajhdafskljhkldjsafhklsdfjahklasfdhkldsfahkljdfhs',
 		email: 'testi@testi.com',
-		language: 'en'
+		language: 'en',
+		infiniteScroll: 'YES'
 	}
 
 	await api
@@ -118,7 +127,8 @@ test('faulty firstname characters', async () => {
 		firstname: 'testi1',
 		lastname: 'testi',
 		email: 'testi@testi.com',
-		language: 'en'
+		language: 'en',
+		infiniteScroll: 'YES'
 	}
 
 	await api
@@ -133,7 +143,8 @@ test('faulty lastname characters', async () => {
 		firstname: 'testi',
 		lastname: 'testi1',
 		email: 'testi@testi.com',
-		language: 'en'
+		language: 'en',
+		infiniteScroll: 'YES'
 	}
 
 	await api
@@ -148,7 +159,8 @@ test('too long email', async () => {
 		firstname: 'testi',
 		lastname: 'testi',
 		email: '12uu1o23io213uoi231uoi123uio213uoi213uoi123uoiu213iou23oiu123opu132oipu231oipu2o13ipuoi213upo2i31uoip231uoip231uoip2u13oipu213oipu231oipu213oipu231oiu231opiu231poiu231oipu231opiu213poiu123oipu123poiu12p3o',
-		language: 'en'
+		language: 'en',
+		infiniteScroll: 'YES'
 	}
 
 	await api
@@ -163,7 +175,8 @@ test('faulty email characters', async () => {
 		firstname: 'testi',
 		lastname: 'testi',
 		email: 'oikeaosoite<>@fkl.fi',
-		language: 'en'
+		language: 'en',
+		infiniteScroll: 'YES'
 	}
 
 	await api
@@ -178,13 +191,30 @@ test('faulty language info', async () => {
 		firstname: 'testi',
 		lastname: 'testi',
 		email: 'oikeaosoite@fkl.fi',
-		language: 'romanian-hungarian with finnish-dialect'
+		language: 'romanian-hungarian with finnish-dialect',
+		infiniteScroll: 'YES'
 	}
 
 	await api
 		.post('/api/profile/editsettings')
 		.send(newUser)
 		.expect("Faulty language information")
+})
+
+test('faulty infinitescroll', async () => {
+	const newUser = {
+		username: 'testi',
+		firstname: 'testi',
+		lastname: 'testi',
+		email: 'oikeaosoite@fkl.fi',
+		language: 'en',
+		infiniteScroll: 'YES, ALWAYS INFINITE SCROLL'
+	}
+
+	await api
+		.post('/api/profile/editsettings')
+		.send(newUser)
+		.expect("Faulty infinite scroll information")
 })
 
 test('null as change password data', async () => {
@@ -279,12 +309,40 @@ test('faulty language in profile pic data', async () => {
 		.expect("Faulty language information")
 })
 
-test('profile get with no cookie', async () => {
-	const data = null
+// test('false cookie in profile pic data', async () => {
+// 	const data = null
 
+// 	await api
+// 		.post('/api/profile/setprofilepic/en')
+// 		.set('Cookie', [`refreshToken=somethingtotallyfake`])
+// 		.expect('Image uploading failed for some reason.')
+// })
+
+// test('false file as profile pic data', async () => {
+// 	fs.readFile('/Users/plehtika/desktop/Safety_Guide.pdf',async (err, data) => {
+// 		if (err) console.log("Just testing")
+// 		let formData = new FormData();
+// 		formData.append('file', data);
+
+// 		await api
+// 			.post('/api/profile/setprofilepic/en')
+// 			.set('Cookie', [`refreshToken=${cookie}`])
+// 			.send(formData)
+// 			.expect('Not right file type!')
+
+// 	})
+// })
+
+test('profile get with no cookie', async () => {
 	await api
 		.get('/api/profile')
-		.send(data)
+		.expect('false')
+})
+
+test('profile get with false cookie', async () => {
+	await api
+		.get('/api/profile')
+		.set('Cookie', [`refreshToken=somethingtotallyfake`])
 		.expect('false')
 })
 
@@ -295,5 +353,16 @@ test('deleteuser with no cookie', async () => {
 		.delete('/api/profile/deleteuser')
 		.send(data)
 		.expect('false')
+})
+
+//requires ddatabase access
+test('deleteuser with false cookie', async () => {
+	const data = null
+
+	await api
+		.delete('/api/profile/deleteuser')
+		.set('Cookie', [`refreshToken=somethingtotallyfake`])
+		.send(data)
+		.expect('Failed to delete user!')
 })
 

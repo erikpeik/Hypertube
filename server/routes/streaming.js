@@ -1,5 +1,7 @@
 module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 	let torrentStream = require("torrent-stream");
+	let qualityList = ['720p', '1080p', '2160p', '3D']
+	let subtitleLanguages = ["en", "fi"]
 
 	const getMagnetLink = (torrentInfo, film_title) => {
 		let hash = torrentInfo.hash;
@@ -89,9 +91,11 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		const quality = request.params.quality;
 		let notLoaded = false;
 
+		if (!qualityList.includes(quality))
+			return response.send("Invalid movie quality")
+
 		let sql = `SELECT * FROM downloads WHERE imdb_id = $1 AND quality = $2`;
 		const { rows } = await pool.query(sql, [id, quality]);
-
 		if (rows.length === 0)
 			return response.send("Faulty Movie ID or quality")
 
@@ -185,9 +189,8 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 
 			let finalSubs = []
 			const allSubs = data.data.map(sub => sub.attributes)
-			let wantedLanguages = ["en", "fi"]
 
-			wantedLanguages.forEach(language => {
+			subtitleLanguages.forEach(language => {
 				const languageSubs = allSubs.filter(sub => sub.language === language && (sub.fps !== 25))
 				if (languageSubs.length > 0) {
 					const languageSub = languageSubs.reduce((a, b) => (a.download_count > b.download_count ? a : b))
@@ -221,12 +224,14 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 	app.get("/api/streaming/subtext/:id/:language", async (request, response) => {
 		const imdb_id = request.params.id
 		const language = request.params.language
+		if (!subtitleLanguages.includes(language))
+			return response.send("Faulty language option")
+
 		const subtitle_file = `./subtitles/${imdb_id}/${imdb_id}-${language}.vtt`
 
 		fs.readFile(subtitle_file, (err, data) => {
 			if (err) {
-				console.log(err)
-				return response.status(404).send("Something went SO wrong")
+				return response.status(404).send("Subtitle file doesn't exist")
 			}
 			response.set("Content-Type", "text/plain")
 			response.status(200).send(data)
@@ -256,10 +261,14 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 	app.get("/api/streaming/torrent/:id/:quality", async (request, response) => {
 		const imdb_id = request.params.id;
 		const quality = request.params.quality
+		const cookie = request.cookies.refreshToken
 
-		let qualityList = ['720p', '1080p', '2160p', '3D']
 		if (!qualityList.includes(quality))
 			return response.send("Invalid movie quality")
+		const check = `SELECT * FROM users WHERE token = $1`;
+		const user = await pool.query(check, [cookie]);
+		if (user.rows.length === 0)
+			return response.send('User not signed in!')
 
 		let sql = `SELECT * FROM downloads WHERE imdb_id = $1 AND quality = $2`;
 		const { rows } = await pool.query(sql, [imdb_id, quality]);
@@ -275,15 +284,15 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			response.status(200).send(`Ready to play, ${downloadRatio} percent finished`);
 		}
 		else {
-			getFilmSubtitles(imdb_id)
-
-			let responseSent = false;
-
 			const movieInfo = await axios.get(`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`)
 				.then(response => response?.data?.data?.movie);
 
 			if (movieInfo === undefined)
 				return response.send("Invalid IMDB_code")
+
+			getFilmSubtitles(imdb_id)
+
+			let responseSent = false;
 
 			console.log(movieInfo)
 
