@@ -130,14 +130,22 @@ const ProfileSettings = ({ t, i18n }) => {
 						sx={{
 							width: '100%',
 							maxWidth: 400,
-							margin: 'auto'
+							margin: 'auto',
 						}}
 						onChange={handleLanguage}
 					>
-						<MenuItem value={'en'}>🇬🇧 {t('profile_settings.19')}</MenuItem>
-						<MenuItem value={'fi'}>🇫🇮 {t('profile_settings.20')}</MenuItem>
-						<MenuItem value={'ro'}>🇷🇴 {t('profile_settings.21')}</MenuItem>
-						<MenuItem value={'hu'}>🇭🇺 {t('profile_settings.22')}</MenuItem>
+						<MenuItem value={'en'}>
+							🇬🇧 {t('profile_settings.19')}
+						</MenuItem>
+						<MenuItem value={'fi'}>
+							🇫🇮 {t('profile_settings.20')}
+						</MenuItem>
+						<MenuItem value={'ro'}>
+							🇷🇴 {t('profile_settings.21')}
+						</MenuItem>
+						<MenuItem value={'hu'}>
+							🇭🇺 {t('profile_settings.22')}
+						</MenuItem>
 					</Select>
 				</Box>
 				<TextField
@@ -206,6 +214,7 @@ const ProfileSettings = ({ t, i18n }) => {
 							}
 							onChange={handleInfiniteScroll}
 							checked={settings.infiniteScroll === 'YES'}
+							sx={{ width: 200, display: 'flex', ml: 4 }}
 						/>
 					</FormGroup>
 				</Box>
