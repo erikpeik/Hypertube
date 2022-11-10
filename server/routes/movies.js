@@ -31,15 +31,18 @@ module.exports = function (app, pool, axios) {
 
 	app.post('/api/movies/watch', async (request, response) => {
 		try {
+			const user_id = request.body.userId;
+			if (user_id === undefined)
+				return response.send([]);
 			let sql = 'SELECT * FROM movies_watched WHERE user_id = $1';
-			const watched = await pool.query(sql, [request.body.userId]);
+			const watched = await pool.query(sql, [user_id]);
 			let finish_array = [];
 			for (let i = 0; i < watched.rows.length; i++) {
 				finish_array.push(watched.rows[i].imdb_id);
 			}
 			response.send(finish_array);
 		} catch (error) {
-			response.send("Faulty User Id")
+			response.send([]);
 		}
 	});
 
@@ -52,8 +55,9 @@ module.exports = function (app, pool, axios) {
 			.get(`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`)
 			.then((res) => {
 				response.send(res.data.data.movie);
-			}).catch((error) => {
-				response.send("No such movie in collection");
+			})
+			.catch((error) => {
+				response.send('No such movie in collection');
 			});
 	});
 };
