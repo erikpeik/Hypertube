@@ -61,14 +61,14 @@
 		"12": "Jelszó megerősítése",
 		"13": "Mentés",
 		"14": "Erősítsd meg a jelszavadat, hogy létrehozzd az újat.",
-		"15": "Change your language",
-		"16": "Change between infinite scroll and pagination",
-		"17": "Infinite Scroll",
-		"18": "Pagination",
-		"19": "English",
-		"20": "Finnish",
-		"21": "Romanian",
-		"22": "Hungarian"
+		"15": "Válts nyelvet",
+		"16": "Váltás a végtelen görgetés és a lapozás között",
+		"17": "Végtelen görgetés",
+		"18": "Lapozás",
+		"19": "Angol",
+		"20": "Finn",
+		"21": "Román",
+		"22": "Magyar"
 	},
 	"reset": {
 		"1": "Jelszó sikeresen megváltoztatva! Lépj be.",
