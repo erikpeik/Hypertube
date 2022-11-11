@@ -63,11 +63,11 @@ const Browsing = ({ t }) => {
 				alignItems: 'center',
 			}}
 		>
-			<SearchBar
+			{/* <SearchBar
 				t={t}
 				browsingSettings={browsingSettings}
 				setBrowsingSettings={setBrowsingSettings}
-			/>
+			/> */}
 			<MovieList movies={movies} />
 			{loading && <LoaderDots />}
 			{error && <p>Error!</p>}
