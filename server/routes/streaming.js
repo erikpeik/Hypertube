@@ -1,6 +1,6 @@
 module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 	let torrentStream = require("torrent-stream");
-	let qualityList = ['720p', '1080p', '2160p', '3D']
+	let qualityList = ['720p', '1080p', '3D']
 	let subtitleLanguages = ["en", "fi"]
 
 	const getMagnetLink = (torrentInfo, film_title) => {
@@ -193,7 +193,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			const allSubs = data.data.map(sub => sub.attributes)
 
 			subtitleLanguages.forEach(language => {
-				const languageSubs = allSubs.filter(sub => sub.language === language && (sub.fps !== 25))
+				const languageSubs = allSubs.filter(sub => sub.language === language && sub.fps !== 25)
 				if (languageSubs.length > 0) {
 					const languageSub = languageSubs.reduce((a, b) => (a.download_count > b.download_count ? a : b))
 					finalSubs.push(languageSub)

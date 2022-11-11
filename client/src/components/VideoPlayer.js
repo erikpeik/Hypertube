@@ -102,7 +102,7 @@ const VideoPlayer = ({ imdb_id, t }) => {
 				);
 				let uniqueQualities = torrentQualities.filter(
 					(quality, index) => {
-						return torrentQualities.indexOf(quality) === index;
+						return (torrentQualities.indexOf(quality) === index && quality !== '2160p');
 					}
 				);
 				setTorrentInfo(uniqueQualities);
