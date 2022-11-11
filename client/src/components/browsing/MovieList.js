@@ -22,7 +22,7 @@ const MovieList = ({ movies }) => {
 		movieService.isWatched(profileData?.id).then((response) => {
 			setWatched(response);
 		});
-	}, [setWatched]);
+	}, [profileData?.id, setWatched]);
 
 	const navigateToMovie = (movie_id) => {
 		navigate(`/movie/${movie_id}`);
