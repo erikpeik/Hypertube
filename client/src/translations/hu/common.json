@@ -140,14 +140,14 @@
 		"4": "Szólj hozzá"
 	},
 	"videoplayer": {
-		"0": "playing",
-		"1": "buffering",
-		"2": "movie not loaded yet",
-		"3": "source file error",
-		"4": "paused",
-		"5": "movie playing",
-		"6": "Playing as a preview,",
-		"7": " percent of the movie downloaded. Refresh the page after complete download for full quality.",
-		"8": "Quality"
+		"0": "Lejátszás",
+		"1": "Buffering",
+		"2": "A film nem töltött még be",
+		"3": "Fájl nem található",
+		"4": "Szünet!",
+		"5": "Film lejátszása",
+		"6": "Lejátszás előnézetként",
+		"7": "A letöltött film százaléka. A teljes minőség érdekében frissítse az oldalt a letöltés után.",
+		"8": "Minőség"
 	}
 }
