@@ -5,8 +5,6 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 
 	const getMagnetLink = (torrentInfo, film_title) => {
 		let hash = torrentInfo.hash;
-		let torrent_url = torrentInfo.url;
-
 		return `magnet:?xt=urn:btih:${hash}&dn=${film_title.split(" ").join("+")}`;
 	};
 
@@ -95,7 +93,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			return response.send("Invalid movie quality")
 		if (!imdb_id.match(/(?=^.{9,10}$)(^tt[\d]{7,8})$/))
 			return response.send("Invalid IMDB_code")
-		let isChrome = request.headers['user-agent'].includes('Chrome')
+		let isChrome = request.headers['user-agent']?.includes('Chrome')
 		let streamType = isChrome ? "matroska" : "webm"
 		let bitRate = isChrome ? "4096k" : "512k"
 

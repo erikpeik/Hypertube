@@ -351,7 +351,6 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 				pool.query(sql, [id]);
 				response.send(true);
 			} catch (error) {
-				console.log(error);
 				response.send('Failed to delete user!');
 			}
 		} else {

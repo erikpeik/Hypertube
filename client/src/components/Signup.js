@@ -1,11 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { changeNotification } from '../reducers/notificationReducer';
 import { changeSeverity } from '../reducers/severityReducer';
 import signUpService from '../services/signUpService';
 import Notification from './Notification';
-import { Button, Paper, TextField, Typography } from '@mui/material';
+import { Button, Paper, TextField, Typography, Box } from '@mui/material';
 import { Container } from '@mui/system';
 import { createTheme } from '@mui/material/styles';
 
@@ -26,12 +26,15 @@ const Signup = ({ t }) => {
 
 	const user = useSelector((state) => state.user);
 	const language = useSelector((state) => state.language);
+	const [pictureForm, setPictureForm] = useState(null);
 
 	useEffect(() => {
 		if (user !== undefined && user !== '') {
 			navigate('/profile');
 		}
 	}, [user, navigate]);
+
+	console.log(pictureForm)
 
 	const submitUser = async (event) => {
 		event.preventDefault();
@@ -43,15 +46,20 @@ const Signup = ({ t }) => {
 			email: event.target.email.value,
 			password: event.target.password.value,
 			confirmPassword: event.target.confirm_password.value,
-			language: language,
+			language: language
 		};
 
 		signUpService
 			.createUser(signedUpUser)
-			.then((result) => {
+			.then(async (result) => {
 				if (result === true) {
 					dispatch(changeSeverity('success'));
 					dispatch(changeNotification(`${t('register.10')}`));
+
+					if (pictureForm) {
+						await signUpService.setProfilePic(
+							pictureForm, signedUpUser.username, language);
+					}
 					navigate('/login');
 				} else {
 					dispatch(changeSeverity('error'));
@@ -59,6 +67,19 @@ const Signup = ({ t }) => {
 				}
 			})
 			.catch((err) => console.log('Signup request failed'));
+	};
+
+	const setProfilePicture = async (event) => {
+		const image = event.target.files[0];
+		if (image.size > 5242880) {
+			dispatch(changeSeverity('error'));
+			dispatch(changeNotification(`${t('profile.0')}`));
+		} else {
+			let formData = new FormData();
+			formData.append('file', image);
+			setPictureForm(formData)
+		}
+		event.target.value = '';
 	};
 
 	return (
@@ -130,6 +151,23 @@ const Signup = ({ t }) => {
 						autoComplete="new-password"
 						required
 					/>
+					<Box>
+						<Button theme={theme}>
+							<label
+								htmlFor="set_profilepic"
+								className="styled-image-upload"
+							>
+								{t('profile.5')}
+							</label>
+							<input
+								type="file"
+								name="file"
+								id="set_profilepic"
+								accept="image/jpeg, image/png, image/jpg"
+								onChange={setProfilePicture}
+							></input>
+						</Button>
+					</Box>
 					<Button
 						type="submit"
 						variant="contained"

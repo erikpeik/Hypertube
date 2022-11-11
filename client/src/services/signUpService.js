@@ -37,6 +37,11 @@ const setNewPassword = (passwords) => {
 	return request.then((response) => response.data);
 };
 
+const setProfilePic = (Picture, user, language) => {
+	const request = axios.post(`${baseUrl}/signup/setprofilepic/${user}/${language}`, Picture);
+	return request.then((response) => response.data);
+};
+
 const connectWith42 = () => {
 	axios.get(`${baseUrl}/oauth/42connect`);
 }
@@ -49,6 +54,7 @@ const signUpService = {
 	getSessionUser,
 	resetPassword,
 	setNewPassword,
+	setProfilePic,
 	connectWith42
 };
 
