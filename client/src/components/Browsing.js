@@ -44,7 +44,8 @@ const Browsing = ({ t }) => {
 
 	useEffect(() => {
 		const page_value = searchParams.get('page');
-		setPage(Number(page_value));
+		if (page_value) setPage(Number(page_value));
+		else setPage(1);
 	}, [searchParams]);
 
 	useEffect(() => {
