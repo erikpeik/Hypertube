@@ -15,6 +15,8 @@ const useFetch = (
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
 	const [movies, setMovies] = useState([]);
+	const [infinite_movies, setInfiniteMovies] = useState([]);
+
 	const [currentQuery, setCurrentQuery] = useState('');
 	const [currentGenre, setCurrentGenre] = useState(null);
 	const [currentSortBy, setCurrentSortBy] = useState(null);
@@ -24,30 +26,39 @@ const useFetch = (
 	if (query !== currentQuery) {
 		setCurrentQuery(query);
 		setMovies([]);
+		setInfiniteMovies([]);
 		setPage(1);
 	}
 
 	if (genre !== currentGenre) {
 		setCurrentGenre(genre);
 		setMovies([]);
+		setInfiniteMovies([]);
+
 		setPage(1);
 	}
 
 	if (sort_by !== currentSortBy) {
 		setCurrentSortBy(sort_by);
 		setMovies([]);
+		setInfiniteMovies([]);
+
 		setPage(1);
 	}
 
 	if (order_by !== currentOrderBy) {
 		setCurrentOrderBy(order_by);
 		setMovies([]);
+		setInfiniteMovies([]);
+
 		setPage(1);
 	}
 
 	if (imdb_rating !== currentImdbRating) {
 		setCurrentImdbRating(imdb_rating);
 		setMovies([]);
+		setInfiniteMovies([]);
+
 		setPage(1);
 	}
 
@@ -69,6 +80,8 @@ const useFetch = (
 				newMovie.splice(0, 2);
 			}
 			setMovies((prev) => [...prev, ...newMovie]);
+			setInfiniteMovies((prev) => [...prev, ...newMovie]);
+
 			setLoading(false);
 		} catch (err) {
 			setError(err);
@@ -79,7 +92,7 @@ const useFetch = (
 		sendQuery();
 	}, [query, page, genre, sendQuery]);
 
-	return { loading, error, movies };
+	return { loading, error, movies, infinite_movies };
 };
 
 export default useFetch;

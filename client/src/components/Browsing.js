@@ -33,7 +33,7 @@ const Browsing = ({ t }) => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [recordsPerPage] = useState(10);
 
-	const { loading, error, movies } = useFetch(
+	const { loading, error, movies, infinite_movies } = useFetch(
 		submittedQuery,
 		currentPage,
 		genre,
@@ -69,8 +69,11 @@ const Browsing = ({ t }) => {
 
 	const indexOfLastRecord = currentPage * recordsPerPage;
 	const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-	const currentRecords = movies.slice(indexOfFirstRecord, indexOfLastRecord);
-	const nPages = Math.ceil(movies.length / recordsPerPage);
+	const currentRecords = infinite_movies.slice(
+		indexOfFirstRecord,
+		indexOfLastRecord
+	);
+	const nPages = Math.ceil(infinite_movies.length / recordsPerPage);
 
 	return (
 		<Container
@@ -86,16 +89,18 @@ const Browsing = ({ t }) => {
 				browsingSettings={browsingSettings}
 				setBrowsingSettings={setBrowsingSettings}
 			/>
-			{profileData?.infinite_scroll !== 'NO' ? (
+			{profileData?.infinite_scroll === 'YES' ? (
 				<MovieList movies={movies} />
 			) : (
-				<MovieList movies={currentRecords} />
+				<>
+					<MovieList movies={currentRecords} />
+					<Pagination
+						nPages={nPages}
+						currentPage={currentPage}
+						setCurrentPage={setCurrentPage}
+					/>
+				</>
 			)}
-			<Pagination
-				nPages={nPages}
-				currentPage={currentPage}
-				setCurrentPage={setCurrentPage}
-			/>
 			{loading && <LoaderDots />}
 			{error && <p>Error!</p>}
 			<div ref={loader} />
