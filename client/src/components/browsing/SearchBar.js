@@ -103,8 +103,9 @@ const SearchBar = ({ t, browsingSettings, setBrowsingSettings }) => {
 				width: '100%',
 				maxWidth: 1030,
 				height: '100%',
-				margin: 1,
-				padding: 1,
+				m: 1,
+				p: 1,
+				mb: 2,
 			}}
 		>
 			<Grid container spacing={2} display="flex">

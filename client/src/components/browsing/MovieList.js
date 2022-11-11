@@ -1,9 +1,5 @@
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useNavigate } from 'react-router-dom';
-import movieService from '../../services/movieService';
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-
 import {
 	Box,
 	Card,
@@ -13,20 +9,10 @@ import {
 	CardActionArea,
 } from '@mui/material';
 
-const MovieList = ({ movies }) => {
-	const [watched, setWatched] = useState([]);
+const MovieList = ({ movies, watched }) => {
 	const navigate = useNavigate();
-	const profileData = useSelector((state) => state.profile);
 
-	useEffect(() => {
-		movieService.isWatched(profileData?.id).then((response) => {
-			setWatched(response);
-		});
-	}, [profileData?.id, setWatched]);
-
-	const navigateToMovie = (movie_id) => {
-		navigate(`/movie/${movie_id}`);
-	};
+	const navigateToMovie = (movie_id) => navigate(`/movie/${movie_id}`);
 
 	return (
 		<Box
