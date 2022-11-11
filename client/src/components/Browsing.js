@@ -32,11 +32,6 @@ const Browsing = ({ t }) => {
 		setPage
 	);
 
-	useEffect(
-		() => console.log('browsingSettings', browsingSettings),
-		[browsingSettings]
-	);
-
 	const handleObserver = useCallback((entries) => {
 		const target = entries[0];
 		if (target.isIntersecting) {
