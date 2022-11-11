@@ -6,6 +6,7 @@ import LoaderDots from './LoaderDots';
 import SearchBar from './browsing/SearchBar';
 import MovieList from './browsing/MovieList';
 import { useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
 import Loader from './Loader';
 import movieService from '../services/movieService';
 
@@ -20,10 +21,12 @@ const Infinite = ({ movies, loading, error, loader, watched }) => {
 	);
 };
 
-const Paginated = ({ movies, watched, page, setPage }) => {
+const Paginated = ({ movies, watched, page, setPage, setSearchParams, loading }) => {
 	const plusOne = () => {
-		setPage((prev) => prev + 1);
+		setPage(Number(page) + 1);
+		setSearchParams({ page: Number(page) + 1 });
 	};
+	if (loading) return <LoaderDots />;
 	return (
 		<>
 			<MovieList movies={movies} watched={watched} />
@@ -33,10 +36,16 @@ const Paginated = ({ movies, watched, page, setPage }) => {
 };
 
 const Browsing = ({ t }) => {
-	const [page, setPage] = useState(1);
+	const [page, setPage] = useState(false);
 	const [watched, setWatched] = useState([]);
 	const loader = useRef();
 	const profileData = useSelector((state) => state.profile);
+	const [searchParams, setSearchParams] = useSearchParams();
+
+	useEffect(() => {
+		const page_value = searchParams.get('page');
+		setPage(Number(page_value));
+	}, [searchParams]);
 
 	useEffect(() => {
 		movieService.isWatched(profileData?.id).then((response) => {
@@ -83,7 +92,7 @@ const Browsing = ({ t }) => {
 		if (loader.current) observer.observe(loader.current);
 	}, [handleObserver]);
 
-	if (!profileData) return <Loader />;
+	if (!profileData || !page) return <Loader />;
 
 	return (
 		<Container
@@ -113,6 +122,8 @@ const Browsing = ({ t }) => {
 					watched={watched}
 					page={page}
 					setPage={setPage}
+					setSearchParams={setSearchParams}
+					loading={loading}
 				/>
 			)}
 		</Container>

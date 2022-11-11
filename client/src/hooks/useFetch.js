@@ -57,7 +57,7 @@ const useFetch = (
 
 	const sendQuery = useCallback(async () => {
 		try {
-			if (infinite_scroll) {
+			if (infinite_scroll && page >= 1) {
 				setLoading(true);
 				setError(false);
 				const values = {
