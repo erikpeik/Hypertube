@@ -5,10 +5,13 @@ import useFetch from '../hooks/useFetch';
 import LoaderDots from './LoaderDots';
 import SearchBar from './browsing/SearchBar';
 import MovieList from './browsing/MovieList';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Pagination from './Pagination';
 
 const Browsing = ({ t }) => {
+	const profileData = useSelector((state) => state.profile);
+	console.log(profileData);
 	const [page, setPage] = useState(1);
 	const loader = useRef();
 
@@ -24,8 +27,8 @@ const Browsing = ({ t }) => {
 	const { submittedQuery, genre, sort_by, order_by, imdb_rating } =
 		browsingSettings;
 
-	const [data, setData] = useState([]);
-	const [load, setLoading] = useState(true);
+	// const [data, setData] = useState([]);
+	// const [load, setLoading] = useState(true);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [recordsPerPage] = useState(10);
 
@@ -39,47 +42,27 @@ const Browsing = ({ t }) => {
 		setCurrentPage,
 	);
 
-<<<<<<< HEAD
-	// useEffect(() => {
-	//     axios.get('MOCK_DATA.json')
-	//         .then(res => {
-	//                 setData(res.data);
-	//                 setLoading(false);
-	//             })
-	//             .catch(() => {
-	//                 alert('There was an error while retrieving the data')
-	//             })
-	// }, [])
-
 	useEffect(
 		() => console.log('browsingSettings', browsingSettings),
 		[browsingSettings]
 	);
 
-	// const handleObserver = useCallback((entries) => {
-	// 	const target = entries[0];
-	// 	if (target.isIntersecting) {
-	// 		setPage((prev) => prev + 1);
-	// 	}
-	// }, []);
-=======
 	const handleObserver = useCallback((entries) => {
 		const target = entries[0];
 		if (target.isIntersecting) {
 			setPage((prev) => prev + 1);
 		}
 	}, []);
->>>>>>> 81c6df0a53d061d3ad89ad4159e5d05b32626355
 
-	// useEffect(() => {
-	// 	const options = {
-	// 		root: null,
-	// 		rootMargin: '20px',
-	// 		threshold: 0,
-	// 	};
-	// 	const observer = new IntersectionObserver(handleObserver, options);
-	// 	if (loader.current) observer.observe(loader.current);
-	// }, [handleObserver]);
+	useEffect(() => {
+		const options = {
+			root: null,
+			rootMargin: '20px',
+			threshold: 0,
+		};
+		const observer = new IntersectionObserver(handleObserver, options);
+		if (loader.current) observer.observe(loader.current);
+	}, [handleObserver]);
 
 	const indexOfLastRecord = currentPage * recordsPerPage;
 	const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
@@ -100,7 +83,7 @@ const Browsing = ({ t }) => {
 				browsingSettings={browsingSettings}
 				setBrowsingSettings={setBrowsingSettings}
 			/>
-			<MovieList movies={currentRecords} />
+			<MovieList movies={profileData.infinite_scroll === 'YES' ? movies : currentRecords} />
 			<Pagination
 				nPages={nPages}
 				currentPage={currentPage}
