@@ -6,6 +6,7 @@ import LoaderDots from './LoaderDots';
 import SearchBar from './browsing/SearchBar';
 import MovieList from './browsing/MovieList';
 import { useSelector, useDispatch } from 'react-redux';
+import Loader from './Loader';
 
 import Pagination from './Pagination';
 
@@ -39,13 +40,13 @@ const Browsing = ({ t }) => {
 		sort_by,
 		order_by,
 		imdb_rating,
-		setCurrentPage,
+		setCurrentPage
 	);
 
-	useEffect(
-		() => console.log('browsingSettings', browsingSettings),
-		[browsingSettings]
-	);
+	// useEffect(
+	// 	() => console.log('browsingSettings', browsingSettings),
+	// 	[browsingSettings]
+	// 	);
 
 	const handleObserver = useCallback((entries) => {
 		const target = entries[0];
@@ -63,6 +64,8 @@ const Browsing = ({ t }) => {
 		const observer = new IntersectionObserver(handleObserver, options);
 		if (loader.current) observer.observe(loader.current);
 	}, [handleObserver]);
+
+	if (!movies || !profileData) return <Loader />;
 
 	const indexOfLastRecord = currentPage * recordsPerPage;
 	const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
@@ -83,7 +86,11 @@ const Browsing = ({ t }) => {
 				browsingSettings={browsingSettings}
 				setBrowsingSettings={setBrowsingSettings}
 			/>
-			<MovieList movies={profileData.infinite_scroll === 'YES' ? movies : currentRecords} />
+			{profileData?.infinite_scroll !== 'NO' ? (
+				<MovieList movies={movies} />
+			) : (
+				<MovieList movies={currentRecords} />
+			)}
 			<Pagination
 				nPages={nPages}
 				currentPage={currentPage}
