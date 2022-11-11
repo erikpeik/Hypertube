@@ -11,19 +11,21 @@ module.exports = function (app, axios) {
 				})
 				.catch((error) => {
 					console.log(error);
-					res.status(500).send({ error: 'Something went wrong' });
+					res.send({ error: 'Something went wrong' });
 				});
 		} catch (error) {
-			res.status(500).send({
+			res.send({
 				error: 'Something went wrong with torrent API',
 			});
 		}
 	});
 
 	app.post(`${baseUrl}/imdb_data`, async (req, res) => {
+		const imdb_id = req.body.imdb_id;
+		console.log('imdb_id', imdb_id);
+		if (!imdb_id.match(/(?=^.{9,10}$)(^tt[\d]{7,8})$/))
+			return res.send("Invalid IMDB_code")
 		try {
-			const imdb_id = req.body.imdb_id;
-			console.log('imdb_id', imdb_id);
 			const omdb_data = await axios.get(
 				`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&i=${imdb_id}`
 			);
@@ -46,19 +48,19 @@ module.exports = function (app, axios) {
 	});
 
 	app.post(`${baseUrl}/movie_query`, async (req, res) => {
+		let { query, genre, sort_by, order_by, imdb_rating, page } =
+			req.body;
+		// if (!query || !genre || !sort_by || !order_by || !imdb_rating || !page)
+		// 	return res.send("Required movie query data missing")
+		console.log(req.body);
+		const limit = page === 1 ? 20 : 22;
+		if (sort_by === undefined) {
+			sort_by = 'rating';
+		}
 		try {
-			let { query, genre, sort_by, order_by, imdb_rating, page } =
-				req.body;
-			console.log(req.body);
-			const limit = page === 1 ? 20 : 22;
-			if (sort_by === undefined) {
-				sort_by = 'rating';
-			}
-			const api_search = `${TORRENT_API}?query_term=${query}&genre=${
-				genre || ''
-			}&sort_by=${sort_by}&order_by=${order_by || ''}&minimum_rating=${
-				imdb_rating || ''
-			}&page=${page}&limit=${limit}`;
+			const api_search = `${TORRENT_API}?query_term=${query}&genre=${genre || ''
+				}&sort_by=${sort_by}&order_by=${order_by || ''}&minimum_rating=${imdb_rating || ''
+				}&page=${page}&limit=${limit}`;
 			console.log(api_search);
 			axios
 				.get(api_search)
@@ -79,10 +81,10 @@ module.exports = function (app, axios) {
 					res.send(movies);
 				})
 				.catch((error) => {
-					res.status(406).send({ error: 'Something went wrong' });
+					res.send({ error: 'Something went wrong' });
 				});
 		} catch (error) {
-			res.status(500).send({
+			res.send({
 				error: 'Something went wrong with movie_query',
 			});
 		}
@@ -96,7 +98,7 @@ module.exports = function (app, axios) {
 			);
 			res.send(movie_details.data.data);
 		} catch (error) {
-			res.status(500).send({
+			res.send({
 				error: 'Something went wrong with faulty movie_query ID',
 			});
 		}
@@ -123,10 +125,10 @@ module.exports = function (app, axios) {
 				})
 				.catch((error) => {
 					console.log(error);
-					res.status(500).send({ error: 'Something went wrong' });
+					res.send({ error: 'Something went wrong' });
 				});
 		} catch (error) {
-			res.status(500).send({
+			res.send({
 				error: 'Something went wrong with recommended_movies ID',
 			});
 		}
@@ -138,7 +140,7 @@ module.exports = function (app, axios) {
 			await axios.get(url);
 			res.status(200).send({ status: 'true' });
 		} catch (error) {
-			res.status(400).send({ status: 'failed' });
+			res.send({ status: 'failed' });
 		}
 	});
 };
