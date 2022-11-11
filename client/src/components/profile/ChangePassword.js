@@ -74,6 +74,7 @@ const ChangePassword = ({ t }) => {
 						fullWidth
 						margin="dense"
 						name="old_password"
+						autoComplete="old_password"
 						label={t('profile_settings.10')}
 						placeholder={t('profile_settings.10')}
 						required
@@ -82,6 +83,7 @@ const ChangePassword = ({ t }) => {
 						type="password"
 						fullWidth
 						margin="dense"
+						autoComplete="password"
 						name="new_password"
 						label={t('profile_settings.11')}
 						placeholder={t('profile_settings.11')}
@@ -92,6 +94,7 @@ const ChangePassword = ({ t }) => {
 						fullWidth
 						margin="dense"
 						name="confirm_password"
+						autoComplete="confirm_password"
 						label={t('profile_settings.12')}
 						placeholder={t('profile_settings.12')}
 						required

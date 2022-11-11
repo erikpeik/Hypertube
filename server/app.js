@@ -75,15 +75,28 @@ const upload = multer({ storage: storage });
 const helperFunctions = require('./utils/helperFunctions.js');
 require('./routes/signup.js')(app, pool, bcrypt, transporter, helperFunctions);
 require('./routes/login_logout.js')(app, pool, bcrypt, jwt, helperFunctions);
-require('./routes/resetpassword.js')(app, pool, bcrypt, transporter, helperFunctions);
-require('./routes/profile.js')(app, pool, bcrypt, upload, fs, path, helperFunctions);
+require('./routes/resetpassword.js')(
+	app,
+	pool,
+	bcrypt,
+	transporter,
+	helperFunctions
+);
+require('./routes/profile.js')(
+	app,
+	pool,
+	bcrypt,
+	upload,
+	fs,
+	path,
+	helperFunctions
+);
 require('./routes/browsing.js')(app, axios);
 require('./routes/oauth.js')(app, pool, axios, helperFunctions, jwt);
 require('./routes/streaming.js')(app, fs, path, axios, pool, ffmpeg);
 require('./routes/comments.js')(app, pool);
 require('./routes/movies.js')(app, pool, axios);
 require('./utils/cronJob')(app, pool, axios);
-
 
 app.get('/', (req, res) => {
 	res.send('Welcome to Hypertube');
