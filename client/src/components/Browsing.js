@@ -39,6 +39,7 @@ const Browsing = ({ t }) => {
 		setCurrentPage,
 	);
 
+<<<<<<< HEAD
 	// useEffect(() => {
 	//     axios.get('MOCK_DATA.json')
 	//         .then(res => {
@@ -61,6 +62,14 @@ const Browsing = ({ t }) => {
 	// 		setPage((prev) => prev + 1);
 	// 	}
 	// }, []);
+=======
+	const handleObserver = useCallback((entries) => {
+		const target = entries[0];
+		if (target.isIntersecting) {
+			setPage((prev) => prev + 1);
+		}
+	}, []);
+>>>>>>> 81c6df0a53d061d3ad89ad4159e5d05b32626355
 
 	// useEffect(() => {
 	// 	const options = {

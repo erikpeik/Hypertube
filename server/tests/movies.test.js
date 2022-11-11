@@ -52,7 +52,7 @@ test('watched movies with false userid', async () => {
 		.post('/api/movies/watch')
 		.set('Cookie', [`refreshToken=${cookie}`])
 		.send(data)
-		.expect('Faulty User Id');
+		.expect([]);
 });
 
 test('single movie details with false imdb_id', async () => {

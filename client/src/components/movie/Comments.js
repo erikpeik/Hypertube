@@ -20,15 +20,12 @@ const Comments = ({ movieId, t }) => {
 		});
 	}, [movieId, refresh]);
 
-	console.log(comments);
-	console.log(profileData);
-
 	return (
 		<>
 			<Container maxWidth="md" sx={{ pt: 5, pb: 5 }}>
 				<NewComment movieId={movieId} setRefresh={setRefresh} t={t} />
 				<Paper style={{ padding: '20px 20px', marginTop: 10 }}>
-					{comments.length > 0 ? (
+					{comments && comments.length > 0 ? (
 						comments.sort((a, b) => b.id - a.id) &&
 						comments.map((c) => {
 							return (
