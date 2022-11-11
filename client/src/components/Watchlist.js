@@ -46,7 +46,6 @@ const Browsing = ({ t }) => {
 		});
 	};
 
-
 	if (!watched) {
 		return <Loader />;
 	}
@@ -60,6 +59,9 @@ const Browsing = ({ t }) => {
 				alignItems: 'center',
 			}}
 		>
+			<Box>
+				<Typography variant='h4'>{t('watchlist.0')}</Typography>
+			</Box>
 			<Box
 				container="true"
 				spacing={3}
@@ -73,65 +75,71 @@ const Browsing = ({ t }) => {
 					height: '100%',
 				}}
 			>
-				{watched.length > 0 ? watched.map((movie, value) => {
-					return (
-						<Box
-							sx={{
-								margin: 1,
-								marginBottom: 3,
-								maxHeight: 345,
-								maxWidth: 245,
-							}}
-							key={value}
-							item="true"
-							xs={3}
-							onClick={() => navigateToMovie(movie.imdb_code)}
-						>
-							<Card className="container" sx={{ flexGrow: 1 }}>
-								<CardActionArea>
-									<CardContent
-										style={{
-											textOverflow: 'ellipsis',
-										}}
-										className="newsletter"
-									>
-										<Typography
-											gutterBottom
-											variant="h7"
+				{watched.length > 0 ? (
+					watched.map((movie, value) => {
+						return (
+							<Box
+								sx={{
+									margin: 1,
+									marginBottom: 3,
+									maxHeight: 345,
+									maxWidth: 245,
+								}}
+								key={value}
+								item="true"
+								xs={3}
+								onClick={() => navigateToMovie(movie.imdb_code)}
+							>
+								<Card
+									className="container"
+									sx={{ flexGrow: 1 }}
+								>
+									<CardActionArea>
+										<CardContent
 											style={{
-												whiteSpace: 'pre-line',
-												overflowWrap: 'break-word',
-												wordWrap: 'break-word',
-												hyphens: 'auto',
-												overflow: 'hidden',
+												textOverflow: 'ellipsis',
 											}}
+											className="newsletter"
 										>
-
-											{movie.title_long}
-										</Typography>
-										<Typography>
-											IMDB rate: {movie.rating}
-										</Typography>
-									</CardContent>
-									<CardMedia
-										sx={{
-											borderRadius: 1,
-											width: 245,
-											height: 345,
-										}}
-										component="img"
-										image={movie.medium_cover_image}
-										alt={movie.title_long}
-										onError={(e) => {
-											e.target.onerror = null;
-											e.target.src = require('../images/no_image.png');
-										}}
-									/>
-								</CardActionArea>
-							</Card>
-						</Box>
-					);
-				}) : <Typography color="white">No movies</Typography> }
+											<Typography
+												gutterBottom
+												variant="h7"
+												style={{
+													whiteSpace: 'pre-line',
+													overflowWrap: 'break-word',
+													wordWrap: 'break-word',
+													hyphens: 'auto',
+													overflow: 'hidden',
+												}}
+											>
+												{movie.title_long}
+											</Typography>
+											<Typography>
+												IMDB rate: {movie.rating}
+											</Typography>
+										</CardContent>
+										<CardMedia
+											sx={{
+												borderRadius: 1,
+												width: 245,
+												height: 345,
+											}}
+											component="img"
+											image={movie.medium_cover_image}
+											alt={movie.title_long}
+											onError={(e) => {
+												e.target.onerror = null;
+												e.target.src = require('../images/no_image.png');
+											}}
+										/>
+									</CardActionArea>
+								</Card>
+							</Box>
+						);
+					})
+				) : (
+					<Typography color="white">No movies</Typography>
+				)}
 			</Box>
 		</Container>
 	);

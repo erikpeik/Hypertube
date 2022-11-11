@@ -149,5 +149,8 @@
 		"6": "Lejátszás előnézetként",
 		"7": "A letöltött film százaléka. A teljes minőség érdekében frissítse az oldalt a letöltés után.",
 		"8": "Minőség"
+	},
+	"watchlist": {
+		"0": "Filmek amiket láttál"
 	}
 }

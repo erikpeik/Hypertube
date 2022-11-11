@@ -149,5 +149,8 @@
 		"6": "Playing as a preview,",
 		"7": " percent of the movie downloaded. Refresh the page after complete download for full quality.",
 		"8": "Quality"
+	},
+	"watchlist": {
+		"0": "Movies what you watched"
 	}
 }
