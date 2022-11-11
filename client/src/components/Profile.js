@@ -131,49 +131,59 @@ const Profile = ({ t }) => {
 						alignItems: 'center',
 					}}
 				>
-					<h4 style={{ color: "#6A5ACD"}}>{t('profile.1')}</h4>
+					<h4 style={{ color: '#6A5ACD' }}>{t('profile.1')}</h4>
 					<Typography>{profileData.firstname}</Typography>
 					<br />
-					<h4 style={{ color: "#6A5ACD"}}>{t('profile.2')}</h4>
+					<h4 style={{ color: '#6A5ACD' }}>{t('profile.2')}</h4>
 					<Typography>{profileData.lastname}</Typography>
 					<br />
-					<h4 style={{ color: "#6A5ACD"}}>{t('profile.3')}</h4>
+					<h4 style={{ color: '#6A5ACD' }}>{t('profile.3')}</h4>
 					<Typography>{profileData.email}</Typography>
 					<br />
 				</Container>
 				<Container
-					sx={{ display: 'flex', justifyContent: 'space-between' }}
+					sx={{
+						pb: '5',
+						display: 'flex',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
 				>
-					<Button
-						theme={theme}
-						onClick={() => navigate('/watchlist')}
-					>
-						{t('profile.10')}
-					</Button>
-					<Button theme={theme} onClick={() => navigate('/settings')}>
-						{t('profile.4')}
-					</Button>
-					<Button theme={theme}>
-						<label
-							htmlFor="set_profilepic"
-							className="styled-image-upload"
+					<Box sx={{ flexGrow: 2, flexDirection: 'column' }}>
+						<Button
+							theme={theme}
+							onClick={() => navigate('/watchlist')}
 						>
-							{t('profile.5')}
-						</label>
-						<input
-							type="file"
-							name="file"
-							id="set_profilepic"
-							accept="image/jpeg, image/png, image/jpg"
-							onChange={setProfilePicture}
-						></input>
-					</Button>
-					<Button
-						theme={theme}
-						onClick={() => navigate('/changepassword')}
-					>
-						{t('profile.6')}
-					</Button>
+							{t('profile.10')}
+						</Button>
+						<Button
+							theme={theme}
+							onClick={() => navigate('/settings')}
+						>
+							{t('profile.4')}
+						</Button>
+						<Button theme={theme}>
+							<label
+								htmlFor="set_profilepic"
+								className="styled-image-upload"
+							>
+								{t('profile.5')}
+							</label>
+							<input
+								type="file"
+								name="file"
+								id="set_profilepic"
+								accept="image/jpeg, image/png, image/jpg"
+								onChange={setProfilePicture}
+							></input>
+						</Button>
+						<Button
+							theme={theme}
+							onClick={() => navigate('/changepassword')}
+						>
+							{t('profile.6')}
+						</Button>
+					</Box>
 				</Container>
 				<br />
 				<Container sx={{ display: 'flex', justifyContent: 'center' }}>
