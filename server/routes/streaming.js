@@ -1,7 +1,7 @@
 module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 	let torrentStream = require("torrent-stream");
 	let qualityList = ['720p', '1080p', '3D']
-	let subtitleLanguages = ["en", "fi"]
+	let subtitleLanguages = ["en", "fi", "hu", "ro"]
 
 	const getMagnetLink = (torrentInfo, film_title) => {
 		let hash = torrentInfo.hash;
@@ -95,6 +95,9 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			return response.send("Invalid movie quality")
 		if (!imdb_id.match(/(?=^.{9,10}$)(^tt[\d]{7,8})$/))
 			return response.send("Invalid IMDB_code")
+		let isChrome = request.headers['user-agent'].includes('Chrome')
+		let streamType = isChrome ? "matroska" : "webm"
+		let bitRate = isChrome ? "4096k" : "512k"
 
 		let sql = `SELECT * FROM downloads WHERE imdb_id = $1 AND quality = $2`;
 		const { rows } = await pool.query(sql, [imdb_id, quality]);
@@ -105,7 +108,8 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		if (rows.length > 0) moviefile = rows[0]["path"];
 		else moviefile = `movies/pushthebutton.mp4`;
 
-		const isMp4 = ((rows[0]["file_type"] === 'mp4' && moviefile.includes("YTS")) || rows[0]["completed"] === 'YES')
+		const isMp4 = ((rows[0]["file_type"] === 'mp4' && moviefile.includes("YTS"))
+			|| (isChrome && rows[0]["completed"] === 'YES'))
 
 		const fileSize = Number(rows[0].file_size)
 		const range = request.headers.range
@@ -131,7 +135,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 				: {
 					"Content-Range": `bytes ${start}-${end}/${fileSize}`,
 					"Accept-Ranges": "bytes",
-					"Content-Type": "video/matroska"
+					"Content-Type": `video/${streamType}`
 				}
 			notLoaded ? response.writeHead(416, head) : response.writeHead(206, head);
 			const videoStream = fs.createReadStream(moviefile, { start, end })
@@ -139,8 +143,8 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 				videoStream.pipe(response)
 			} else {
 				ffmpeg(videoStream)
-					.format('matroska')
-					.videoBitrate('2048k')
+					.format(streamType)
+					.videoBitrate(bitRate)
 					.on('error', () => { })
 					.pipe(response);
 			}
