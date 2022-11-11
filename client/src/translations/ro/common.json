@@ -61,14 +61,14 @@
 		"12": "Confirmă parola nouă",
 		"13": "Submite",
 		"14": "Introduce parola veche, iar apoi pe cea nouă.",
-		"15": "Change your language",
-		"16": "Change between infinite scroll and pagination",
-		"17": "Infinite Scroll",
-		"18": "Pagination",
-		"19": "English",
-		"20": "Finnish",
-		"21": "Romanian",
-		"22": "Hungarian"
+		"15": "Schimbă limba",
+		"16": "Schimbă paginația",
+		"17": "Paginație infinită",
+		"18": "Paginație",
+		"19": "Englenză",
+		"20": "Finlandeză",
+		"21": "Română",
+		"22": "Maghiară"
 	},
 	"reset": {
 		"1": "Noua parolă setată!",

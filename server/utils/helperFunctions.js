@@ -15,15 +15,6 @@ const translate = async (text, pool, toLang) => {
 	const API_KEY = process.env.GOOGLE_API_KEY;
 	let fromLang = 'en';
 
-	// const cookie = request.cookies.refreshToken;
-
-	// let toLang;
-	// if (cookie) {
-	// 	let sql = 'SELECT * FROM users WHERE token = $1';
-	// 	let { rows } = await pool.query(sql, [cookie]);
-	// 	toLang = rows[0]['language'];
-	// }
-
 	let url = `https://translation.googleapis.com/language/translate/v2?key=${API_KEY}`;
 	url += '&q=' + encodeURI(text);
 	url += `&source=${fromLang}`;
