@@ -19,15 +19,12 @@ const Browsing = ({ t }) => {
 	const profileData = useSelector((state) => state.profile);
 	const navigate = useNavigate();
 
-	// useEffect(() => console.log(watched), [watched]);
-
 	useEffect(() => {
 		const getMoviesData = async (response) => {
 			if (response.length === 0) setWatched([]);
 			let movie_list = [];
 			for (let i = 0; i < response.length; i++) {
 				const movieData = await movieService.getMovieData(response[i]);
-				// console.log('movieData', movieData);
 				movie_list.push(movieData);
 				if (i === response.length - 1) setWatched(movie_list);
 			}
@@ -40,11 +37,7 @@ const Browsing = ({ t }) => {
 		}
 	}, [profileData]);
 
-	const navigateToMovie = (movie_id) => {
-		navigate(`/movie/${movie_id}`, {
-			state: watched.filter((movie) => movie.imdb_code === movie_id),
-		});
-	};
+	const navigateToMovie = (movie_id) => navigate(`/movie/${movie_id}`);
 
 	if (!watched) {
 		return <Loader />;
@@ -60,7 +53,9 @@ const Browsing = ({ t }) => {
 			}}
 		>
 			<Box>
-				<Typography variant='h4'>{t('watchlist.0')}</Typography>
+				<Typography variant="h4" sx={{ color: 'white', mt: 1, mb: 1, textShadow: '0 2px 8px #13044F' }}>
+					{t('watchlist.0')}
+				</Typography>
 			</Box>
 			<Box
 				container="true"
