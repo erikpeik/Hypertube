@@ -100,6 +100,7 @@ const Login = ({ t }) => {
 						margin="dense"
 						type="password"
 						name="password"
+						autoComplete='current_password'
 						label={t('login.4')}
 						placeholder="Password"
 						required
