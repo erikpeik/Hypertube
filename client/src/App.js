@@ -33,7 +33,7 @@ import profileService from './services/profileService';
 import { changeSeverity } from './reducers/severityReducer';
 import {
 	changeNotification,
-	resetNotification,
+	// resetNotification,
 } from './reducers/notificationReducer';
 import { setLanguage } from './reducers/languageReducer';
 
@@ -46,7 +46,7 @@ const App = () => {
 	const [settings, changeSettings] = useState({});
 
 	useEffect(() => {
-		dispatch(resetNotification());
+		// dispatch(resetNotification());
 		if (profileData) {
 			changeSettings({
 				username: profileData.username,

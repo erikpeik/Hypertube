@@ -37,7 +37,7 @@ const SearchBar = ({ t, browsingSettings, setBrowsingSettings }) => {
 	];
 
 	const imdbRatingList = [
-		{ label: 'All', value: null },
+		{ label: t('browsing.13'), value: null },
 		{ label: '9+', value: 9 },
 		{ label: '8+', value: 8 },
 		{ label: '7+', value: 7 },
