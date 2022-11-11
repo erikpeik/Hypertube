@@ -93,7 +93,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 
 		if (!qualityList.includes(quality))
 			return response.send("Invalid movie quality")
-		if (!imdb_id.match(/(?=^.{9}$)(^tt[\d]{7})$/))
+		if (!imdb_id.match(/(?=^.{9,10}$)(^tt[\d]{7,8})$/))
 			return response.send("Invalid IMDB_code")
 
 		let sql = `SELECT * FROM downloads WHERE imdb_id = $1 AND quality = $2`;
@@ -228,7 +228,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		const language = request.params.language
 		if (!subtitleLanguages.includes(language))
 			return response.send("Faulty language option")
-		if (!imdb_id.match(/(?=^.{9}$)(^tt[\d]{7})$/))
+		if (!imdb_id.match(/(?=^.{9,10}$)(^tt[\d]{7,8})$/))
 			return response.send("Invalid IMDB_code")
 
 		const subtitle_file = `./subtitles/${imdb_id}/${imdb_id}-${language}.vtt`
@@ -269,7 +269,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 
 		if (!qualityList.includes(quality))
 			return response.send("Invalid movie quality")
-		if (!imdb_id.match(/(?=^.{9}$)(^tt[\d]{7})$/))
+		if (!imdb_id.match(/(?=^.{9,10}$)(^tt[\d]{7,8})$/))
 			return response.send("Invalid IMDB_code")
 		const check = `SELECT * FROM users WHERE token = $1`;
 		const user = await pool.query(check, [cookie]);
