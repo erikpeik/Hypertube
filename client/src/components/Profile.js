@@ -147,9 +147,10 @@ const Profile = ({ t }) => {
 						display: 'flex',
 						justifyContent: 'center',
 						alignItems: 'center',
+						flexDirection: 'column'
 					}}
 				>
-					<Box sx={{ flexGrow: 2, flexDirection: 'column' }}>
+					<Box sx={{ flexGrow: 2 }}>
 						<Button
 							theme={theme}
 							onClick={() => navigate('/watchlist')}
