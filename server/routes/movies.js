@@ -23,10 +23,13 @@ module.exports = function (app, pool, axios) {
 			await pool.query(sql, [request.body.userId, request.params.id]);
 			return response.send('Movie already watched!');
 		}
-
-		sql = 'INSERT INTO movies_watched (imdb_id, user_id) VALUES ($1, $2)';
-		await pool.query(sql, [request.params.id, request.body.userId]);
-		response.send(true);
+		try {
+			sql = 'INSERT INTO movies_watched (imdb_id, user_id) VALUES ($1, $2)';
+			await pool.query(sql, [request.params.id, request.body.userId]);
+			response.send(true);
+		} catch (error) {
+			response.send("Couldn't add movie to watched list!");
+		}
 	});
 
 	app.post('/api/movies/watch', async (request, response) => {
