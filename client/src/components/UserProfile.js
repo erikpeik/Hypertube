@@ -1,23 +1,27 @@
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Typography, Paper, Box, Grid, Avatar } from '@mui/material';
 import AspectRatio from '@mui/joy/AspectRatio';
 import { Container } from '@mui/system';
 import Notification from './Notification';
 import profileService from '../services/profileService';
 import PathNotExistsfrom from './PathNotExists';
+import Loader from './Loader';
 
 const Profile = ({ t }) => {
 	const [profileId, setProfileId] = useState('');
-
-	const id = window.location.pathname.slice(
-		window.location.pathname.lastIndexOf('/') + 1,
-		window.location.pathname.length
-	);
+	const [isLoading, setIsLoading] = useState(true);
+	const params = useParams();
+	const id = params.id;
 
 	useEffect(() => {
 		profileService.getUserProfile(id).then((response) => {
-			setProfileId(response || '');
-			console.log(response);
+			if (response.id) {
+				setProfileId(response || '');
+			} else {
+				setProfileId(null);
+			}
+			setIsLoading(false);
 		});
 	}, [id]);
 
@@ -27,6 +31,8 @@ const Profile = ({ t }) => {
 		borderRadius: '50%',
 		objectFit: 'cover',
 	};
+
+	if (isLoading) return(<Loader />);
 
 	if (profileId) {
 		return (
