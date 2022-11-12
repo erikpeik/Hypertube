@@ -26,10 +26,20 @@ const Paginated = ({ movies, watched, page, setPage, setSearchParams, loading })
 		setPage(Number(page) + 1);
 		setSearchParams({ page: Number(page) + 1 });
 	};
+	const minusOne = () => {
+		if (page > 1) {
+			setPage(Number(page) - 1);
+			setSearchParams({ page: Number(page) - 1 });
+		} else {
+			setPage(1);
+			setSearchParams({ page: 1 });
+		}
+	};
 	if (loading) return <LoaderDots />;
 	return (
 		<>
 			<MovieList movies={movies} watched={watched} />
+			<Button onClick={minusOne}>Go back page!</Button>
 			<Button onClick={plusOne}>Go next page!</Button>
 		</>
 	);
