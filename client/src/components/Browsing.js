@@ -9,7 +9,9 @@ import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import Loader from './Loader';
 import movieService from '../services/movieService';
-
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import Grid from '@mui/material/Grid';
 const Infinite = ({ movies, loading, error, loader, watched }) => {
 	return (
 		<>
@@ -39,8 +41,14 @@ const Paginated = ({ movies, watched, page, setPage, setSearchParams, loading })
 	return (
 		<>
 			<MovieList movies={movies} watched={watched} />
-			<Button onClick={minusOne}>Go back page!</Button>
-			<Button onClick={plusOne}>Go next page!</Button>
+			<Grid sx={{ flexGrow: 1 }} >
+				<Button onClick={minusOne}>
+					<ArrowBackIcon />BACK
+				</Button>
+				<Button onClick={plusOne}>
+					NEXT<ArrowForwardIcon/>
+				</Button>
+			</Grid>
 		</>
 	);
 };
