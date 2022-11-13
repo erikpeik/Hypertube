@@ -12,7 +12,9 @@ import {
 const MovieList = ({ movies, watched }) => {
 	const navigate = useNavigate();
 
-	const navigateToMovie = (movie_id) => navigate(`/movie/${movie_id}`);
+	const navigateToMovie = (movie_id) => {
+		navigate(`/movie/${movie_id}`);
+	};
 
 	return (
 		<Box

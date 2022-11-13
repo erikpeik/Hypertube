@@ -19,7 +19,7 @@ const useFetch = (
 	const [currentQuery, setCurrentQuery] = useState('');
 	const [currentGenre, setCurrentGenre] = useState(null);
 	const [currentSortBy, setCurrentSortBy] = useState(null);
-	const [currentOrderBy, setCurrentOrderBy] = useState(null);
+	const [currentOrderBy, setCurrentOrderBy] = useState('desc');
 	const [currentImdbRating, setCurrentImdbRating] = useState(null);
 	const profileData = useSelector((state) => state.profile);
 
@@ -53,22 +53,22 @@ const useFetch = (
 		setPage(1);
 	}
 
-	const infinite_scroll = profileData?.infinite_scroll;
+	let infinite_scroll = profileData?.infinite_scroll;
 
 	const sendQuery = useCallback(async () => {
 		try {
-			if (infinite_scroll && page >= 1) {
-				setLoading(true);
-				setError(false);
-				const values = {
-					query,
-					genre: genre?.value,
-					sort_by: sort_by?.value,
-					order_by,
-					page,
-					imdb_rating: imdb_rating?.value,
-				};
-				const res = await axios.post(`${baseUrl}`, values);
+			setLoading(true);
+			setError(false);
+			const values = {
+				query,
+				genre: genre?.value,
+				sort_by: sort_by?.value,
+				order_by,
+				page,
+				imdb_rating: imdb_rating?.value,
+			};
+			const res = await axios.post(`${baseUrl}`, values);
+			if (!res.data.error) {
 				const newMovie = res.data || [];
 				if (page > 1) {
 					newMovie.splice(0, 2);

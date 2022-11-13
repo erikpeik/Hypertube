@@ -52,6 +52,7 @@ module.exports = function (app, axios) {
 		// if (!query || !genre || !sort_by || !order_by || !imdb_rating || !page)
 		// 	return res.send("Required movie query data missing")
 		console.log(req.body);
+		if (!page) res.send({ error: 'Page number missing' });
 		const limit = page === 1 ? 20 : 22;
 		if (sort_by === undefined) {
 			sort_by = 'rating';
