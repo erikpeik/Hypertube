@@ -137,32 +137,21 @@ const Paginated = ({ watched, page, setPage, browsingSettings }) => {
 
 	return (
 		<>
-			{movies.length < 20 ? (
-				<MovieList movies={movies} watched={watched} />
-			) : (
-				<>
-					<MovieList movies={movies} watched={watched} />
-					{page > 1 ? (
-						<Grid sx={{ flexGrow: 1 }}>
-							<Button onClick={minusOne}>
-								<ArrowBackIcon />
-								BACK
-							</Button>
-							<Button onClick={plusOne}>
-								NEXT
-								<ArrowForwardIcon />
-							</Button>
-						</Grid>
-					) : (
-						<Grid sx={{ flexGrow: 1 }}>
-							<Button onClick={plusOne}>
-								NEXT
-								<ArrowForwardIcon />
-							</Button>
-						</Grid>
-					)}
-				</>
-			)}
+			<MovieList movies={movies} watched={watched} />
+			<Grid sx={{ flexGrow: 1, mb: 1 }}>
+				{page > 1 && (
+					<Button onClick={minusOne}>
+						<ArrowBackIcon />
+						BACK
+					</Button>
+				)}
+				{movies.length >= 20 && (
+					<Button onClick={plusOne}>
+						NEXT
+						<ArrowForwardIcon />
+					</Button>
+				)}
+			</Grid>
 		</>
 	);
 };
