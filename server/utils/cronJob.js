@@ -2,7 +2,7 @@ const cron = require('node-cron');
 const fs = require('fs');
 const path = require('node:path');
 
-module.exports = function (app, pool, axios) {
+module.exports = function (pool) {
 	function get() {
 		const current_date = Date.now();
 		const month_ago = new Date(current_date - 2592000000)

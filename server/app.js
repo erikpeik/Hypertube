@@ -82,7 +82,7 @@ require('./routes/oauth.js')(app, pool, axios, helperFunctions, jwt);
 require('./routes/streaming.js')(app, fs, path, axios, pool, ffmpeg);
 require('./routes/comments.js')(app, pool);
 require('./routes/movies.js')(app, pool, axios);
-require('./utils/cronJob')(app, pool, axios);
+require('./utils/cronJob')(pool);
 
 app.get('/', (req, res) => {
 	res.send('Welcome to Hypertube');
