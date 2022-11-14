@@ -285,9 +285,6 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			response.status(200).send(`Ready to play`);
 		else if (rows.length > 0 && fs.existsSync(rows[0]["path"])
 			&& fs.statSync(rows[0]["path"]).size > 50000000) {
-			console.log(fs.statSync(rows[0]["path"]).size)
-			console.log(rows[0]['file_size'])
-			console.log(fs.statSync(rows[0]["path"]).size / rows[0]['file_size'])
 			let downloadRatio = Math.floor(fs.statSync(rows[0]["path"]).size / rows[0]['file_size'] * 100)
 			response.status(200).send(`Ready to play, ${downloadRatio} percent finished`);
 		}
@@ -322,7 +319,6 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			fs.watch(`movies/${torrent_files[0].path}`, (curr, prev) => {
 				fs.stat(`movies/${torrent_files[0].path}`, (err, stats) => {
 					if (stats?.size > 50000000 && responseSent === false) {
-						console.log(stats?.size);
 						let downloadRatio = Math.floor(stats?.size / torrent_files[0].size * 100)
 						responseSent = true;
 						response.status(200).send(`Ready to play, ${downloadRatio} percent finished`);

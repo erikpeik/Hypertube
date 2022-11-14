@@ -34,8 +34,6 @@ const Signup = ({ t }) => {
 		}
 	}, [user, navigate]);
 
-	console.log(pictureForm)
-
 	const submitUser = async (event) => {
 		event.preventDefault();
 
@@ -66,7 +64,10 @@ const Signup = ({ t }) => {
 					dispatch(changeNotification(result));
 				}
 			})
-			.catch((err) => console.log('Signup request failed'));
+			.catch((err) => {
+				dispatch(changeSeverity('error'));
+				dispatch(changeNotification('Signup request failed'));
+			});
 	};
 
 	const setProfilePicture = async (event) => {

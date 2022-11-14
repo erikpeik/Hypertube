@@ -35,10 +35,8 @@ module.exports = function (app, axios) {
 			if (yts_movie === undefined || yts_movie.title === null) {
 				return res.send({ error: 'Movie not found on database' });
 			} else if (omdb_data.data.Response === 'False') {
-				console.log('Returning yts data');
 				return res.status(200).send(yts_movie);
 			}
-			console.log('Returning omdb data');
 			res.status(200).send(omdb_data.data);
 		} catch (error) {
 			console.log(error);
@@ -49,9 +47,6 @@ module.exports = function (app, axios) {
 	app.post(`${baseUrl}/movie_query`, async (req, res) => {
 		let { query, genre, sort_by, order_by, imdb_rating, page } =
 			req.body;
-		// if (!query || !genre || !sort_by || !order_by || !imdb_rating || !page)
-		// 	return res.send("Required movie query data missing")
-		console.log(req.body);
 		if (!page) res.send({ error: 'Page number missing' });
 		const limit = page === 1 ? 20 : 22;
 		if (sort_by === undefined) {

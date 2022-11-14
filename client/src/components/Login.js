@@ -19,11 +19,9 @@ const Login = ({ t }) => {
 	const [searchParams, setSearchParams] = useSearchParams();
 
 	useEffect(() => {
-		console.log('profileData', profileData);
 		const error_message = searchParams.get('error');
 		if (error_message && profileData != null) {
 			setTimeout(() => {
-				console.log(error_message);
 				dispatch(changeNotification(error_message));
 				dispatch(changeSeverity('error'));
 				setSearchParams({});

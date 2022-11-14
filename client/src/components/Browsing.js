@@ -123,13 +123,11 @@ const Paginated = ({ watched, page, setPage, browsingSettings }) => {
 		};
 
 		browsingService.getMovieQuery(values).then((response) => {
-			console.log(response);
 			setLoading(false);
 			if (page > 1 && response.data) {
 				response.data.splice(0, 2);
 			}
 			setMovies(response.data || []);
-			// console.log(response)
 		});
 	}, [page, submittedQuery, genre, sort_by, order_by, imdb_rating]);
 

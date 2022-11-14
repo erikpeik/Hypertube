@@ -58,7 +58,6 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 			headers: { Accept: 'application/json' },
 		});
 
-		console.log(github_response.data);
 		if (github_response.data.error) {
 			const error_message = encodeURIComponent(github_response.data?.error_description || 'Github login failed');
 			response.redirect(`http://localhost:3000/login?error=${error_message}`);

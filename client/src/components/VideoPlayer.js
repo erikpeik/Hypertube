@@ -36,11 +36,7 @@ const VideoPlayer = ({ imdb_id, t }) => {
 	const profileData = useSelector((state) => state.profile);
 
 	const isWatched = () => {
-		movieService
-			.getUserWatchMovie(imdb_id, profileData.id)
-			.then((response) => {
-				console.log(response);
-			});
+		movieService.getUserWatchMovie(imdb_id, profileData.id)
 	};
 
 	const onPlay = () => {
@@ -69,7 +65,6 @@ const VideoPlayer = ({ imdb_id, t }) => {
 				error_code === 1
 			) {
 				setStatusPlayer(`${t('videoplayer.3')}`);
-				console.log(error.target.error);
 				setError(true);
 				playerRef.current.showPreview();
 			}
@@ -143,7 +138,6 @@ const VideoPlayer = ({ imdb_id, t }) => {
 	};
 
 	const handleQuality = (event) => {
-		console.log(event.target.value);
 		setQuality(event.target.value);
 	};
 

@@ -22,7 +22,6 @@ module.exports = function (app, pool, axios) {
 		WHERE t.created_at <= $1 AND d.completed = 'YES'`;
 		pool.query(sql, [month_ago], (err, result) => {
 			if (err) throw err;
-			console.log(result.rows);
 			result.rows.forEach((element) => {
 				const element_path = element.path.split('/');
 				const folder_path = path.resolve(
