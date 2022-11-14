@@ -133,7 +133,7 @@ const Browsing = ({ t }) => {
 						);
 					})
 				) : (
-					<Typography color="white">No movies</Typography>
+					<Typography color="white">{t('watchlist.1')}</Typography>
 				)}
 			</Box>
 		</Container>

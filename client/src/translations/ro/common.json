@@ -151,6 +151,7 @@
 		"8": "Calitate"
 	},
 	"watchlist": {
-		"0": "Filme vizualizate"
+		"0": "Filme vizualizate",
+		"1": "Nici un film vizualizat."
 	}
 }

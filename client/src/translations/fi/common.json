@@ -151,6 +151,7 @@
 		"8": "Laatu"
 	},
 	"watchlist": {
-		"0": "Katsotut elokuvat"
+		"0": "Katsotut elokuvat",
+		"1": "Ei katsottu elokuvia."
 	}
 }
