@@ -142,16 +142,25 @@ const Paginated = ({ watched, page, setPage, browsingSettings }) => {
 			) : (
 				<>
 					<MovieList movies={movies} watched={watched} />
-					<Grid sx={{ flexGrow: 1 }}>
-						<Button onClick={minusOne}>
-							<ArrowBackIcon />
-							BACK
-						</Button>
-						<Button onClick={plusOne}>
-							NEXT
-							<ArrowForwardIcon />
-						</Button>
-					</Grid>
+					{page > 1 ? (
+						<Grid sx={{ flexGrow: 1 }}>
+							<Button onClick={minusOne}>
+								<ArrowBackIcon />
+								BACK
+							</Button>
+							<Button onClick={plusOne}>
+								NEXT
+								<ArrowForwardIcon />
+							</Button>
+						</Grid>
+					) : (
+						<Grid sx={{ flexGrow: 1 }}>
+							<Button onClick={plusOne}>
+								NEXT
+								<ArrowForwardIcon />
+							</Button>
+						</Grid>
+					)}
 				</>
 			)}
 		</>
