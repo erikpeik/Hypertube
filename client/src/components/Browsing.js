@@ -102,7 +102,15 @@ const Paginated = ({ watched, page, setPage, browsingSettings }) => {
 				currentImdbRating: imdb_rating,
 			});
 		}
-	}, [currentSearch, genre, imdb_rating, order_by, setPage, sort_by, submittedQuery]);
+	}, [
+		currentSearch,
+		genre,
+		imdb_rating,
+		order_by,
+		setPage,
+		sort_by,
+		submittedQuery,
+	]);
 
 	useEffect(() => {
 		const values = {
@@ -129,17 +137,23 @@ const Paginated = ({ watched, page, setPage, browsingSettings }) => {
 
 	return (
 		<>
-			<MovieList movies={movies} watched={watched} />
-			<Grid sx={{ flexGrow: 1 }}>
-				<Button onClick={minusOne}>
-					<ArrowBackIcon />
-					BACK
-				</Button>
-				<Button onClick={plusOne}>
-					NEXT
-					<ArrowForwardIcon />
-				</Button>
-			</Grid>
+			{movies.length < 20 ? (
+				<MovieList movies={movies} watched={watched} />
+			) : (
+				<>
+					<MovieList movies={movies} watched={watched} />
+					<Grid sx={{ flexGrow: 1 }}>
+						<Button onClick={minusOne}>
+							<ArrowBackIcon />
+							BACK
+						</Button>
+						<Button onClick={plusOne}>
+							NEXT
+							<ArrowForwardIcon />
+						</Button>
+					</Grid>
+				</>
+			)}
 		</>
 	);
 };
