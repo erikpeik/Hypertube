@@ -9,7 +9,7 @@ module.exports = function (app, pool, axios) {
 		if (request.body.userId !== user.rows[0].id)
 			return response.send('User id and token do not match!');
 
-		if (!request.params.id.match(/(?=^.{9}$)(tt[\d]{7})$/))
+		if (!request.params.id.match(/(?=^.{9,10}$)(tt[\d]{7,8})$/))
 			return response.send('Faulty Imdb_id!');
 
 		sql = `SELECT * FROM movies_watched WHERE imdb_id = $1 AND user_id = $2`;
@@ -24,7 +24,8 @@ module.exports = function (app, pool, axios) {
 			return response.send('Movie already watched!');
 		}
 		try {
-			sql = 'INSERT INTO movies_watched (imdb_id, user_id) VALUES ($1, $2)';
+			sql =
+				'INSERT INTO movies_watched (imdb_id, user_id) VALUES ($1, $2)';
 			await pool.query(sql, [request.params.id, request.body.userId]);
 			response.send(true);
 		} catch (error) {
@@ -35,8 +36,7 @@ module.exports = function (app, pool, axios) {
 	app.post('/api/movies/watch', async (request, response) => {
 		try {
 			const user_id = request.body.userId;
-			if (user_id === undefined)
-				return response.send([]);
+			if (user_id === undefined) return response.send([]);
 			let sql = 'SELECT * FROM movies_watched WHERE user_id = $1';
 			const watched = await pool.query(sql, [user_id]);
 			let finish_array = [];
@@ -56,8 +56,14 @@ module.exports = function (app, pool, axios) {
 
 		axios
 			.get(`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`)
-			.then((res) => {
-				response.send(res.data.data.movie);
+			.then(async (res) => {
+				const movie = res.data.data.movie;
+				if (movie === undefined)
+					return response.send('Movie not found!');
+				await axios.get(movie.medium_cover_image).catch((err) => {
+					movie.medium_cover_image = '../images/no_image.png';
+				});
+				response.send(movie);
 			})
 			.catch((error) => {
 				response.send('No such movie in collection');

@@ -113,8 +113,19 @@ module.exports = function (app, axios) {
 				.get(
 					`https://yts.mx/api/v2/movie_suggestions.json?movie_id=${movie_id}`
 				)
-				.then((response) => {
-					res.send(response.data);
+				.then(async (response) => {
+					const movies = response?.data?.data.movies
+					await Promise.all(
+						movies.map(async (movie) => {
+							await axios
+								.get(movie.medium_cover_image)
+								.catch((error) => {
+									movie.medium_cover_image =
+										'../images/no_image.png';
+								});
+						})
+					);
+					return res.send(movies);
 				})
 				.catch((error) => {
 					res.send({ error: 'Something went wrong' });

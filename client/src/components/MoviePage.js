@@ -102,8 +102,9 @@ const MoviePage = ({ t }) => {
 			}
 		});
 
-		browsingService.getRecommendedMovies(imdb_id).then((response) => {
-			setRecommendedMovies(response?.data?.movies || []);
+		browsingService.getRecommendedMovies(imdb_id).then(async (response) => {
+			const movies = response;
+			setRecommendedMovies(movies || []);
 		});
 	}, [imdb_id]);
 
