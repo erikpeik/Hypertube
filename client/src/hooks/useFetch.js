@@ -1,8 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
-
-const baseUrl = 'http://localhost:3001/api/browsing/movie_query';
+import browsingService from '../services/browsingService';
 
 const useFetch = (
 	query,
@@ -67,7 +65,7 @@ const useFetch = (
 				page,
 				imdb_rating: imdb_rating?.value,
 			};
-			const res = await axios.post(`${baseUrl}`, values);
+			const res = await browsingService.getMovieQuery(values);
 			if (!res.data.error) {
 				const newMovie = res.data || [];
 				if (page > 1) {

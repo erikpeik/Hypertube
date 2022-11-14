@@ -6,13 +6,48 @@ import LoaderDots from './LoaderDots';
 import SearchBar from './browsing/SearchBar';
 import MovieList from './browsing/MovieList';
 import { useSelector } from 'react-redux';
-import { useSearchParams } from 'react-router-dom';
+// import { useSearchParams } from 'react-router-dom';
 import Loader from './Loader';
 import movieService from '../services/movieService';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Grid from '@mui/material/Grid';
-const Infinite = ({ movies, loading, error, loader, watched }) => {
+import browsingService from '../services/browsingService';
+
+const Infinite = ({ loader, watched, setPage, page, browsingSettings }) => {
+	const { submittedQuery, genre, sort_by, order_by, imdb_rating } =
+		browsingSettings;
+
+	const { loading, error, movies } = useFetch(
+		submittedQuery,
+		page,
+		genre,
+		sort_by,
+		order_by,
+		imdb_rating,
+		setPage
+	);
+
+	const handleObserver = useCallback(
+		(entries) => {
+			const target = entries[0];
+			if (target.isIntersecting) {
+				setPage((prev) => prev + 1);
+			}
+		},
+		[setPage]
+	);
+
+	useEffect(() => {
+		const options = {
+			root: null,
+			rootMargin: '20px',
+			threshold: 0,
+		};
+		const observer = new IntersectionObserver(handleObserver, options);
+		if (loader.current) observer.observe(loader.current);
+	}, [handleObserver, loader]);
+
 	return (
 		<>
 			<MovieList movies={movies} watched={watched} />
@@ -23,30 +58,86 @@ const Infinite = ({ movies, loading, error, loader, watched }) => {
 	);
 };
 
-const Paginated = ({ movies, watched, page, setPage, setSearchParams, loading }) => {
+const Paginated = ({ watched, page, setPage, browsingSettings }) => {
+	const [movies, setMovies] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const { submittedQuery, genre, sort_by, order_by, imdb_rating } =
+		browsingSettings;
+
+	const [currentSearch, setCurrentSearch] = useState({
+		currentQuery: '',
+		currentGenre: null,
+		currentSortBy: null,
+		currentOrderBy: 'desc',
+		currentImdbRating: null,
+	});
+
 	const plusOne = () => {
 		setPage(Number(page) + 1);
-		setSearchParams({ page: Number(page) + 1 });
 	};
+
 	const minusOne = () => {
 		if (page > 1) {
 			setPage(Number(page) - 1);
-			setSearchParams({ page: Number(page) - 1 });
 		} else {
 			setPage(1);
-			setSearchParams({ page: 1 });
 		}
 	};
-	if (loading) return <LoaderDots />;
+
+	useEffect(() => {
+		const { currentQuery, currentGenre, currentSortBy, currentOrderBy } =
+			currentSearch;
+		if (
+			currentQuery !== submittedQuery ||
+			currentGenre !== genre ||
+			currentSortBy !== sort_by ||
+			currentOrderBy !== order_by
+		) {
+			setPage(1);
+			setCurrentSearch({
+				currentQuery: submittedQuery,
+				currentGenre: genre,
+				currentSortBy: sort_by,
+				currentOrderBy: order_by,
+				currentImdbRating: imdb_rating,
+			});
+		}
+	}, [currentSearch, genre, imdb_rating, order_by, setPage, sort_by, submittedQuery]);
+
+	useEffect(() => {
+		const values = {
+			query: submittedQuery,
+			genre: genre?.value,
+			sort_by: sort_by?.value,
+			order_by,
+			page,
+			imdb_rating: imdb_rating?.value,
+		};
+
+		browsingService.getMovieQuery(values).then((response) => {
+			console.log(response);
+			setLoading(false);
+			if (page > 1 && response.data) {
+				response.data.splice(0, 2);
+			}
+			setMovies(response.data || []);
+			// console.log(response)
+		});
+	}, [page, submittedQuery, genre, sort_by, order_by, imdb_rating]);
+
+	if (loading) return <Loader />;
+
 	return (
 		<>
 			<MovieList movies={movies} watched={watched} />
-			<Grid sx={{ flexGrow: 1 }} >
+			<Grid sx={{ flexGrow: 1 }}>
 				<Button onClick={minusOne}>
-					<ArrowBackIcon />BACK
+					<ArrowBackIcon />
+					BACK
 				</Button>
 				<Button onClick={plusOne}>
-					NEXT<ArrowForwardIcon/>
+					NEXT
+					<ArrowForwardIcon />
 				</Button>
 			</Grid>
 		</>
@@ -54,17 +145,10 @@ const Paginated = ({ movies, watched, page, setPage, setSearchParams, loading })
 };
 
 const Browsing = ({ t }) => {
-	const [page, setPage] = useState(false);
+	const [page, setPage] = useState(1);
 	const [watched, setWatched] = useState([]);
 	const loader = useRef();
 	const profileData = useSelector((state) => state.profile);
-	const [searchParams, setSearchParams] = useSearchParams();
-
-	useEffect(() => {
-		const page_value = searchParams.get('page');
-		if (page_value) setPage(Number(page_value));
-		else setPage(1);
-	}, [searchParams]);
 
 	useEffect(() => {
 		movieService.isWatched(profileData?.id).then((response) => {
@@ -80,36 +164,6 @@ const Browsing = ({ t }) => {
 		order_by: 'desc',
 		imdb_rating: null,
 	});
-
-	const { submittedQuery, genre, sort_by, order_by, imdb_rating } =
-		browsingSettings;
-
-	const { loading, error, movies } = useFetch(
-		submittedQuery,
-		page,
-		genre,
-		sort_by,
-		order_by,
-		imdb_rating,
-		setPage
-	);
-
-	const handleObserver = useCallback((entries) => {
-		const target = entries[0];
-		if (target.isIntersecting) {
-			setPage((prev) => prev + 1);
-		}
-	}, []);
-
-	useEffect(() => {
-		const options = {
-			root: null,
-			rootMargin: '20px',
-			threshold: 0,
-		};
-		const observer = new IntersectionObserver(handleObserver, options);
-		if (loader.current) observer.observe(loader.current);
-	}, [handleObserver]);
 
 	if (!profileData || !page) return <Loader />;
 
@@ -129,20 +183,18 @@ const Browsing = ({ t }) => {
 			/>
 			{profileData?.infinite_scroll === 'YES' ? (
 				<Infinite
-					movies={movies}
-					loading={loading}
-					error={error}
 					loader={loader}
 					watched={watched}
+					setPage={setPage}
+					browsingSettings={browsingSettings}
+					page={page}
 				/>
 			) : (
 				<Paginated
-					movies={movies}
 					watched={watched}
 					page={page}
 					setPage={setPage}
-					setSearchParams={setSearchParams}
-					loading={loading}
+					browsingSettings={browsingSettings}
 				/>
 			)}
 		</Container>

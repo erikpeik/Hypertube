@@ -10,7 +10,6 @@ const getMovieQuery = async (values) => {
 	if (values.query === "") {
 		values.query = "0";
 	}
-	console.log("values", values);
 	const request = axios.post(`${baseUrl}/movie_query`, values);
 	return request.then((response) => response);
 };
