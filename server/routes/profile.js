@@ -258,8 +258,7 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 		}
 	});
 
-	app.post(
-		'/api/profile/setprofilepic/:language', upload.single('file'), async (request, response) => {
+	app.post('/api/profile/setprofilepic/:language', upload.single('file'), async (request, response) => {
 			const language = request.params.language;
 			if (helperFunctions.checkValidLanguage(language) !== true)
 				return response.send('Faulty language information');
@@ -274,9 +273,7 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 			if (!request.file)
 				return response.send('Required profile pic data missing');
 			const cookie = request.cookies.refreshToken;
-			const image =
-				'http://localhost:3001/images/' + request.file?.filename;
-
+			const image = `${process.env.REACT_APP_BACKEND_URL}/images/${request.file?.filename}`;
 			if (request.file?.size > 5242880) {
 				res = await helperFunctions.translate(
 					'The maximum size for uploaded images is 5 megabytes.',
@@ -300,7 +297,7 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 						const oldImage =
 							path.resolve(__dirname, '../images') +
 							oldImageData.replace(
-								'http://localhost:3001/images',
+								`${process.env.REACT_APP_BACKEND_URL}/images`,
 								''
 							);
 						if (fs.existsSync(oldImage)) {

@@ -108,7 +108,7 @@ const VideoPlayer = ({ imdb_id, t }) => {
 		};
 	}, [imdb_id]);
 
-	let stream_url = `http://localhost:3001/api/moviestream/${imdb_id}/${quality}`;
+	let stream_url = `${process.env.REACT_APP_BACKEND_URL}/api/moviestream/${imdb_id}/${quality}`;
 
 	const getTorrent = () => {
 		setStatusPlayer(`${t('videoplayer.1')}`);

@@ -23,7 +23,7 @@ module.exports = function (app, pool) {
 					picture_path = picture.rows[0]["picture_data"];
 				else {
 					picture_path =
-						"http://localhost:3001/images/file-1666255644329.jpg";
+						`${process.env.REACT_APP_BACKEND_URL}/images/file-1666255644329.jpg`;
 				}
 				try {
 					sql =

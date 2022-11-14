@@ -116,7 +116,7 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 			client_id: process.env.FORTYTWO_CLIENT_ID,
 			client_secret: process.env.FORTYTWO_CLIENT_SECRET,
 			code: code,
-			redirect_uri: 'http://localhost:3001/api/oauth/42direct',
+			redirect_uri: `${process.env.REACT_APP_BACKEND_URL}/api/oauth/42direct`,
 		});
 
 		if (fortytwo_response.data.error) {

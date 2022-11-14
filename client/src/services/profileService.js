@@ -1,5 +1,5 @@
 import axios from 'axios';
-const baseUrl = 'http://localhost:3001/api/profile';
+const baseUrl = `${process.env.REACT_APP_BACKEND_URL}/api/profile`;
 
 const editUserSettings = (ProfileSettings) => {
 	const request = axios.post(`${baseUrl}/editsettings`, ProfileSettings);

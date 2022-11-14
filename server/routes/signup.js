@@ -236,7 +236,7 @@ module.exports = function (app, pool, bcrypt, transporter, upload, helperFunctio
 		if (!request.file)
 			return response.send('Required profile pic data missing');
 		const image =
-			'http://localhost:3001/images/' + request.file?.filename;
+			`${process.env.REACT_APP_BACKEND_URL}/images/${request.file?.filename}`;
 
 		if (request.file?.size > 5242880) {
 			res = await helperFunctions.translate(

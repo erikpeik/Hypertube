@@ -69,7 +69,7 @@ const Login = ({ t }) => {
 		},
 	});
 
-	let redirect_url = 'http://localhost:3001/api/oauth/42direct';
+	let redirect_url = `${process.env.REACT_APP_BACKEND_URL}/api/oauth/42direct`;
 
 	return (
 		<Container maxWidth="sm" sx={{ display: 'grid', pt: 5, pb: 5 }}>

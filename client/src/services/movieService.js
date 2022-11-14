@@ -1,5 +1,5 @@
 import axios from 'axios';
-const baseUrl = 'http://localhost:3001/api/movies';
+const baseUrl = `${process.env.REACT_APP_BACKEND_URL}/api/movies`;
 
 const getUserWatchMovie = async (imdb_id, userId) => {
 	const request = axios.post(`${baseUrl}/watch/${imdb_id}`, { userId });

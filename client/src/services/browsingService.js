@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseUrl = "http://localhost:3001/api/browsing";
+const baseUrl = `${process.env.REACT_APP_BACKEND_URL}/api/browsing`;
 
 const getMovies = async () => {
 	const request = axios.get(`${baseUrl}/movies`);
