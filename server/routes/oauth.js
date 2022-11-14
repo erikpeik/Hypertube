@@ -105,6 +105,12 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 	app.get('/api/oauth/42direct', async (request, response) => {
 		let code = request.query.code;
 
+		if (!code) {
+			const error_message = "Failed request code, error 666"
+			response.redirect(`http://localhost:3000/login?error=${error_message}`);
+			return;
+		}
+
 		const fortytwo_response = await axios.post(`${FORTYTWO_URL}`, {
 			grant_type: 'authorization_code',
 			client_id: process.env.FORTYTWO_CLIENT_ID,
@@ -112,6 +118,13 @@ module.exports = function (app, pool, axios, helperFunctions, jwt) {
 			code: code,
 			redirect_uri: 'http://localhost:3001/api/oauth/42direct',
 		});
+
+		if (fortytwo_response.data.error) {
+			console.log(fortytwo_response.data.error)
+			const error_message = encodeURIComponent(fortytwo_response.data?.error_description || '42 login failed');
+			response.redirect(`http://localhost:3000/login?error=${error_message}`);
+			return;
+		}
 
 		const { data } = await axios.get('https://api.intra.42.fr/v2/me', {
 			headers: {
