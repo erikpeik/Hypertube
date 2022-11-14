@@ -24,14 +24,14 @@ const UserMenu = ({ user, t }) => {
 		setAnchorElUser(null);
 	};
 	let translate1 = `${t("nav.3")}`;
-	let translate2 = `${t("nav.4")}`;
+	let translate2 = `${t("nav.6")}`;
 	let translate3 = `${t("nav.5")}`;
 
 	const settings = {};
 
 	if (user) {
 		settings[translate1] = "/profile";
-		settings[translate2] = "/browsing";
+		settings[translate2] = "/settings";
 		settings[translate3] = "/logout";
 	}
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import browsingService from '../services/browsingService';
 
 const useFetch = (query, genre, sort_by, order_by, imdb_rating) => {

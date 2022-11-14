@@ -91,7 +91,8 @@
 		"2": "Signup",
 		"3": "Profile",
 		"4": "Browsing",
-		"5": "Log Out"
+		"5": "Log Out",
+		"6": "Settings"
 	},
 	"browsing": {
 		"1": "Search",
