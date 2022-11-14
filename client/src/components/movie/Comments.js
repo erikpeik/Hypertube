@@ -71,7 +71,15 @@ const Comments = ({ movieId, t }) => {
 										>
 											{c.username}
 										</h4>
-										<p style={{ textAlign: 'left' }}>
+										<p
+											style={{
+												whiteSpace: 'pre-line',
+												overflowWrap: 'break-word',
+												wordWrap: 'break-word',
+												hyphens: 'auto',
+												textAlign: 'left',
+											}}
+										>
 											{c.comment}{' '}
 										</p>
 										<p

@@ -80,7 +80,7 @@ const Profile = ({ t }) => {
 		} else {
 			let formData = new FormData();
 			formData.append('file', image);
-			profileService.setProfilePic(formData, language).then(result => {
+			profileService.setProfilePic(formData, language).then((result) => {
 				if (result === true) {
 					dispatch(getProfileData());
 					dispatch(changeSeverity('success'));
@@ -89,7 +89,7 @@ const Profile = ({ t }) => {
 					dispatch(changeSeverity('error'));
 					dispatch(changeNotification(result));
 				}
-			})
+			});
 		}
 		event.target.value = '';
 	};
@@ -106,7 +106,7 @@ const Profile = ({ t }) => {
 						mb: 2,
 					}}
 				>
-					<Box sx={{ width: '200px', display: 'inline-block' }}>
+					<Box sx={{ width: '100%', minWidth: '50px', maxWidth: '200px', display: 'inline-block' }}>
 						<AspectRatio ratio={1}>
 							<Avatar
 								src={profile_pic}
@@ -116,7 +116,10 @@ const Profile = ({ t }) => {
 						</AspectRatio>
 					</Box>
 					<Box sx={{ width: 'fit-content', ml: 5 }}>
-						<Typography variant="h2" sx={{ fontSize: '250%' }}>
+						<Typography variant="h2" sx={{ fontSize: '250%', whiteSpace: 'pre-line',
+							overflowWrap: 'break-word',
+							wordWrap: 'break-word',
+							hyphens: 'auto', }}>
 							{profileData.username}
 						</Typography>
 					</Box>
@@ -130,13 +133,40 @@ const Profile = ({ t }) => {
 					}}
 				>
 					<h4 style={{ color: '#6A5ACD' }}>{t('profile.1')}</h4>
-					<Typography>{profileData.firstname}</Typography>
+					<Typography
+						style={{
+							whiteSpace: 'pre-line',
+							overflowWrap: 'break-word',
+							wordWrap: 'break-word',
+							hyphens: 'auto',
+						}}
+					>
+						{profileData.firstname}
+					</Typography>
 					<br />
 					<h4 style={{ color: '#6A5ACD' }}>{t('profile.2')}</h4>
-					<Typography>{profileData.lastname}</Typography>
+					<Typography
+						style={{
+							whiteSpace: 'pre-line',
+							overflowWrap: 'break-word',
+							wordWrap: 'break-word',
+							hyphens: 'auto',
+						}}
+					>
+						{profileData.lastname}
+					</Typography>
 					<br />
 					<h4 style={{ color: '#6A5ACD' }}>{t('profile.3')}</h4>
-					<Typography>{profileData.email}</Typography>
+					<Typography
+						style={{
+							whiteSpace: 'pre-line',
+							overflowWrap: 'break-word',
+							wordWrap: 'break-word',
+							hyphens: 'auto',
+						}}
+					>
+						{profileData.email}
+					</Typography>
 					<br />
 				</Container>
 				<Container
@@ -145,7 +175,7 @@ const Profile = ({ t }) => {
 						display: 'flex',
 						justifyContent: 'center',
 						alignItems: 'center',
-						flexDirection: 'column'
+						flexDirection: 'column',
 					}}
 				>
 					<Box sx={{ flexGrow: 2 }}>
