@@ -18,17 +18,10 @@ module.exports = function (app, pool) {
 				const username = rows[0]["username"];
 				sql = "SELECT * FROM user_pictures WHERE user_id = $1";
 				const picture = await pool.query(sql, [user_id]);
-				let picture_path;
-				if (picture.rows[0] !== undefined)
-					picture_path = picture.rows[0]["picture_data"];
-				else {
-					picture_path =
-						`${process.env.REACT_APP_BACKEND_URL}/images/file-1666255644329.jpg`;
-				}
 				try {
 					sql =
-						"INSERT INTO comments (user_id, username, user_pic, imdb_id, comment) VALUES ($1, $2, $3, $4, $5) RETURNING *";
-					await pool.query(sql, [user_id, username, picture_path, imdb_id, comment]);
+						"INSERT INTO comments (user_id, imdb_id, comment) VALUES ($1, $2, $3) RETURNING *";
+					await pool.query(sql, [user_id, imdb_id, comment]);
 					response.send(true);
 				} catch (error) {
 					console.log("ERROR: ", error);
@@ -43,7 +36,10 @@ module.exports = function (app, pool) {
 		if (!imdb_id.match(/(?=^.{9,10}$)(^tt[\d]{7,8})$/))
 			return response.send("Faulty imdb_id")
 		try {
-			sql = "SELECT * FROM comments WHERE imdb_id = $1";
+			sql = `SELECT comments.id, comments.user_id, username, comment, picture_data, created_at FROM comments
+			INNER JOIN users ON comments.user_id = users.id
+			LEFT JOIN user_pictures ON users.id = user_pictures.user_id
+			WHERE imdb_id = $1`;
 			const comments = await pool.query(sql, [imdb_id]);
 			response.send(comments.rows);
 		} catch (error) {

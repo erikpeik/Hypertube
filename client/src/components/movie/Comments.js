@@ -28,6 +28,8 @@ const Comments = ({ movieId, t }) => {
 					{comments && comments.length > 0 ? (
 						comments.sort((a, b) => b.id - a.id) &&
 						comments.map((c) => {
+							let created_at = new Date(c.created_at);
+							created_at.setTime(created_at.getTime() - 7200000);
 							return (
 								<Grid
 									container
@@ -39,8 +41,8 @@ const Comments = ({ movieId, t }) => {
 										<Grid item>
 											<Link to={'/profile'}>
 												<Avatar
-													alt="Remy Sharp"
-													src={c.user_pic}
+													alt="profile picture"
+													src={c?.picture_data}
 												/>
 											</Link>
 										</Grid>
@@ -48,8 +50,8 @@ const Comments = ({ movieId, t }) => {
 										<Grid item>
 											<Link to={'/profile/' + c?.user_id}>
 												<Avatar
-													alt="Remy Sharp"
-													src={c.user_pic}
+													alt="profile picture"
+													src={c?.picture_data}
 												/>
 											</Link>
 										</Grid>
@@ -78,7 +80,7 @@ const Comments = ({ movieId, t }) => {
 												color: 'gray',
 											}}
 										>
-											{format(c.created_at)}
+											{format(created_at)}
 										</p>
 										<Divider
 											variant="fullWidth"
