@@ -259,12 +259,17 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 	});
 
 	app.post(
-		'/api/profile/setprofilepic/:language',
-		upload.single('file'),
-		async (request, response) => {
+		'/api/profile/setprofilepic/:language', upload.single('file'), async (request, response) => {
 			const language = request.params.language;
-			if (helperFunctions.checkValidLanguage(language) !== true) {
+			if (helperFunctions.checkValidLanguage(language) !== true)
 				return response.send('Faulty language information');
+			if (request.fileValidationError) {
+				res = await helperFunctions.translate(
+					'Forbidden filetype!',
+					pool,
+					language
+				);
+				return response.send(res);
 			}
 			if (!request.file)
 				return response.send('Required profile pic data missing');
@@ -272,27 +277,15 @@ module.exports = (app, pool, bcrypt, upload, fs, path, helperFunctions) => {
 			const image =
 				'http://localhost:3001/images/' + request.file?.filename;
 
+			if (request.file?.size > 5242880) {
+				res = await helperFunctions.translate(
+					'The maximum size for uploaded images is 5 megabytes.',
+					pool,
+					language
+				);
+				return response.send(res);
+			}
 			if (cookie) {
-				if (request.file?.size > 5242880) {
-					res = await helperFunctions.translate(
-						'The maximum size for uploaded images is 5 megabytes.',
-						pool,
-						language
-					);
-					return response.send(res);
-				}
-				if (
-					request.file?.mimetype !== 'image/png' &&
-					request.file?.mimetype !== 'image/jpg' &&
-					request.file?.mimetype !== 'image/jpeg'
-				) {
-					res = await helperFunctions.translate(
-						'Not right file type!',
-						pool,
-						language
-					);
-					return response.send(res);
-				}
 				try {
 					let sql = `SELECT * FROM users WHERE token = $1`;
 					let user = await pool.query(sql, [cookie]);

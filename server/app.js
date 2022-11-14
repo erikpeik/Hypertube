@@ -70,7 +70,26 @@ const storage = multer.diskStorage({
 		);
 	},
 });
-const upload = multer({ storage: storage });
+
+const checkFileType = (req, file, cb) => {
+	const filetypes = /jpeg|jpg|png/;
+	const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+	const mimetype = filetypes.test(file.mimetype);
+
+	if (mimetype && extname) {
+		return cb(null, true);
+	} else {
+		req.fileValidationError = "Forbidden extension";
+		return cb(null, false, req.fileValidationError);
+	}
+}
+
+const upload = multer({
+	storage: storage,
+	fileFilter: (req, file, cb) => {
+		checkFileType(req, file, cb)
+	}
+});
 
 const helperFunctions = require('./utils/helperFunctions.js');
 require('./routes/signup.js')(app, pool, bcrypt, transporter, upload, helperFunctions);

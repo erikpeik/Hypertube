@@ -80,18 +80,16 @@ const Profile = ({ t }) => {
 		} else {
 			let formData = new FormData();
 			formData.append('file', image);
-			const result = await profileService.setProfilePic(
-				formData,
-				language
-			);
-			if (result === true) {
-				dispatch(getProfileData());
-				dispatch(changeSeverity('success'));
-				dispatch(changeNotification(`${t('profile.8')}`));
-			} else {
-				dispatch(changeSeverity('error'));
-				dispatch(changeNotification(result));
-			}
+			profileService.setProfilePic(formData, language).then(result => {
+				if (result === true) {
+					dispatch(getProfileData());
+					dispatch(changeSeverity('success'));
+					dispatch(changeNotification(`${t('profile.8')}`));
+				} else {
+					dispatch(changeSeverity('error'));
+					dispatch(changeNotification(result));
+				}
+			})
 		}
 		event.target.value = '';
 	};

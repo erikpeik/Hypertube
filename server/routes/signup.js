@@ -223,8 +223,15 @@ module.exports = function (app, pool, bcrypt, transporter, upload, helperFunctio
 	app.post('/api/signup/setprofilepic/:user/:language', upload.single('file'), async (request, response) => {
 		const username = request.params.user;
 		const language = request.params.language;
-		if (helperFunctions.checkValidLanguage(language) !== true) {
+		if (helperFunctions.checkValidLanguage(language) !== true)
 			return response.send('Faulty language information');
+		if (request.fileValidationError) {
+			res = await helperFunctions.translate(
+				'Forbidden filetype!',
+				pool,
+				language
+			);
+			return response.send(res);
 		}
 		if (!request.file)
 			return response.send('Required profile pic data missing');
@@ -239,29 +246,15 @@ module.exports = function (app, pool, bcrypt, transporter, upload, helperFunctio
 			);
 			return response.send(res);
 		}
-		if (
-			request.file?.mimetype !== 'image/png' &&
-			request.file?.mimetype !== 'image/jpg' &&
-			request.file?.mimetype !== 'image/jpeg'
-		) {
-			res = await helperFunctions.translate(
-				'Not right file type!',
-				pool,
-				language
-			);
-			return response.send(res);
-		}
 		try {
-			let sql = `SELECT * FROM users WHERE username = $1`;
+			let sql = `SELECT * FROM users WHERE username = $1 AND verified = 'NO'`;
 			let user = await pool.query(sql, [username]);
-			sql = `SELECT * FROM user_pictures WHERE user_id = $1 AND profile_pic = 'YES'`;
-			let { rows } = await pool.query(sql, [user.rows[0]['id']]);
 
-			if (rows.length === 0) {
+			if (user.rows.length) {
 				sql = `INSERT INTO user_pictures (user_id, picture_data, profile_pic) VALUES ($1, $2, 'YES')`;
 				await pool.query(sql, [user.rows[0]['id'], image]);
 			} else {
-				return response.send("Failure, a new user shouldn't have a profile picture")
+				return response.send("Failure, couldn't find a new user with this name")
 			}
 			response.send(true);
 		} catch (error) {
