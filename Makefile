@@ -6,7 +6,7 @@
 #    By: emende <emende@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/19 14:19:46 by emende            #+#    #+#              #
-#    Updated: 2022/10/19 14:20:13 by emende.          ###   ########.fr        #
+#    Updated: 2022/11/14 21:22:50 by emende           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,7 +44,4 @@ make sense: # Make sense of your life
 	@sleep 5
 	@make re
 
-# make clear-volumes: # Remove all volumes
-# 	docker volume rm $$(docker volume ls -q)
-
-.PHONY: all build up build-up clean fclean re npm-back npm-front npm-all sense clear-volumes
+.PHONY: all build up build-up clean fclean re npm-back npm-front npm-all sense
