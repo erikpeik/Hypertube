@@ -122,6 +122,7 @@ const Paginated = ({ watched, page, setPage, browsingSettings }) => {
 			imdb_rating: imdb_rating?.value,
 		};
 
+		setLoading(true);
 		browsingService.getMovieQuery(values).then((response) => {
 			setLoading(false);
 			if (page > 1 && response.data) {

@@ -23,7 +23,7 @@ module.exports = function (app, axios) {
 	app.post(`${baseUrl}/imdb_data`, async (req, res) => {
 		const imdb_id = req.body.imdb_id;
 		if (!imdb_id.match(/(?=^.{9,10}$)(^tt[\d]{7,8})$/))
-			return res.send("Invalid IMDB_code")
+			return res.send('Invalid IMDB_code');
 		try {
 			const omdb_data = await axios.get(
 				`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&i=${imdb_id}`
@@ -45,17 +45,18 @@ module.exports = function (app, axios) {
 	});
 
 	app.post(`${baseUrl}/movie_query`, async (req, res) => {
-		let { query, genre, sort_by, order_by, imdb_rating, page } =
-			req.body;
+		let { query, genre, sort_by, order_by, imdb_rating, page } = req.body;
 		if (!page) res.send({ error: 'Page number missing' });
 		const limit = page === 1 ? 20 : 22;
 		if (sort_by === undefined) {
 			sort_by = 'rating';
 		}
 		try {
-			const api_search = `${TORRENT_API}?query_term=${query}&genre=${genre || ''
-				}&sort_by=${sort_by}&order_by=${order_by || ''}&minimum_rating=${imdb_rating || ''
-				}&page=${page}&limit=${limit}`;
+			const api_search = `${TORRENT_API}?query_term=${encodeURIComponent(
+				query
+			)}&genre=${genre || ''}&sort_by=${sort_by}&order_by=${
+				order_by || ''
+			}&minimum_rating=${imdb_rating || ''}&page=${page}&limit=${limit}`;
 			console.log(api_search);
 			axios
 				.get(api_search)
