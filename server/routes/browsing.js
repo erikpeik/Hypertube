@@ -46,7 +46,7 @@ module.exports = function (app, axios) {
 
 	app.post(`${baseUrl}/movie_query`, async (req, res) => {
 		let { query, genre, sort_by, order_by, imdb_rating, page } = req.body;
-		if (!page) res.send({ error: 'Page number missing' });
+		if (!page) return res.send({ error: 'Page number missing' });
 		const limit = page === 1 ? 20 : 22;
 		if (sort_by === undefined) {
 			sort_by = 'rating';
@@ -74,13 +74,13 @@ module.exports = function (app, axios) {
 							})
 						);
 					}
-					res.send(movies);
+					return res.send(movies);
 				})
 				.catch((error) => {
-					res.send({ error: 'Something went wrong' });
+					return res.send({ error: 'Something went wrong' });
 				});
 		} catch (error) {
-			res.send({
+			return res.send({
 				error: 'Something went wrong with movie_query',
 			});
 		}

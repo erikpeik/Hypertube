@@ -1,57 +1,39 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import browsingService from '../services/browsingService';
 
-const useFetch = (
-	query,
-	page,
-	genre,
-	sort_by,
-	order_by,
-	imdb_rating,
-	setPage
-) => {
+const useFetch = (query, genre, sort_by, order_by, imdb_rating) => {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
 	const [movies, setMovies] = useState([]);
-	const [currentQuery, setCurrentQuery] = useState('');
-	const [currentGenre, setCurrentGenre] = useState(null);
-	const [currentSortBy, setCurrentSortBy] = useState(null);
-	const [currentOrderBy, setCurrentOrderBy] = useState('desc');
-	const [currentImdbRating, setCurrentImdbRating] = useState(null);
 	const profileData = useSelector((state) => state.profile);
-
-	if (query !== currentQuery) {
-		setCurrentQuery(query);
-		setMovies([]);
-		setPage(1);
-	}
-
-	if (genre !== currentGenre) {
-		setCurrentGenre(genre);
-		setMovies([]);
-		setPage(1);
-	}
-
-	if (sort_by !== currentSortBy) {
-		setCurrentSortBy(sort_by);
-		setMovies([]);
-		setPage(1);
-	}
-
-	if (order_by !== currentOrderBy) {
-		setCurrentOrderBy(order_by);
-		setMovies([]);
-		setPage(1);
-	}
-
-	if (imdb_rating !== currentImdbRating) {
-		setCurrentImdbRating(imdb_rating);
-		setMovies([]);
-		setPage(1);
-	}
+	const page = useSelector((state) => state.page);
+	const [currentValues, setCurrentValues] = useState({
+		currentQuery: '',
+		currentGenre: null,
+		currentSortBy: null,
+		currentOrderBy: 'desc',
+		currentImdbRating: null,
+	});
 
 	let infinite_scroll = profileData?.infinite_scroll;
+
+	if (
+		query !== currentValues.currentQuery ||
+		genre !== currentValues.currentGenre ||
+		sort_by !== currentValues.currentSortBy ||
+		order_by !== currentValues.currentOrderBy ||
+		imdb_rating !== currentValues.currentImdbRating
+	) {
+		setMovies([]);
+		setCurrentValues({
+			currentQuery: query,
+			currentGenre: genre,
+			currentSortBy: sort_by,
+			currentOrderBy: order_by,
+			currentImdbRating: imdb_rating,
+		});
+	}
 
 	const sendQuery = useCallback(async () => {
 		try {

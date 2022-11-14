@@ -2,8 +2,11 @@ import QuerySearch from './QuerySearch';
 import AutoBrowsing from './AutoBrowsing';
 import OrderBy from './OrderBy';
 import { Grid, Paper } from '@mui/material';
+import { setPage } from '../../reducers/pageReducer';
+import { useDispatch } from 'react-redux';
 
 const SearchBar = ({ t, browsingSettings, setBrowsingSettings }) => {
+	const dispatch = useDispatch();
 	const genres = [
 		{ label: t('categories.1'), value: 'Action' },
 		{ label: t('categories.2'), value: 'Adventure' },
@@ -59,6 +62,7 @@ const SearchBar = ({ t, browsingSettings, setBrowsingSettings }) => {
 		event.preventDefault();
 		const value = query.trim();
 		setBrowsingSettings({ ...browsingSettings, submittedQuery: value });
+		dispatch(setPage(1));
 	};
 
 	const setGenre = (event) => {
@@ -67,6 +71,7 @@ const SearchBar = ({ t, browsingSettings, setBrowsingSettings }) => {
 			genre: event,
 			submittedQuery: query,
 		});
+		dispatch(setPage(1));
 	};
 
 	const setSortBy = (event) => {
@@ -75,6 +80,7 @@ const SearchBar = ({ t, browsingSettings, setBrowsingSettings }) => {
 			sort_by: event,
 			submittedQuery: query,
 		});
+		dispatch(setPage(1));
 	};
 
 	const setOrderBy = (event) => {
@@ -83,6 +89,7 @@ const SearchBar = ({ t, browsingSettings, setBrowsingSettings }) => {
 			order_by: event,
 			submittedQuery: query,
 		});
+		dispatch(setPage(1));
 	};
 
 	const setImdbRating = (event) => {
@@ -91,6 +98,7 @@ const SearchBar = ({ t, browsingSettings, setBrowsingSettings }) => {
 			imdb_rating: event,
 			submittedQuery: query,
 		});
+		dispatch(setPage(1));
 	};
 
 	return (

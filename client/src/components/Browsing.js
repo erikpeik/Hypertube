@@ -5,37 +5,36 @@ import useFetch from '../hooks/useFetch';
 import LoaderDots from './LoaderDots';
 import SearchBar from './browsing/SearchBar';
 import MovieList from './browsing/MovieList';
-import { useSelector } from 'react-redux';
-// import { useSearchParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import Loader from './Loader';
 import movieService from '../services/movieService';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Grid from '@mui/material/Grid';
 import browsingService from '../services/browsingService';
+import { setPage, increasePage } from '../reducers/pageReducer';
 
-const Infinite = ({ loader, watched, setPage, page, browsingSettings }) => {
+const Infinite = ({ loader, watched, browsingSettings }) => {
+	const dispatch = useDispatch();
 	const { submittedQuery, genre, sort_by, order_by, imdb_rating } =
 		browsingSettings;
 
 	const { loading, error, movies } = useFetch(
 		submittedQuery,
-		page,
 		genre,
 		sort_by,
 		order_by,
-		imdb_rating,
-		setPage
+		imdb_rating
 	);
 
 	const handleObserver = useCallback(
 		(entries) => {
 			const target = entries[0];
 			if (target.isIntersecting) {
-				setPage((prev) => prev + 1);
+				dispatch(increasePage());
 			}
 		},
-		[setPage]
+		[dispatch]
 	);
 
 	useEffect(() => {
@@ -58,7 +57,9 @@ const Infinite = ({ loader, watched, setPage, page, browsingSettings }) => {
 	);
 };
 
-const Paginated = ({ watched, page, setPage, browsingSettings }) => {
+const Paginated = ({ watched, browsingSettings }) => {
+	const dispatch = useDispatch();
+	const page = useSelector((state) => state.page);
 	const [movies, setMovies] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const { submittedQuery, genre, sort_by, order_by, imdb_rating } =
@@ -73,14 +74,14 @@ const Paginated = ({ watched, page, setPage, browsingSettings }) => {
 	});
 
 	const plusOne = () => {
-		setPage(Number(page) + 1);
+		dispatch(setPage(Number(page) + 1));
 	};
 
 	const minusOne = () => {
 		if (page > 1) {
-			setPage(Number(page) - 1);
+			dispatch(setPage(Number(page) - 1));
 		} else {
-			setPage(1);
+			dispatch(setPage(1));
 		}
 	};
 
@@ -93,7 +94,7 @@ const Paginated = ({ watched, page, setPage, browsingSettings }) => {
 			currentSortBy !== sort_by ||
 			currentOrderBy !== order_by
 		) {
-			setPage(1);
+			dispatch(setPage(1));
 			setCurrentSearch({
 				currentQuery: submittedQuery,
 				currentGenre: genre,
@@ -107,7 +108,7 @@ const Paginated = ({ watched, page, setPage, browsingSettings }) => {
 		genre,
 		imdb_rating,
 		order_by,
-		setPage,
+		dispatch,
 		sort_by,
 		submittedQuery,
 	]);
@@ -156,10 +157,10 @@ const Paginated = ({ watched, page, setPage, browsingSettings }) => {
 };
 
 const Browsing = ({ t }) => {
-	const [page, setPage] = useState(1);
 	const [watched, setWatched] = useState([]);
 	const loader = useRef();
 	const profileData = useSelector((state) => state.profile);
+	const page = useSelector((state) => state.page);
 
 	useEffect(() => {
 		movieService.isWatched(profileData?.id).then((response) => {
@@ -196,15 +197,11 @@ const Browsing = ({ t }) => {
 				<Infinite
 					loader={loader}
 					watched={watched}
-					setPage={setPage}
 					browsingSettings={browsingSettings}
-					page={page}
 				/>
 			) : (
 				<Paginated
 					watched={watched}
-					page={page}
-					setPage={setPage}
 					browsingSettings={browsingSettings}
 				/>
 			)}
