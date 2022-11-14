@@ -33,6 +33,8 @@ module.exports = function (app, pool, axios) {
 				}
 				sql = `DELETE FROM downloads WHERE imdb_id = $1`;
 				pool.query(sql, [element.imdb_id]);
+				sql = `DELETE FROM subtitles WHERE imdb_id = $1`;
+				pool.query(sql, [element.imdb_id]);
 			});
 		});
 	}
@@ -50,4 +52,3 @@ module.exports = function (app, pool, axios) {
 	}
 	crontab();
 };
-// module.export = { crontab };
