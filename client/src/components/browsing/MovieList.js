@@ -69,9 +69,18 @@ const MovieList = ({ movies, watched }) => {
 								</Typography>
 								{watched &&
 								watched.includes(movie.imdb_code) ? (
-									<Typography>
-										<VisibilityIcon />
-									</Typography>
+									<Box
+										style={{
+											display: 'flex',
+											alignItems: 'center',
+											flexWrap: 'wrap',
+										}}
+									>
+										<Typography style={{marginRight: 4, marginTop: 3}}>
+											<VisibilityIcon />{' '}
+										</Typography>
+										<Typography>Watched</Typography>
+									</Box>
 								) : null}
 							</CardContent>
 							<CardMedia
