@@ -36,7 +36,7 @@ const VideoPlayer = ({ imdb_id, t }) => {
 	const profileData = useSelector((state) => state.profile);
 
 	const isWatched = () => {
-		movieService.getUserWatchMovie(imdb_id, profileData.id)
+		movieService.getUserWatchMovie(imdb_id, profileData.id);
 	};
 
 	const onPlay = () => {
@@ -59,11 +59,7 @@ const VideoPlayer = ({ imdb_id, t }) => {
 	const onError = (error) => {
 		if (error?.target?.error) {
 			const error_code = error.target.error.code;
-			if (
-				// error_code === 3 || // failed to send audio packet for decoding
-				error_code === 4 ||
-				error_code === 1
-			) {
+			if (error_code === 4 || error_code === 1) {
 				setStatusPlayer(`${t('videoplayer.3')}`);
 				setError(true);
 				playerRef.current.showPreview();
@@ -97,7 +93,10 @@ const VideoPlayer = ({ imdb_id, t }) => {
 				);
 				let uniqueQualities = torrentQualities.filter(
 					(quality, index) => {
-						return (torrentQualities.indexOf(quality) === index && quality !== '2160p');
+						return (
+							torrentQualities.indexOf(quality) === index &&
+							quality !== '2160p'
+						);
 					}
 				);
 				setTorrentInfo(uniqueQualities);
@@ -208,7 +207,6 @@ const VideoPlayer = ({ imdb_id, t }) => {
 						onPlay={onPlay}
 						width="100%"
 						height="100%"
-						// light={video_banner}
 						playIcon={
 							<PlayCircleFilledWhiteOutlined fontSize="large" />
 						}

@@ -4,18 +4,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import signUpService from '../../services/signUpService';
 import { Container, Paper, TextField, Typography, Button } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
-// import { IconMailForward } from '@tabler/icons'
 import Notification from '../Notification';
 import { changeNotification } from '../../reducers/notificationReducer';
 import { changeSeverity } from '../../reducers/severityReducer';
-
-// const imageStyle = {
-// 	width: '100px',
-// 	display: 'relative',
-// 	marginLeft: 'calc(50% + 5px)',
-// 	transform: 'translate(-50%)',
-// 	filter: 'drop-shadow(0px 0px 3px rgb(241 25 38 / 0.8))',
-// }
 
 const theme = createTheme({
 	palette: {
@@ -133,7 +124,6 @@ const ResetPasswordForm = ({ t }) => {
 	return (
 		<Container maxWidth="sm" sx={{ pt: 5, pb: 5 }}>
 			<Paper elevation={10} sx={{ p: 3 }}>
-				{/* <IconMailForward size={100} color="#F11926" style={imageStyle} /> */}
 				<Typography
 					variant="h5"
 					align="center"

@@ -31,10 +31,7 @@ import { useTranslation } from 'react-i18next';
 import Button from '@mui/material/Button';
 import profileService from './services/profileService';
 import { changeSeverity } from './reducers/severityReducer';
-import {
-	changeNotification,
-	// resetNotification,
-} from './reducers/notificationReducer';
+import { changeNotification } from './reducers/notificationReducer';
 import { setLanguage } from './reducers/languageReducer';
 
 const App = () => {
@@ -46,7 +43,6 @@ const App = () => {
 	const [settings, changeSettings] = useState({});
 
 	useEffect(() => {
-		// dispatch(resetNotification());
 		if (profileData) {
 			changeSettings({
 				username: profileData.username,
@@ -148,7 +144,10 @@ const App = () => {
 						<Route path="/login" element={<Login t={t} />} />
 						<Route path="/signup" element={<Signup t={t} />} />
 						<Route path="/profile" element={<Profile t={t} />} />
-						<Route path="/profile/:id" element={<UserProfile t={t} />} />
+						<Route
+							path="/profile/:id"
+							element={<UserProfile t={t} />}
+						/>
 						<Route path="/browsing" element={<Browsing t={t} />} />
 						<Route
 							path="/movie/:id"
