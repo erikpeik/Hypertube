@@ -243,8 +243,9 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 
 	app.get("/api/streaming/subs/:id", async (request, response) => {
 		const imdb_id = request.params.id
+		const refresh_token = request.cookies.refreshToken
 
-		sql = `SELECT * FROM subtitles WHERE imdb_id = $1`
+		let sql = `SELECT * FROM subtitles WHERE imdb_id = $1`
 		const { rows } = await pool.query(sql, [imdb_id])
 
 		let subtitleTracks = []
@@ -257,7 +258,20 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 				default: true,
 			})
 		})
-
+		if (refresh_token) {
+			sql = `SELECT language FROM users WHERE token = $1`
+			const { rows } = await pool.query(sql, [refresh_token])
+			if (rows.length > 0) {
+				const userLanguage = rows[0]['language']
+				const languageList = subtitleTracks.map(sub => sub.srcLang)
+				const fromIndex = languageList.indexOf(userLanguage)
+				if (fromIndex > -1) {
+					const element = subtitleTracks[fromIndex]
+					subtitleTracks.splice(fromIndex, 1)
+					subtitleTracks.unshift(element)
+				}
+			}
+		}
 		response.status(200).send(subtitleTracks)
 	})
 
