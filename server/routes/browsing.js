@@ -10,7 +10,6 @@ module.exports = function (app, axios) {
 					res.send(response.data);
 				})
 				.catch((error) => {
-					console.log(error);
 					res.send({ error: 'Something went wrong' });
 				});
 		} catch (error) {
@@ -39,7 +38,6 @@ module.exports = function (app, axios) {
 			}
 			res.status(200).send(omdb_data.data);
 		} catch (error) {
-			console.log(error);
 			return res.send({ error: 'Something went wrong' });
 		}
 	});
@@ -57,7 +55,6 @@ module.exports = function (app, axios) {
 			)}&genre=${genre || ''}&sort_by=${sort_by}&order_by=${
 				order_by || ''
 			}&minimum_rating=${imdb_rating || ''}&page=${page}&limit=${limit}`;
-			console.log(api_search);
 			axios
 				.get(api_search)
 				.then(async (response) => {
@@ -120,7 +117,6 @@ module.exports = function (app, axios) {
 					res.send(response.data);
 				})
 				.catch((error) => {
-					console.log(error);
 					res.send({ error: 'Something went wrong' });
 				});
 		} catch (error) {

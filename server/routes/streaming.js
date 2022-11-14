@@ -11,7 +11,6 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 	const downloadTorrent = async (magnet_link, imdb_id, quality) =>
 		new Promise((resolve) => {
 			let videoPath = path.resolve(__dirname, "../movies");
-			console.log("Downloading files to: ", videoPath);
 
 			let options = {
 				trackers: [
@@ -35,7 +34,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 					'udp://tracker.lelux.fi:6969',
 					'udp://tracker.encrypted-data.xyz:1337',
 				],
-				path: videoPath, // Where to save the files. Overrides `tmp`.
+				path: videoPath,
 			};
 			let engine = torrentStream(magnet_link, options);
 
@@ -202,8 +201,6 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 				}
 			})
 
-			console.log(finalSubs)
-
 			finalSubs.forEach(async (sub) => {
 				await axios.post(`https://api.opensubtitles.com/api/v1/download`, {
 					"file_id": sub.files[0].file_id,
@@ -254,7 +251,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 		rows.forEach(sub => {
 			subtitleTracks.push({
 				kind: "subtitles",
-				src: process.env.BACKEND_URL + `/api/streaming/subtext/${imdb_id}/${sub['language']}`,
+				src: process.env.REACT_APP_BACKEND_URL + `/api/streaming/subtext/${imdb_id}/${sub['language']}`,
 				srcLang: sub['language'],
 				label: sub['language'],
 				default: true,
@@ -299,8 +296,6 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 
 			let responseSent = false;
 
-			console.log(movieInfo)
-
 			let torrentInfo = movieInfo.torrents.filter(torrent => torrent.quality === quality);
 			if (torrentInfo.length === 0)
 				return response.send("Invalid movie quality")
@@ -311,7 +306,6 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			let magnet_link = getMagnetLink(torrentInfo[0], film_title)
 
 			let torrent_files = await downloadTorrent(magnet_link, imdb_id, quality);
-			console.log("Torrent files: ", torrent_files);
 
 			while (fs.existsSync(`movies/${torrent_files[0].path}`) === false)
 				await new Promise(r => setTimeout(r, 1000));
