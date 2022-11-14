@@ -67,7 +67,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			});
 
 			engine.on("download", () => {
-				console.log("Downloading...");
+				console.log(`Downloading ${files[0]?.name || ''}...`);
 				resolve(files);
 			});
 
@@ -94,7 +94,7 @@ module.exports = (app, fs, path, axios, pool, ffmpeg) => {
 			return response.send("Invalid IMDB_code")
 		let isChrome = request.headers['user-agent']?.includes('Chrome')
 		let streamType = isChrome ? "matroska" : "webm"
-		let bitRate = isChrome ? "4096k" : "512k"
+		let bitRate = isChrome ? "2048k" : "512k"
 
 		let sql = `SELECT * FROM downloads WHERE imdb_id = $1 AND quality = $2`;
 		const { rows } = await pool.query(sql, [imdb_id, quality]);
