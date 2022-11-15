@@ -5,7 +5,7 @@ const api = supertest(app)
 const fs = require('fs')
 
 // change cookie to your current token
-let cookie = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6InBsZWh0aWthIiwibWFpbCI6InBsZWh0aWthQHN0dWRlbnQuaGl2ZS5maSIsImlhdCI6MTY2ODA4NDcxNywiZXhwIjoxNjY4MTcxMTE3fQ.C7mNRy4S1RNEWJrMJEplSNSJFKVZ_oEkA29h7tYisuA'
+let cookie = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6InBsZWh0aWthIiwibWFpbCI6InBsZWh0aWthQHN0dWRlbnQuaGl2ZS5maSIsImlhdCI6MTY2ODQzODMwMSwiZXhwIjoxNjY4NTI0NzAxfQ.hCcfhu5omUuB_Un3gDeYa1s9SdM0mUzsoATGLFxAPcw'
 
 test('null as profile data', async () => {
 	const newUser = null
@@ -310,30 +310,6 @@ test('faulty language in profile pic data', async () => {
 		.expect("Faulty language information")
 })
 
-// test('false cookie in profile pic data', async () => {
-// 	const data = null
-
-// 	await api
-// 		.post('/api/profile/setprofilepic/en')
-// 		.set('Cookie', [`refreshToken=somethingtotallyfake`])
-// 		.expect('Image uploading failed for some reason.')
-// })
-
-// test('false file as profile pic data', async () => {
-// 	fs.readFile('/Users/plehtika/desktop/Safety_Guide.pdf',async (err, data) => {
-// 		if (err) console.log("Just testing")
-// 		let formData = new FormData();
-// 		formData.append('file', data);
-
-// 		await api
-// 			.post('/api/profile/setprofilepic/en')
-// 			.set('Cookie', [`refreshToken=${cookie}`])
-// 			.send(formData)
-// 			.expect('Not right file type!')
-
-// 	})
-// })
-
 test('profile get with no cookie', async () => {
 	await api
 		.get('/api/profile')
@@ -356,7 +332,7 @@ test('deleteuser with no cookie', async () => {
 		.expect('false')
 })
 
-//requires ddatabase access
+//requires database access
 test('deleteuser with false cookie', async () => {
 	const data = null
 

@@ -21,7 +21,7 @@ module.exports = function (app, axios) {
 
 	app.post(`${baseUrl}/imdb_data`, async (req, res) => {
 		const imdb_id = req.body.imdb_id;
-		if (!imdb_id.match(/(?=^.{9,10}$)(^tt[\d]{7,8})$/))
+		if (!imdb_id || !imdb_id.match(/(?=^.{9,10}$)(^tt[\d]{7,8})$/))
 			return res.send({ error: 'Invalid IMDB_code' });
 		try {
 			const omdb_data = await axios.get(
