@@ -22,7 +22,7 @@ module.exports = function (app, axios) {
 	app.post(`${baseUrl}/imdb_data`, async (req, res) => {
 		const imdb_id = req.body.imdb_id;
 		if (!imdb_id.match(/(?=^.{9,10}$)(^tt[\d]{7,8})$/))
-			return res.send('Invalid IMDB_code');
+			return res.send({ error: 'Invalid IMDB_code' });
 		try {
 			const omdb_data = await axios.get(
 				`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&i=${imdb_id}`
@@ -52,9 +52,8 @@ module.exports = function (app, axios) {
 		try {
 			const api_search = `${TORRENT_API}?query_term=${encodeURIComponent(
 				query
-			)}&genre=${genre || ''}&sort_by=${sort_by}&order_by=${
-				order_by || ''
-			}&minimum_rating=${imdb_rating || ''}&page=${page}&limit=${limit}`;
+			)}&genre=${genre || ''}&sort_by=${sort_by}&order_by=${order_by || ''
+				}&minimum_rating=${imdb_rating || ''}&page=${page}&limit=${limit}`;
 			axios
 				.get(api_search)
 				.then(async (response) => {
@@ -89,6 +88,10 @@ module.exports = function (app, axios) {
 			const movie_details = await axios.get(
 				`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`
 			);
+			if (movie_details.data.data.movie.title === null)
+				return res.send({
+					error: 'Something went wrong with faulty movie_query ID',
+				});
 			res.send(movie_details.data.data);
 		} catch (error) {
 			res.send({
