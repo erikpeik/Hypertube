@@ -98,6 +98,23 @@ const MoviePage = ({ t }) => {
 						delete backToNormal['year'];
 					}
 				}
+				if (t('imdb_data.0') !== 'Title') {
+					let translatedKeys = filtered.map((key) => {
+						let keyIndex = imdbArray.indexOf(key[0])
+						let translation = `${t(`imdb_data.${keyIndex}`)}`
+						return translation
+					})
+					const replaceKeys = (translatedKeys, backToNormal) => {
+						const keys = Object.keys(backToNormal);
+						const res = {};
+						for (let a in translatedKeys) {
+							res[translatedKeys[a]] = backToNormal[keys[a]];
+							backToNormal[translatedKeys[a]] = backToNormal[keys[a]];
+							delete backToNormal[keys[a]];
+						};
+					};
+					replaceKeys(translatedKeys, backToNormal);
+				}
 				setImdbData(backToNormal || '');
 			}
 		});
@@ -106,7 +123,7 @@ const MoviePage = ({ t }) => {
 			const movies = response;
 			setRecommendedMovies(movies || []);
 		});
-	}, [imdb_id]);
+	}, [imdb_id, t]);
 
 	if (!imdbData || !recommendedMovies) return <Loader />;
 
@@ -138,7 +155,7 @@ const MoviePage = ({ t }) => {
 			<Box>
 				<Box>
 					<h2 className="movie-title">
-						{imdbData.Title} ({imdbData.Year})
+						{Object.values(imdbData)[0]} ({Object.values(imdbData)[1]})
 					</h2>
 					<VideoPlayer imdb_id={imdb_id} t={t} />
 					<h5 className="comment" onClick={() => setShow(!show)}>

@@ -154,5 +154,23 @@
 	"watchlist": {
 		"0": "Filme vizualizate",
 		"1": "Nici un film vizualizat."
+	},
+	"imdb_data": {
+		"0": "TitleRO",
+		"1": "YearRO",
+		"2": "RatedRO",
+		"3": "ReleasedRO",
+		"4": "RuntimeRO",
+		"5": "GenreRO",
+		"6": "DirectorRO",
+		"7": "WriterRO",
+		"8": "ActorsRO",
+		"9": "PlotRO",
+		"10": "LanguageRO",
+		"11": "CountryRO",
+		"12": "AwardsRO",
+		"13": "MetascoreRO",
+		"14": "imdbRatingRO",
+		"15": "imdbVotesRO"
 	}
 }

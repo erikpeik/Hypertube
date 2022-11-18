@@ -154,5 +154,23 @@
 	"watchlist": {
 		"0": "Katsotut elokuvat",
 		"1": "Ei katsottu elokuvia."
+	},
+	"imdb_data": {
+		"0": "Nimi",
+		"1": "Vuosi",
+		"2": "Ikäraja",
+		"3": "Ensi-iltapäivä",
+		"4": "Kesto",
+		"5": "Lajityyppi",
+		"6": "Ohjaus",
+		"7": "Käsikirjoitus",
+		"8": "Pääosissa",
+		"9": "Synopsis",
+		"10": "Kieli",
+		"11": "Julkaisumaa",
+		"12": "Palkinnot",
+		"13": "Metascore-arvio",
+		"14": "IMDb-arvio",
+		"15": "IMDb-ääniä"
 	}
 }

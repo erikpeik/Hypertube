@@ -154,5 +154,23 @@
 	"watchlist": {
 		"0": "Movies that you watched",
 		"1": "No watched movies."
+	},
+	"imdb_data": {
+		"0": "Title",
+		"1": "Year",
+		"2": "Rated",
+		"3": "Released",
+		"4": "Runtime",
+		"5": "Genre",
+		"6": "Director",
+		"7": "Writer",
+		"8": "Actors",
+		"9": "Plot",
+		"10": "Language",
+		"11": "Country",
+		"12": "Awards",
+		"13": "Metascore",
+		"14": "imdbRating",
+		"15": "imdbVotes"
 	}
 }
