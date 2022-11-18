@@ -1,5 +1,5 @@
 # Hypertube - A Netflix-like movie streaming website
-
+## ⚠️⚠️⚠️ this was created only for pure educational reasons! 
 ### by [erikpeik](https://github.com/erikpeik), [SeanTroy](https://github.com/SeanTroy), [ghorvath](https://github.com/mobahug) and [acamaras0](https://github.com/acamaras0)
 
 A Netflix-like movie streaming website where you can choose from over 43.000 movies.
