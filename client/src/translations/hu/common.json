@@ -156,21 +156,21 @@
 		"1": "Nincs film."
 	},
 	"imdb_data": {
-		"0": "TitleHU",
-		"1": "YearHU",
-		"2": "RatedHU",
-		"3": "ReleasedHU",
-		"4": "RuntimeHU",
-		"5": "GenreHU",
-		"6": "DirectorHU",
-		"7": "WriterHU",
-		"8": "ActorsHU",
-		"9": "PlotHU",
-		"10": "LanguageHU",
-		"11": "CountryHU",
-		"12": "AwardsHU",
-		"13": "MetascoreHU",
-		"14": "imdbRatingHU",
-		"15": "imdbVotesHU"
+		"0": "Cím",
+		"1": "Év",
+		"2": "Értékelés",
+		"3": "Megjelenés",
+		"4": "Játékidő",
+		"5": "Kategória",
+		"6": "Rendező",
+		"7": "Író",
+		"8": "Színészek",
+		"9": "Leírás",
+		"10": "Nyelv",
+		"11": "Ország",
+		"12": "Díjak",
+		"13": "Metapontok",
+		"14": "imdb értékelés",
+		"15": "imdb szavazatok"
 	}
 }
