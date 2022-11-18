@@ -168,8 +168,7 @@ const MoviePage = ({ t }) => {
 			<Box>
 				<Box>
 					<h2 className="movie-title">
-						{Object.values(imdbData)[0]} (
-						{Object.values(imdbData)[1]})
+						{Object.values(imdbData)[0]} ({Object.values(imdbData)[1]})
 					</h2>
 					<VideoPlayer imdb_id={imdb_id} t={t} />
 					<h5 className="comment" onClick={() => setShow(!show)}>
