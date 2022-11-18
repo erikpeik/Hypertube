@@ -100,21 +100,26 @@ const MoviePage = ({ t }) => {
 				}
 				if (t('imdb_data.0') !== 'Title') {
 					let translatedKeys = filtered.map((key) => {
-						let keyIndex = imdbArray.indexOf(key[0])
-						let translation = `${t(`imdb_data.${keyIndex}`)}`
-						return translation
-					})
+						let keyIndex = imdbArray.indexOf(key[0]);
+						if (keyIndex === -1) {
+							keyIndex = ytsArray.indexOf(key[0])
+						} 
+						let translation = `${t(`imdb_data.${keyIndex}`)}`;
+						return translation;
+					});
 					const replaceKeys = (translatedKeys, backToNormal) => {
 						const keys = Object.keys(backToNormal);
 						const res = {};
 						for (let a in translatedKeys) {
 							res[translatedKeys[a]] = backToNormal[keys[a]];
-							backToNormal[translatedKeys[a]] = backToNormal[keys[a]];
+							backToNormal[translatedKeys[a]] =
+								backToNormal[keys[a]];
 							delete backToNormal[keys[a]];
-						};
+						}
 					};
 					replaceKeys(translatedKeys, backToNormal);
 				}
+
 				setImdbData(backToNormal || '');
 			}
 		});
@@ -136,7 +141,6 @@ const MoviePage = ({ t }) => {
 		return (
 			<Box
 				container="true"
-				// spacing={3}
 				style={{
 					direction: 'column',
 					alignItems: 'center',
@@ -155,7 +159,8 @@ const MoviePage = ({ t }) => {
 			<Box>
 				<Box>
 					<h2 className="movie-title">
-						{Object.values(imdbData)[0]} ({Object.values(imdbData)[1]})
+						{Object.values(imdbData)[0]} (
+						{Object.values(imdbData)[1]})
 					</h2>
 					<VideoPlayer imdb_id={imdb_id} t={t} />
 					<h5 className="comment" onClick={() => setShow(!show)}>
