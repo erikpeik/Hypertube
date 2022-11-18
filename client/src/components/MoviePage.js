@@ -47,13 +47,22 @@ const MoviePage = ({ t }) => {
 				'imdbVotes',
 			];
 			const ytsArray = [
-				'description_full',
-				'genres',
-				'language',
-				'rating',
-				'runtime',
 				'title',
 				'year',
+				'empty_value',
+				'empty_value',
+				'runtime',
+				'genres',
+				'empty_value',
+				'empty_value',
+				'empty_value',
+				'description_full',
+				'language',
+				'empty_value',
+				'empty_value',
+				'empty_value',
+				'rating',
+				'empty_value',
 			];
 
 			if (data.error) {
@@ -103,7 +112,7 @@ const MoviePage = ({ t }) => {
 						let keyIndex = imdbArray.indexOf(key[0]);
 						if (keyIndex === -1) {
 							keyIndex = ytsArray.indexOf(key[0])
-						} 
+						}
 						let translation = `${t(`imdb_data.${keyIndex}`)}`;
 						return translation;
 					});
