@@ -95,7 +95,7 @@ const MoviePage = ({ t }) => {
 						delete backToNormal['rating'];
 					}
 					if (key === 'runtime') {
-						backToNormal['Runtime'] = value;
+						backToNormal['Runtime'] = value + ' min';
 						delete backToNormal['runtime'];
 					}
 					if (key === 'title') {
